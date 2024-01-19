@@ -1,0 +1,354 @@
+# Generated and updated by Froley. Custom changes will not be overwritten; customize as desired.
+module Boss
+
+class Cmd( t:Token )
+  GLOBAL METHODS
+    method to_character( st:String )->Character
+      if (st is null or st.count == 0) return Character(0)
+      return st[0]
+
+  METHODS
+    method init( existing:Cmd )
+      t = existing.t
+
+    method cloned->ThisType [propagated]
+      return ThisType(this)
+
+    method add( cmd:Cmd )
+      throw UnsupportedOperationError()
+
+    method clear
+      throw UnsupportedOperationError()
+
+    method count->Int
+      return 0
+
+    method description->String
+      return "Cmd"
+
+    method dispatch<<$m,$VisitorType>>( visitor:$VisitorType )  [propagated]
+      visitor.$m( this )
+
+    method dispatch<<$m,$VisitorType,$ReturnType>>( visitor:$VisitorType )->$ReturnType [propagated]
+      return visitor.$m( this )
+
+    method first->Cmd
+      throw UnsupportedOperationError()
+
+    method get( index:Int )->Cmd
+      throw UnsupportedOperationError()
+
+    method get<<$AsType>>( index:Int )->$AsType
+      return get(index)->(as $AsType)
+
+    method insert( element:Cmd, before_index=0:Int )
+      throw UnsupportedOperationError()
+
+    method last->Cmd
+      throw UnsupportedOperationError()
+
+    method remove_first->Cmd
+      throw UnsupportedOperationError()
+
+    method remove_last->Cmd
+      throw UnsupportedOperationError()
+
+    method set( index:Int, value:Cmd )
+      throw UnsupportedOperationError()
+
+    method to->Character
+      return Character(this->Int)
+
+    method to->Cmd[]
+      throw UnsupportedOperationError()
+
+    method to->Int
+      return 0
+
+    method to->Logical
+      return (this->Int)?
+
+    method to->Real
+      return this->Int
+
+    method to->String
+      return description
+
+    method to->Token[]
+      throw UnsupportedOperationError()
+endClass
+
+class CmdList : Cmd
+  PROPERTIES
+    list = Cmd[]
+
+  METHODS
+    method init( t )
+      noAction
+
+    method init( t, element:Cmd )
+      list.add( element )
+
+    method init( t, element1:Cmd, element2:Cmd )
+      list.add( element1 )
+      list.add( element2 )
+
+    method init( existing:CmdList )
+      prior.init( existing )
+
+      # Start with shallow clone
+      list = existing.list.cloned
+
+      # Turn into deep clone
+      localize list
+      forEach (cmd at i in list)
+        if (cmd) list[i] = cmd.cloned
+      endForEach
+
+    method add( cmd:Cmd )
+      @list.add( cmd )
+
+    method clear
+      @list.clear
+
+    method count->Int
+      return @list.count
+
+    method description->String
+      return "CmdList" + list_description
+
+    method first->Cmd
+      return @list.first
+
+    method get( index:Int )->Cmd
+      return @list[index]
+
+    method insert( element:Cmd, before_index=0:Int )
+      list.insert( element, before_index )
+
+    method last->Cmd
+      return @list.last
+
+    method list_description->String
+      local builder = String()
+      builder.print '['
+      forEach (element at index in @list)
+        if (index > 0) builder.print ','
+        builder.print( %element )
+      endForEach
+      builder.print ']'
+      return builder
+
+    method remove_first->Cmd
+      return @list.remove_first
+
+    method remove_last->Cmd
+      return @list.remove_last
+
+    method set( index:Int, value:Cmd )
+      @list[index] = value
+
+    method to->Cmd[]
+      return @list
+
+endClass
+
+class TokenList : Cmd
+  PROPERTIES
+    tokens : Token[]
+
+  METHODS
+    method init( t )
+      tokens = Token[]
+
+    method init( t, tokens )
+
+    method init( existing:TokenList )
+      tokens = existing.tokens.cloned
+
+    method description->String
+      return "TokenList($)"(tokens)
+
+    method to->Token[]
+      return tokens
+endClass
+
+class Unary( t, operand:Cmd ) : Cmd
+  METHODS
+    method init( existing:Unary )
+      prior.init( existing )
+      operand = existing.operand.cloned
+
+    method description->String
+      return "Unary($)"(%operand)
+endClass
+
+class Binary( t, left:Cmd, right:Cmd ) : Cmd
+  METHODS
+    method init( existing:Binary )
+      prior.init( existing )
+      left = existing.left.cloned
+      right = existing.right.cloned
+
+    method description->String
+      return "Binary($,$)"(%left,%right)
+endClass
+
+class AST : Cmd
+  PROPERTIES
+    statements : Cmd
+
+  METHODS
+    method init( t, statements )
+
+    method init( existing:AST )
+      prior.init( existing )
+      if (existing.statements) statements = existing.statements.cloned
+
+    method description->String
+      return "AST($)" (%statements)
+
+endClass
+
+class Access : Cmd
+  PROPERTIES
+    name : String
+
+  METHODS
+    method init( t, name )
+
+    method init( existing:Access )
+      prior.init( existing )
+      name = existing.name
+
+    method description->String
+      return "Access($)" (%name)
+
+    method to->Character
+      return Cmd.to_character(name)
+
+    method to->Int:     return name
+    method to->Logical: return name?
+    method to->String: return name
+
+endClass
+
+class Add : Binary
+  METHODS
+    method description->String
+      return "Add($,$)" (%left,%right)
+
+endClass
+
+class Args : CmdList
+  METHODS
+    method description->String
+      return "Args" + list_description
+endClass
+
+class Assign : Binary
+  METHODS
+    method description->String
+      return "Assign($,$)" (%left,%right)
+
+endClass
+
+class Divide : Binary
+  METHODS
+    method description->String
+      return "Divide($,$)" (%left,%right)
+
+endClass
+
+class LiteralString : Cmd
+  PROPERTIES
+    value : String
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralString )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralString($)" (%value)
+
+    method to->Character
+      return Cmd.to_character(value)
+
+    method to->Int:     return value
+    method to->Logical: return value?
+    method to->String: return value
+
+endClass
+
+class Multiply : Binary
+  METHODS
+    method description->String
+      return "Multiply($,$)" (%left,%right)
+
+endClass
+
+class Negate : Unary
+  METHODS
+    method description->String
+      return "Negate($)" (%operand)
+
+endClass
+
+class Number : Cmd
+  PROPERTIES
+    value : Real
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:Number )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "Number($)" (%value)
+
+    method to->Int:    return value
+    method to->Real:   return value
+    method to->String: return value
+
+endClass
+
+class Print : Cmd
+  PROPERTIES
+    args : Cmd
+
+  METHODS
+    method init( t, args )
+
+    method init( existing:Print )
+      prior.init( existing )
+      if (existing.args) args = existing.args.cloned
+
+    method description->String
+      return "Print($)" (%args)
+
+endClass
+
+class Println : Print
+  METHODS
+    method description->String
+      return "Println($)" (%args)
+
+endClass
+
+class Statements : CmdList
+  METHODS
+    method description->String
+      return "Statements" + list_description
+endClass
+
+class Subtract : Binary
+  METHODS
+    method description->String
+      return "Subtract($,$)" (%left,%right)
+
+endClass
