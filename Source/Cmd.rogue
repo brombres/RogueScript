@@ -194,22 +194,6 @@ class Binary( t, left:Cmd, right:Cmd ) : Cmd
       return "Binary($,$)"(%left,%right)
 endClass
 
-class AST : Cmd
-  PROPERTIES
-    statements : Cmd
-
-  METHODS
-    method init( t, statements )
-
-    method init( existing:AST )
-      prior.init( existing )
-      if (existing.statements) statements = existing.statements.cloned
-
-    method description->String
-      return "AST($)" (%statements)
-
-endClass
-
 class Access : Cmd
   PROPERTIES
     name : String
@@ -297,19 +281,19 @@ class Negate : Unary
 
 endClass
 
-class Number : Cmd
+class LiteralReal : Cmd
   PROPERTIES
     value : Real
 
   METHODS
     method init( t, value )
 
-    method init( existing:Number )
+    method init( existing:LiteralReal )
       prior.init( existing )
       value = existing.value
 
     method description->String
-      return "Number($)" (%value)
+      return "LiteralReal($)" (%value)
 
     method to->Int:    return value
     method to->Real:   return value
@@ -351,4 +335,16 @@ class Subtract : Binary
     method description->String
       return "Subtract($,$)" (%left,%right)
 
+endClass
+
+class Literal : Cmd
+  METHODS
+    method description->String
+      return "Literal"
+endClass
+
+class LiteralPrimitive : Literal
+  METHODS
+    method description->String
+      return "LiteralPrimitive"
 endClass

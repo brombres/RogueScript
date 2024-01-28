@@ -1,5 +1,7 @@
 module Boss
 
+$include "BossVariant.rogue"
+$include "CmdExecute.rogue"
 $include "Scanner.rogue"
 $include "Parser.rogue" [optional]
 uses Boss
@@ -18,7 +20,7 @@ endTry
 
 class Boss
   PROPERTIES
-    command : Variant
+    command : Rogue::Variant
 
   METHODS
     method init( args:String[] )
@@ -49,11 +51,12 @@ class Boss
           local filepath = arg->String
           local parser = Parser( File(filepath) )
           local ast = parser.parse
-          @trace ast
+          #@trace ast
+          if (ast) ast.execute
         endForEach
       endIf
 
-    method parse_args( args:String[] )->Variant
+    method parse_args( args:String[] )->Rogue::Variant
       # This method is unrelated to the Froley Parser
       local command = CommandLineParser().
       [

@@ -5,95 +5,547 @@
 --------------------------------------------------------------------------------
 tokens
 --------------------------------------------------------------------------------
-EOL(end of line)
-IDENTIFIER identifier [content]
-NUMBER     number     [content]
-STRING     string     [content]
+EOL(end of line)             [content]
+CHARACTER      character     [content]
+BINARY_INTEGER integer       [content]
+OCTAL_INTEGER  integer       [content]
+HEX_INTEGER    integer       [content]
+INTEGER        integer       [content]
+REAL_NUMBER    real          [content]
+STRING         string        [content]
+IDENTIFIER     identifier    [content]
+SYMBOL_DOLLAR  $
+PLACEHOLDER($directive or $placeholder)  [content]
+GENERIC_FN_ARG $arg          [content]
 
---------------------------------------------------------------------------------
-tokens Symbols
---------------------------------------------------------------------------------
-SYMBOL_CLOSE_PAREN )  [structural]
-SYMBOL_EQUALS      =
-SYMBOL_MINUS       -
-SYMBOL_OPEN_PAREN  (
-SYMBOL_PLUS        +
-SYMBOL_SLASH       /
-SYMBOL_STAR        *
-
---------------------------------------------------------------------------------
+----------------------------------------------------------------------
 tokens Keywords
---------------------------------------------------------------------------------
-KEYWORD_PRINT   print
-KEYWORD_PRINTLN println
+----------------------------------------------------------------------
+KEYWORD_AND               and
+KEYWORD_ASSERT            assert
+KEYWORD_AUGMENT           augment        [structural]
+KEYWORD_BLOCK             block
+KEYWORD_CASE              case           [structural]
+KEYWORD_CATCH             catch          [structural]
+KEYWORD_CATEGORIES        CATEGORIES     [structural]
+KEYWORD_CLASS             class          [structural]
+KEYWORD_CONTINGENT        contingent
+KEYWORD_DEFINITIONS       DEFINITIONS    [structural]
+KEYWORD_DOWN_TO           downTo
+KEYWORD_ELSE              else           [structural]
+KEYWORD_ELSE_IF           elseIf         [structural]
+KEYWORD_END_AUGMENT       endAugment     [structural]
+KEYWORD_END_BLOCK         endBlock       [structural]
+KEYWORD_END_CLASS         endClass       [structural]
+KEYWORD_END_CONTINGENT    endContingent  [structural]
+KEYWORD_END_ENUM          endEnum        [structural]
+KEYWORD_END_FOR_EACH      endForEach     [structural]
+KEYWORD_END_FUNCTION      endFunction    [structural]
+KEYWORD_END_IF            endIf          [structural]
+KEYWORD_END_LOOP          endLoop        [structural]
+KEYWORD_END_ROUTINE       endRoutine     [structural]
+KEYWORD_END_SUBCLASS      endSubclass    [structural]
+KEYWORD_END_TEMPORARILY   endTemporarily [structural]
+KEYWORD_END_TRY           endTry         [structural]
+KEYWORD_END_USE           endUse         [structural]
+KEYWORD_END_WHICH         endWhich       [structural]
+KEYWORD_END_WHILE         endWhile       [structural]
+KEYWORD_ENUM              enum           [structural]
+KEYWORD_ENSURE            ensure
+KEYWORD_ESCAPE_BLOCK      escapeBlock
+KEYWORD_ESCAPE_CONTINGENT escapeContingent
+KEYWORD_ESCAPE_FOR_EACH   escapeForEach
+KEYWORD_ESCAPE_IF         escapeIf
+KEYWORD_ESCAPE_LOOP       escapeLoop
+KEYWORD_ESCAPE_TRY        escapeTry
+KEYWORD_ESCAPE_WHICH      escapeWhich
+KEYWORD_ESCAPE_WHILE      escapeWhile
+KEYWORD_EXPORT            export
+KEYWORD_FALSE             false
+KEYWORD_FOR_EACH          forEach
+KEYWORD_FUNCTION          function
+KEYWORD_FUNCTION_TYPE     Function
+KEYWORD_GLOBAL_PROPERTIES(GLOBAL PROPERTIES) [structural]
+KEYWORD_GLOBAL_METHODS(GLOBAL METHODS)       [structural]
+KEYWORD_IF                if
+KEYWORD_IMPORT            import
+KEYWORD_INSTANCE_OF       instanceOf
+KEYWORD_IS                is
+KEYWORD_IS_TYPE           isType
+KEYWORD_LOCAL             local
+KEYWORD_LOCALIZE          localize
+KEYWORD_LOOP              loop
+KEYWORD_METHOD            method      [structural]
+KEYWORD_METHODS           METHODS     [structural]
+KEYWORD_MODULE            module      [structural]
+KEYWORD_NATIVE_SECTION    NATIVE      [structural]
+KEYWORD_NATIVE            native
+KEYWORD_NATIVE_HEADER     nativeHeader
+KEYWORD_NATIVE_CODE       nativeCode
+KEYWORD_NATIVE_TYPE       nativeType  [structural]
+KEYWORD_NECESSARY         necessary
+KEYWORD_NEW               new
+KEYWORD_NEXT_ITERATION    nextIteration
+KEYWORD_NO_ACTION         noAction
+KEYWORD_NOT               not
+KEYWORD_NULL              null
+KEYWORD_OR                or
+KEYWORD_OTHERS            others      [structural]
+KEYWORD_PI                pi
+KEYWORD_PRIOR             prior
+KEYWORD_PROPERTIES        PROPERTIES  [structural]
+KEYWORD_RETURN            return
+KEYWORD_ROUTINE           routine     [structural]
+KEYWORD_SATISFIED         satisfied   [structural]
+KEYWORD_STATES            STATES      [structural]
+KEYWORD_SUBCLASS          subclass
+KEYWORD_SUFFICIENT        sufficient
+KEYWORD_SWAP_VALUES       swapValues
+KEYWORD_TEMPORARILY       temporarily
+KEYWORD_THIS              this
+KEYWORD_THIS_TYPE         ThisType
+KEYWORD_THROW             throw
+KEYWORD_TRACE             trace
+KEYWORD_TRUE              true
+KEYWORD_TRY               try
+KEYWORD_UNDEFINED         undefined
+KEYWORD_UNSATISFIED       unsatisfied [structural]
+KEYWORD_USE               use
+KEYWORD_USES              uses        [structural]
+KEYWORD_WHICH             which
+KEYWORD_WHILE             while
+KEYWORD_WITH              with
+KEYWORD_XOR               xor
+
+----------------------------------------------------------------------
+tokens Symbols
+----------------------------------------------------------------------
+#META_DEFAULT_VALUE    $defaultValue   [meta]
+#META_DEFINE           $define         [meta]
+#META_ELSE_IF          $elseIf         [meta structural]
+#META_END_IF           $endIf          [meta structural]
+#META_END_LOCAL_MACRO  $endLocalMacro  [meta structural]
+#META_END_MACRO        $endMacro       [meta structural]
+#META_EXISTS           $exists         [meta]
+#META_FILE_BYTES       $fileBytes      [meta]
+#META_FILE_STRING      $fileString     [meta]
+#META_IF               $if             [meta]
+#META_INCLUDE          $include        [meta]
+#META_INCLUDE_FOLDER   $includeFolder  [meta]
+#META_IS_COMPOUND      $isCompound     [meta]
+#META_IS_DEFINED       $isDefined      [meta]
+#META_IS_ENUM          $isEnum         [meta]
+#META_IS_PRIMITIVE     $isPrimitive    [meta]
+#META_IS_REFERENCE     $isReference    [meta]
+#META_JOIN_IDS         $id             [meta]
+#META_JOIN_STRINGS     $string         [meta]
+#META_LOCAL_DEFINE     $localDefine    [meta]
+#META_LOCAL_MACRO      $localMacro     [meta]
+#META_LOWERCASE        $lowercase      [meta]
+#META_MACRO            $macro          [meta]
+#META_REQUIRE_ROGUE    $requireRogue   [meta]
+#META_ROGUE_VERSION    $rogueVersion   [meta]
+#META_SOURCE_FILEPATH  $sourceFilepath [meta]
+#META_SOURCE_LINE      $sourceLine     [meta]
+#META_TARGET           $target         [meta]
+#META_THIS_MODULE      $thisModule     [meta]
+#META_UPPERCASE        $uppercase      [meta]
+
+SYMBOL_AMPERSAND             &
+SYMBOL_ARROW                 ->
+SYMBOL_ASTERISK              *
+SYMBOL_AT                    @
+SYMBOL_BACKSLASH             \
+SYMBOL_BANG                  !
+SYMBOL_CARET                 ^
+SYMBOL_CLOSE_CURLY           }   [structural]
+SYMBOL_CLOSE_SQUARE          ]   [structural]
+SYMBOL_CLOSE_PAREN           )   [structural]
+SYMBOL_COLON                 :   [structural]
+SYMBOL_COLON_COLON           ::
+SYMBOL_COMMA                 ,   [structural]
+SYMBOL_COMPARE               <>
+SYMBOL_QUESTION_DOT          ?.
+SYMBOL_DOTDOT                ..
+SYMBOL_DOTDOTLT              ..<
+SYMBOL_DOTDOTGT              ..>
+SYMBOL_DOT_OPEN_SQUARE       .[
+SYMBOL_DOUBLE_VERTICAL_BAR   ||  [structural]
+SYMBOL_EMPTY_SQUARE_BRACKETS []
+SYMBOL_VALUE_LIST            @[
+SYMBOL_VALUE_TABLE           @{
+SYMBOL_EQ                    ==
+SYMBOL_EQUALS                =
+SYMBOL_FAT_ARROW             =>
+SYMBOL_GE                    >=
+SYMBOL_GT                    >   [structural]
+SYMBOL_GTGT                  >>  [structural]
+SYMBOL_LE                    <=
+SYMBOL_LEFT_SHIFT            :<<:
+SYMBOL_LEFT_SHIFT_EQUALS     :<<:=
+SYMBOL_LT                    <
+SYMBOL_LTLT                  <<
+SYMBOL_MINUS                 -
+SYMBOL_MINUS_MINUS           --
+SYMBOL_NE                    !=
+SYMBOL_OPEN_CURLY            {
+SYMBOL_OPEN_SQUARE           [
+SYMBOL_OPEN_SQUARE_GT        [>
+SYMBOL_OPEN_PAREN            (
+SYMBOL_PERCENT               %
+SYMBOL_PERIOD                .
+SYMBOL_PLUS                  +
+SYMBOL_PLUS_PLUS             ++
+SYMBOL_QUESTION              ?
+SYMBOL_QUESTION_COLON        ?:
+SYMBOL_RIGHT_SHIFT           :>>:
+SYMBOL_RIGHT_SHIFT_EQUALS    :>>:=
+SYMBOL_RIGHT_SHIFT_X         :>>>:
+SYMBOL_RIGHT_SHIFT_X_EQUALS  :>>>:=
+SYMBOL_SEMICOLON             ;  [structural]
+SYMBOL_SLASH                 /
+SYMBOL_SLASH_SLASH           //
+SYMBOL_BRIEF_TRACE           @trace
+SYMBOL_TILDE                 ~
+SYMBOL_VERTICAL_BAR          |
+
+SYMBOL_PLUS_EQUALS           +=
+SYMBOL_MINUS_EQUALS          -=
+SYMBOL_TIMES_EQUALS          *=
+SYMBOL_DIVIDE_EQUALS         /=
+SYMBOL_MOD_EQUALS            %=
+SYMBOL_POWER_EQUALS          ^=
+SYMBOL_BITWISE_AND_EQUALS    &=
+SYMBOL_BITWISE_OR_EQUALS     |=
+SYMBOL_BITWISE_XOR_EQUALS    ~=
+SYMBOL_SHIFT_LEFT_EQUALS     :<<:=
+SYMBOL_SHIFT_RIGHT_EQUALS    :>>:=
+SYMBOL_SHIFT_RIGHT_X_EQUALS  :>>>:=
+SYMBOL_ACCESS_EQUALS         .=
 
 --------------------------------------------------------------------------------
 scanner
 --------------------------------------------------------------------------------
-- main
-  consume [ \r\t]*               # whitespace
-  if consume("#" [^\n]*) restart # single-line comment
+- tokenize_another
+  ch = peek
+  if (ch == ' ' or ch == '\r' or ch == '\t') consume [ \r\t]* # whitespace
 
-  if (not hasAnother) halt
   markPosition
+  ch = peek
+  if (ch == '#' or (ch == '-' and nextIs("----")) or (ch == '=' and nextIs("====")))
+    scan_comment
+  endIf
 
-  if (consume('\n')) produce EOL
+  if (not hasAnother)
+    create EOL
+    halt
+  endIf
 
-  match
+  if (ch == '.' and consume("..."))
+    while (hasAnother and not consume('\n'))
+      if (not (consume(' ') or consume('\t')))
+        if (nextIs('#')) scan_comment; restart
+        syntaxError "End of line expected."
+      endIf
+    endWhile
+    restart
+  endIf
+
+  if ((ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch == '_')
+    scan_id_or_keyword
+  endIf
+
+  match input
     produceAny Symbols
+    case '\n': call mark_beginning_of_line; produce EOL
+    case '"':  tokenize_string
+    case "'":  tokenize_character_or_string
+    case "''": tokenize_two_quote_string
+    case "@|": tokenize_verbatim_string
   endMatch
 
-  scan_id_or_keyword
+  if (ch == '$')
+    scan('$')
+    if (scan([_a-zA-Z][_a-zA-Z0-9]*)) produce PLACEHOLDER
+    if (scan([0-9]*)) produce GENERIC_FN_ARG
+    produce SYMBOL_DOLLAR
+  endIf
+
   scan_number
-  scan_string
 
   syntaxError
 
+- scan_comment
+  if (scan('#'))
+    if (scan('{'))
+      count = 1
+      while (hasAnother)
+        ch = read
+        collect ch
+        if (ch == '\n')
+          saved_buffer = buffer
+          create EOL
+          buffer = saved_buffer
+        elseIf (ch == '#')
+          if (scan('{')) ++count
+        elseIf (ch == '}')
+          if (scan('#'))
+            --count
+            if (count == 0) call process_comment; restart
+          endIf
+        endIf
+      endWhile
+      syntaxError "Unterminated multi-line comment."
+    else
+      # Single line comment
+      if scan [^\n]*
+        call process_comment
+        consume '\n'
+        call mark_beginning_of_line
+        produce EOL
+      endIf
+    endIf
+
+  elseIf (consume({"----"[-]*}) or consume({"===="[=]*}))
+    # HR comments
+    scan [^\n]*
+    call process_comment
+    consume '\n'
+    call mark_beginning_of_line
+    produce EOL
+
+  else
+    return
+
+  endIf
+
 - scan_id_or_keyword
   if (not scan([_a-zA-Z][_a-zA-Z0-9]*)) return
-  # 'scan' fills 'buffer' with matching characters
 
   match buffer
     produceAny Keywords
+    case "GLOBAL"
+      # "GLOBAL PROPERTIES" / "GLOBAL METHODS"
+      if (consume [ ]+)
+        collect ' '
+        if (scan([_a-zA-Z][_a-zA-Z0-9]*))
+          match buffer
+            case "GLOBAL PROPERTIES" -> KEYWORD_GLOBAL_PROPERTIES
+            case "GLOBAL METHODS"    -> KEYWORD_GLOBAL_METHODS
+            others
+              syntaxError "Expected 'GLOBAL PROPERTIES' or 'GLOBAL METHODS'."
+          endMatch
+        endIf
+      endIf
     others
       produce IDENTIFIER
-      # Because type IDENTIFER has [content], 'buffer' will be copied
-      # as the resulting Token's .content string.
   endMatch
 
 - scan_number
-  if (not hasAnother) return
+  if (not nextIs([0-9]) or nextIs([.][0-9])) return
 
-  if (scan [0-9])
-    scan_integer  # First character is now in 'buffer'
-    if (scan '.') scan_integer
-    produce NUMBER
-  elseIf (scan '.')
-    scan_integer
-    produce NUMBER
-  else
+  match input
+    case "0b"
+      base = 2
+      scan_binary_integer
+      scan({[iIlL]})
+      produce BINARY_INTEGER
+    case "0c"
+      base = 8
+      scan_octal_integer
+      scan({[iIlL]})
+      produce OCTAL_INTEGER
+    case "0x"
+      base = 16
+      scan_hex_integer
+      scan({[iIlL]})
+      produce HEX_INTEGER
+    others
+      scan_integer
+      if (nextIs('.'))
+        ch = peek(1)
+        if (ch >= 'a' and ch <= 'z' or ch >= 'A' and ch <= 'Z' or ch == '_' or ch == '.') produce INTEGER
+      endIf
+      if (scan({[iIlL]})) produce INTEGER
+      if (scan({[fFrR]})) produce REAL_NUMBER
+      if (not scan('.')) produce INTEGER
+      scan_integer
+      if (scan({[eE]}))
+        scan [+-]
+        if (not scan([0-9]+)) syntaxError "Integer exponent expected."
+      endIf
+      scan( {[fFrR]} )
+      produce REAL_NUMBER
+  endMatch
+
+- scan_integer
+  while (scan([0-9]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- scan_binary_integer
+  while (scan([01]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- scan_octal_integer
+  while (scan([0-7]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- scan_hex_integer
+  while (scan([0-9A-Fa-f]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- tokenize_string
+  scan_string
+  produce STRING
+
+- scan_string
+  while (hasAnother and not nextIs('"'))
+    scan_character
+  endWhile
+  mustConsume '"'
+  return
+
+- tokenize_character_or_string
+  if (consume('\'')) produce STRING
+  scan_character
+  if (consume('\'')) produce CHARACTER
+  while (hasAnother and not nextIs('\''))
+    scan_character
+  endWhile
+  mustConsume('\'')
+  produce STRING
+
+- scan_single_quote_string
+  while (hasAnother and not nextIs('\''))
+    scan_character
+  endWhile
+  mustConsume '\''
+  return
+
+- tokenize_two_quote_string
+  scan_two_quote_string
+  produce STRING
+
+- scan_two_quote_string
+  while (hasAnother and not nextIs("''"))
+    scan_character
+  endWhile
+  mustConsume "''"
+  return
+
+- scan_character
+  if (not hasAnother) syntaxError "Unterminated string - unexpected end of file."
+  ch = read
+  if (ch == '\n')
+    syntaxError "Unterminated string - unexpected end of line."
+  endIf
+  if (ch != '\\')
+    collect ch
     return
   endIf
 
-- scan_integer
-  scan [0-9]*  # Fills 'buffer' with remaining digits
+  if (consume('b')) collect Character(8); return
+  if (consume('e')) collect Character(27); return
+  if (consume('f')) collect Character(12); return
+  if (consume('n')) collect '\n'; return
+  if (consume('r')) collect '\r'; return
+  if (consume('t')) collect '\t'; return
+  if (consume('v')) collect Character(11); return
+  if (consume('0')) collect Character(0); return
+  if (consume('/')) collect '/'; return
+  if (consume('?')) collect '?'; return
+  if (consume('\''))collect '\''; return
+  if (consume('\\'))collect '\\'; return
+  if (consume('"')) collect '"'; return
+  if (consume('x'))
+    hex2 = 0
+    read_hex2
+    collect Character(hex2)
+    return
+  endIf
+  if (consume('u'))
+    read_hex4
+    collect Character(hex4)
+    return
+  endIf
+  if (consume('['))
+    hex_digit = 0
+    read_hex_digit
+    value = hex_digit
+    digits = 1
+    while (digits < 6 and nextIs([0-9a-fA-F]))
+      read_hex_digit
+      value = value * 16 + hex_digit
+      ++digits
+    endWhile
+    mustConsume ']'
+    collect Character(value)
+    return
+  endIf
+  buffer = ""
+  collect "Invalid escape sequence '\\" ch
+  collect "'. Supported: \\b \\e \\f \\n \\r \\t \\v \\0 \\? \\/ \\' \\\\ \\\" \\xHH \\uHHHH \\[H*]."
+  syntaxError buffer
 
-- scan_string
-  if (not consume('"')) return
-  while (hasAnother and not nextIs('\n'))
-    ch = read
-    if (ch == '"') produce STRING
-    elseIf (ch == '\\' and hasAnother) ch = read  # VisitContent backslash escapes
-    collect ch
+- read_hex4
+  read_hex2
+  hex4 = hex2 * 256
+  read_hex2
+  hex4 = hex4 + hex2
+  return
+
+- read_hex2
+  read_hex_digit
+  hex2 = hex_digit * 16
+  read_hex_digit
+  hex2 = hex2 + hex_digit
+  return
+
+- read_hex_digit
+  if (not nextIs([0-9a-fA-F])) syntaxError "Hex digit expected (0-9, a-f, or A-F)."
+  ch = read
+  if (ch >= 'a' and ch <= 'f')
+    hex_digit = (ch - Integer('a')) + 10
+  elseIf (ch >= 'A' and ch <= 'F')
+    hex_digit = (ch - Integer('A')) + 10
+  else
+    hex_digit = ch - Integer('0')
+  endIf
+  return
+
+- tokenize_verbatim_string
+  scan_verbatim_string
+  produce STRING
+
+- scan_verbatim_string
+  while (hasAnother)
+    scan [^\n]*
+    savePosition
+      consume '\n'
+      consume [ \t]*
+      if (not consume('|'))
+        restorePosition
+        return
+      else
+        discardPosition
+        collect '\n'
+      endIf
   endWhile
-  syntaxError "Unterminated string."
+
 
 --------------------------------------------------------------------------------
 parser
 --------------------------------------------------------------------------------
 - ast
   statements
-  produce AST(statements)
 
 - statements
   consume_eols
@@ -108,8 +560,8 @@ parser
   produceList Statements
 
 - statement
-  on "print"   arg_list -> Print(args)
-  on "println" arg_list -> Println(args):Print
+  on @"print"   arg_list -> Print(args)
+  on @"println" arg_list -> Println(args):Print
   expression
 
 - consume_eols
@@ -141,7 +593,11 @@ parser
 
 - term
   on '(' expression ')': return
-  on IDENTIFIER -> Access(name=content)
-  on NUMBER     -> Number(value=content:Real)
-  on STRING     -> LiteralString(value=content)
+  on IDENTIFIER  -> Access(name=content)
+  on REAL_NUMBER -> LiteralReal(value=content:Real)
+  on STRING      -> LiteralString(value=content)
   syntaxError
+
+- additional_node_types
+  create Literal
+  create LiteralPrimitive:Literal

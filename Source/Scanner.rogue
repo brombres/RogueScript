@@ -5,4 +5,9 @@ $include "ScannerCore.rogue"
 
 class Scanner : ScannerCore
   METHODS
+    method mark_beginning_of_line
+      noAction
+
+    method process_comment
+      noAction
 endClass

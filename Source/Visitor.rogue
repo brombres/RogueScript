@@ -61,10 +61,6 @@ class Visitor
         if (visited_element) writer.write( visited_element )
       endForEach
 
-
-    method on_visit_children( cmd:AST )
-      cmd.statements = visit(cmd.statements)
-
     method on_visit_children( cmd:Binary )
       cmd.left = visit(cmd.left)
       cmd.right = visit(cmd.right)

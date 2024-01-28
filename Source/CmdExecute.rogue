@@ -1,0 +1,20 @@
+module Boss
+
+augment
+  METHODS
+    method Cmd.execute->Boss::Variant
+      throw t.error( "[TODO] $.execute"(type_name) )
+
+    method LiteralString.execute->Boss::Variant
+      return value
+
+    method Println.execute->Boss::Variant
+      forEach (arg in args)
+        println arg.execute
+      endForEach
+
+    method Statements.execute->Boss::Variant
+      forEach (statement in this)
+        statement.execute
+      endForEach
+endAugment
