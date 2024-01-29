@@ -1,0 +1,16 @@
+module Boss
+
+class Resolver : Visitor
+  PROPERTIES
+    this_module : Module
+
+  METHODS
+    method init( this_module )
+
+    method on( cmd:Access )->Cmd
+      which (cmd.name)
+        case "print":   return Print( cmd.t, cmd.args )
+        case "println": return Println( cmd.t, cmd.args )
+        others:         return cmd
+      endWhich
+endClass

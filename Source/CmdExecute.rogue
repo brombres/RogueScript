@@ -3,6 +3,7 @@ module Boss
 augment
   METHODS
     method Cmd.execute->Boss::Variant
+      println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
     method LiteralString.execute->Boss::Variant

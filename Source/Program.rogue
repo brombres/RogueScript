@@ -5,10 +5,13 @@ class Program [singleton]
     parsed_file_timestamps = [String:Timestamp]
 
     t              : Token
-    configured     : Logical
     current_module : Module
     default_module : Module
     modules        = [String:Module]
+
+    type_Int       : Type
+
+    configured     : Logical
 
   METHODS
     method init
@@ -19,7 +22,11 @@ class Program [singleton]
       default_module = Module( t, "Boss" )
       current_module = default_module
 
+      type_Int = Type( t, "Int" )
+
     method launch
+      resolve
+
       forEach (mod in modules)
         mod.launch
       endForEach
@@ -54,4 +61,7 @@ class Program [singleton]
       catch (err:Error)
         return CompileError( "[INTERNAL ERROR] " + err, filepath )
       endTry
+
+    method resolve
+      (forEach in modules).resolve
 endClass

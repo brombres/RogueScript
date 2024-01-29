@@ -120,36 +120,36 @@ KEYWORD_XOR               xor
 ----------------------------------------------------------------------
 tokens Symbols
 ----------------------------------------------------------------------
-#META_DEFAULT_VALUE    $defaultValue   [meta]
-#META_DEFINE           $define         [meta]
-#META_ELSE_IF          $elseIf         [meta structural]
-#META_END_IF           $endIf          [meta structural]
-#META_END_LOCAL_MACRO  $endLocalMacro  [meta structural]
-#META_END_MACRO        $endMacro       [meta structural]
-#META_EXISTS           $exists         [meta]
-#META_FILE_BYTES       $fileBytes      [meta]
-#META_FILE_STRING      $fileString     [meta]
-#META_IF               $if             [meta]
-#META_INCLUDE          $include        [meta]
-#META_INCLUDE_FOLDER   $includeFolder  [meta]
-#META_IS_COMPOUND      $isCompound     [meta]
-#META_IS_DEFINED       $isDefined      [meta]
-#META_IS_ENUM          $isEnum         [meta]
-#META_IS_PRIMITIVE     $isPrimitive    [meta]
-#META_IS_REFERENCE     $isReference    [meta]
-#META_JOIN_IDS         $id             [meta]
-#META_JOIN_STRINGS     $string         [meta]
-#META_LOCAL_DEFINE     $localDefine    [meta]
-#META_LOCAL_MACRO      $localMacro     [meta]
-#META_LOWERCASE        $lowercase      [meta]
-#META_MACRO            $macro          [meta]
-#META_REQUIRE_ROGUE    $requireRogue   [meta]
-#META_ROGUE_VERSION    $rogueVersion   [meta]
-#META_SOURCE_FILEPATH  $sourceFilepath [meta]
-#META_SOURCE_LINE      $sourceLine     [meta]
-#META_TARGET           $target         [meta]
-#META_THIS_MODULE      $thisModule     [meta]
-#META_UPPERCASE        $uppercase      [meta]
+META_DEFAULT_VALUE    $defaultValue   [meta]
+META_DEFINE           $define         [meta]
+META_ELSE_IF          $elseIf         [meta structural]
+META_END_IF           $endIf          [meta structural]
+META_END_LOCAL_MACRO  $endLocalMacro  [meta structural]
+META_END_MACRO        $endMacro       [meta structural]
+META_EXISTS           $exists         [meta]
+META_FILE_BYTES       $fileBytes      [meta]
+META_FILE_STRING      $fileString     [meta]
+META_IF               $if             [meta]
+META_INCLUDE          $include        [meta]
+META_INCLUDE_FOLDER   $includeFolder  [meta]
+META_IS_COMPOUND      $isCompound     [meta]
+META_IS_DEFINED       $isDefined      [meta]
+META_IS_ENUM          $isEnum         [meta]
+META_IS_PRIMITIVE     $isPrimitive    [meta]
+META_IS_REFERENCE     $isReference    [meta]
+META_JOIN_IDS         $id             [meta]
+META_JOIN_STRINGS     $string         [meta]
+META_LOCAL_DEFINE     $localDefine    [meta]
+META_LOCAL_MACRO      $localMacro     [meta]
+META_LOWERCASE        $lowercase      [meta]
+META_MACRO            $macro          [meta]
+META_REQUIRE_ROGUE    $requireRogue   [meta]
+META_ROGUE_VERSION    $rogueVersion   [meta]
+META_SOURCE_FILEPATH  $sourceFilepath [meta]
+META_SOURCE_LINE      $sourceLine     [meta]
+META_TARGET           $target         [meta]
+META_THIS_MODULE      $thisModule     [meta]
+META_UPPERCASE        $uppercase      [meta]
 
 SYMBOL_AMPERSAND             &
 SYMBOL_ARROW                 ->
@@ -257,7 +257,7 @@ scanner
 
   match input
     produceAny Symbols
-    case '\n': call mark_beginning_of_line; produce EOL
+    case '\n': #{FIXME call mark_beginning_of_line;}# produce EOL
     case '"':  tokenize_string
     case "'":  tokenize_character_or_string
     case "''": tokenize_two_quote_string
@@ -291,7 +291,7 @@ scanner
         elseIf (ch == '}')
           if (scan('#'))
             --count
-            if (count == 0) call process_comment; restart
+            if (count == 0) #{FIXME call process_comment;}# restart
           endIf
         endIf
       endWhile
@@ -299,9 +299,9 @@ scanner
     else
       # Single line comment
       if scan [^\n]*
-        call process_comment
+        #FIXME call process_comment
         consume '\n'
-        call mark_beginning_of_line
+        #FIXME call mark_beginning_of_line
         produce EOL
       endIf
     endIf
@@ -309,9 +309,9 @@ scanner
   elseIf (consume({"----"[-]*}) or consume({"===="[=]*}))
     # HR comments
     scan [^\n]*
-    call process_comment
+    #FIXME call process_comment
     consume '\n'
-    call mark_beginning_of_line
+    #FIXME call mark_beginning_of_line
     produce EOL
 
   else
@@ -626,7 +626,6 @@ parser
   consume_eols
   if (not hasAnother) return
 
-#{
   if (nextIs("class"))
     savePosition     # Pass 1: save position to scan template tokens from (node output already disabled)
     ++disable_output # Pass 2: also disable output; just parse to get past
@@ -635,7 +634,7 @@ parser
     identifier
     template_parameters
     class
-    call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
+    #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
 
     --disable_output
     discardPosition
@@ -651,7 +650,7 @@ parser
     identifier
     template_parameters
     enum
-    call on_parsed_enum  # Pass 1: stores enum template tokens. Pass 2: does nothing.
+    #FIXME call on_parsed_enum  # Pass 1: stores enum template tokens. Pass 2: does nothing.
 
     --disable_output
     discardPosition
@@ -674,7 +673,7 @@ parser
 
       savePosition  # collect tokens
       type
-      call set_augment_context_name
+      #FIXME call set_augment_context_name
       discardPosition
 
       savePosition  # collect tokens
@@ -682,7 +681,7 @@ parser
       must_consume_eols
       class_sections
       mustConsume "endAugment"
-      call on_parsed_augment
+      #FIXME call on_parsed_augment
       discardPosition
 
       --disable_output
@@ -692,14 +691,14 @@ parser
 
 
   on "module"
-    call parse_module_id
+    #FIXME call parse_module_id
     module_attributes
     produce DefineModule(name:String,attributes:Attributes)
   endOn
 
   on "nativeType"
     # EXAMPLE: nativeType<<"char*">> RogueCString
-    call define_native_type
+    #FIXME call define_native_type
     return
   endOn
 
@@ -711,7 +710,7 @@ parser
     identifier
     template_parameters
     class
-    call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
+    #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
 
     --disable_output
     discardPosition
@@ -751,10 +750,9 @@ parser
     uses_attributes
 
     disable_output = saved_setting
-    call on_uses_module
+    #FIXME call on_uses_module
     return
   endOn
-}#
 
   if (nextHasAttribute(structural))
     syntaxError
@@ -771,13 +769,13 @@ parser
     class_sections
     mustConsume "endSubclass"
     --disable_output
-    call on_parsed_subclass  # Pass 1: stores class template tokens & replaces access with generated type name.
+    #FIXME call on_parsed_subclass  # Pass 1: stores class template tokens & replaces access with generated type name.
                              # Pass 2: does nothing.
     discardPosition
   endIf
 
 - store_routine
-  call on_parsed_routine  # Pass 1: stores routine as class template tokens. Pass 2: does nothing.
+  #FIXME call on_parsed_routine  # Pass 1: stores routine as class template tokens. Pass 2: does nothing.
   --disable_output
   discardPosition
 
@@ -1003,7 +1001,7 @@ parser
     type
     mustConsume ']'
     create Type(key_type:Type,value_type:Type)
-    call use_Table
+    #FIXME call use_Table
     list_or_optional_type
     return
 
@@ -1015,7 +1013,7 @@ parser
     return
 
   elseOnOthers
-    call set_cur_token
+    #FIXME call set_cur_token
     pathed_name
     remaining_type
 
@@ -1063,7 +1061,7 @@ parser
     if (consume(':'))
       # name:Type parameter - name is discarded
       discardPosition
-      call discard_last  # discard identifier
+      #FIXME call discard_last  # discard identifier
       type
       return
     endIf
@@ -1183,7 +1181,7 @@ parser
     while (nextIs(STRING))
       on STRING
         create LiteralString(value=content):Literal
-        call join_strings
+        #FIXME call join_strings
       endOn
     endWhile
     return
@@ -1225,7 +1223,7 @@ parser
   on @"primitive" -> AttributePrimitive
   on @"singleton" -> AttributeSingleton
   if (consume @"essential")
-    call class_attribute_essential
+    #FIXME call class_attribute_essential
     produce AttributeEssential
   endIf
   syntaxError "Illegal class attribute. Expected one or more of [abstract api aspect compound essential primitive singleton]."
@@ -1234,7 +1232,7 @@ parser
   constructor_properties
   base_types
   class_attributes
-  call parse_doc_comment
+  #FIXME call parse_doc_comment
   if (consume(';'))
     createNull
   else
@@ -1262,7 +1260,7 @@ parser
   constructor_properties
   base_types
   enum_attributes
-  call parse_doc_comment
+  #FIXME call parse_doc_comment
   if (consume(';'))
     createNull
   else
@@ -1422,7 +1420,7 @@ parser
     elseOnOthers
       createNull
     endOn
-    call parse_doc_comment
+    #FIXME call parse_doc_comment
     produce Category(name:String,args,value,doc:String)
   endOn
   identifier  # syntax error
@@ -1450,7 +1448,7 @@ parser
     on @"File"
       mustConsume '('
       string
-      call load_filepath_as_string
+      #FIXME call load_filepath_as_string
       mustConsume ')'
     elseOnOthers
       string
@@ -1472,7 +1470,7 @@ parser
     on @"File"
       mustConsume '('
       string
-      call load_filepath_as_string
+      #FIXME call load_filepath_as_string
       mustConsume ')'
     elseOnOthers
       string
@@ -1607,26 +1605,6 @@ parser
     produce If(condition,statements,cmd_else):Conditional
   endOn
 
-- print_peek_8
-  savePosition
-  println ""
-  call print_peek
-  read
-  call print_peek
-  read
-  call print_peek
-  read
-  call print_peek
-  read
-  call print_peek
-  read
-  call print_peek
-  read
-  call print_peek
-  read
-  call print_peek
-  restorePosition
-
 - if_local_elseifs_or_else
   on "elseIf"
     mustConsume "local"
@@ -1749,10 +1727,11 @@ parser
 
 - method
   on "method"
+    is_batch_augment = false # FIXME
     if (is_batch_augment)
       savePosition
       type
-      call set_augment_context_name
+      #FIXME call set_augment_context_name
       discardPosition
       mustConsume '.'
       savePosition
@@ -1771,7 +1750,7 @@ parser
         create Identifier(name=content)
         procedure_return_type
         procedure_parameters
-        call swap
+        #FIXME call swap
       endOn
 
     else
@@ -1793,7 +1772,7 @@ parser
         else
           # Method template instance, e.g. method name<<Rogue::Int32>>(...)
           template_args
-          call join_template_args  # name + <<type-args>>
+          #FIXME call join_template_args  # name + <<type-args>>
         endIf
       endIf
       procedure_parameters
@@ -1802,7 +1781,7 @@ parser
 
     procedure_attributes
     consume(':')
-    call parse_doc_comment
+    #FIXME call parse_doc_comment
 
     if (is_batch_augment)
       multi_line_statements
@@ -1811,7 +1790,7 @@ parser
         --disable_output
         discardPosition
       endIf
-      call batch_augment_create_method
+      #FIXME call batch_augment_create_method
       discardPosition
     elseIf (is_method_template)
       multi_line_statements
@@ -1847,7 +1826,7 @@ parser
   procedure_return_type
   procedure_attributes
   consume(':')
-  call parse_doc_comment
+  #FIXME call parse_doc_comment
 
   savePosition
 
@@ -1861,7 +1840,7 @@ parser
   procedure_return_type
   procedure_attributes
   consume(':')
-  call parse_doc_comment
+  #FIXME call parse_doc_comment
 
   savePosition
 
@@ -1902,7 +1881,7 @@ parser
       else
         # Global method template instance, e.g. method name<<Int32>>(...)
         template_args
-        call join_identifiers  # name + <<type-args>>
+        #FIXME call join_identifiers  # name + <<type-args>>
       endIf
     endIf
 
@@ -1910,7 +1889,7 @@ parser
     procedure_return_type
     procedure_attributes
     consume(':')
-    call parse_doc_comment
+    #FIXME call parse_doc_comment
     scoped_multi_line_statements
     produce GlobalMethod(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,body:LocalScope):Procedure
   endOn
@@ -1926,7 +1905,7 @@ parser
   createList
   optional_type
   global_property_attributes
-  call parse_doc_comment
+  #FIXME call parse_doc_comment
   produce GlobalPropertyDeclarations( declarations, type:Type, attributes:Attributes, doc:String )
 
 - properties
@@ -1940,7 +1919,7 @@ parser
   createList
   optional_type
   property_attributes
-  call parse_doc_comment
+  #FIXME call parse_doc_comment
   produce PropertyDeclarations( declarations, type:Type, attributes:Attributes, doc:String )
 
 - property_declaration
@@ -2004,7 +1983,6 @@ parser
   endWhile
   produceList Statements
 
-#{
 - single_line_statements
   on EOL
     consume_eols
@@ -2191,9 +2169,9 @@ parser
   endWhile
 
 - arg
-  call on_begin_arg # detect use of '$' and '$1' etc. generic fn args
+  #FIXME call on_begin_arg # detect use of '$' and '$1' etc. generic fn args
   arg_inner
-  call on_end_arg
+  #FIXME call on_end_arg
 
 - arg_inner
   on '&'
@@ -2217,7 +2195,6 @@ parser
   expression
 
 - statement
-#{
   on "assert"
     savePosition
     expression
@@ -2260,11 +2237,9 @@ parser
 
   on "++" expression -> Increment(operand):Stepper
   on "--" expression -> Decrement(operand):Stepper
-}#
 
   expression
 
-#{
   on "++" -> Increment(operand):Stepper
   on "--" -> Decrement(operand):Stepper
 
@@ -2308,9 +2283,8 @@ parser
 
   if (hasAnother and not nextHasAttribute(structural) and not nextIs(EOL))
     args
-    call store_statement_args
+    #FIXME call store_statement_args
   endIf
-}#
 
 - verbose_trace
   on "trace"
@@ -2381,7 +2355,7 @@ parser
   createTokenListPreservingStack
   pop initial_value_tokens
 
-  call clone
+  #FIXME call clone
   createNull
   create Access(name:String,args)
   subclass
@@ -2641,7 +2615,7 @@ parser
 - uses_attribute
   on "export"    -> AttributeExport
   if (consume @"noInclude")
-    call uses_attribute_no_include
+    #FIXME call uses_attribute_no_include
     return
   endIf
   syntaxError "Illegal 'uses' attribute. Expected any of [export noInclude]."
@@ -3386,8 +3360,8 @@ parser
     string
   endIf
   if consume("->")
-    if consume @"LiteralInt32"
-      produce NativeLiteralInt32(content:String):NativeExpression
+    if consume @"LiteralInt"
+      produce NativeLiteralInt(content:String):NativeExpression
     else
       type
       produce NativeExpression(content:String,result_type:Type)
@@ -3453,29 +3427,28 @@ parser
   produceNull
 
 - process_another
-#{ FIXME
   on "$define"
-    call mark_token
+    #FIXME call mark_token
     on IDENTIFIER
       buffer = ""
-      call collect_token_string
+      #FIXME call collect_token_string
       while (hasAnother and not nextIs(EOL))
-        call collect_next_token
+        #FIXME call collect_next_token
       endWhile
-      call create_definition
+      #FIXME call create_definition
     elseOnOthers
       syntaxError "Identifier expected."
     endOn
 
   elseOn "$id"
-    call begin_join_ids
+    #FIXME call begin_join_ids
       mustConsume '('
       process_another
       while (consume(',') or not nextIs(')'))
         process_another
       endWhile
       mustConsume ')'
-    call end_join_ids
+    #FIXME call end_join_ids
     return
 
   elseOn "$include"
@@ -3484,7 +3457,7 @@ parser
     include_attribute_folder   = false
     include_attribute_optional = false
     include_attributes
-    call include_filepath
+    #FIXME call include_filepath
     return
 
   elseOn "$includeFolder"
@@ -3493,13 +3466,13 @@ parser
     include_attribute_folder   = true
     include_attribute_optional = false
     include_attributes
-    call include_filepath
+    #FIXME call include_filepath
     return
 
   elseOn "$isDefined"
     mustConsume '('
     on IDENTIFIER
-      call on_is_defined
+      #FIXME call on_is_defined
     elseOnOthers
       syntaxError "Identifier expected."
     endOn
@@ -3507,14 +3480,14 @@ parser
     return
 
   elseOn "$localDefine"
-    call mark_token
+    #FIXME call mark_token
     on IDENTIFIER
       buffer = ""
-      call collect_token_string
+      #FIXME call collect_token_string
       while (hasAnother and not nextIs(EOL))
-        call collect_next_token
+        #FIXME call collect_next_token
       endWhile
-      call create_local_definition
+      #FIXME call create_local_definition
     elseOnOthers
       syntaxError "Identifier expected."
     endOn
@@ -3549,18 +3522,18 @@ parser
       consume_eols
     endIf
 
-    call define_macro
+    #FIXME call define_macro
     return
 
   elseOn "$lowercase"
-    call begin_join_lowercase
+    #FIXME call begin_join_lowercase
       mustConsume '('
       process_another
       while (consume(',') or not nextIs(')'))
         process_another
       endWhile
       mustConsume ')'
-    call end_join_lowercase
+    #FIXME call end_join_lowercase
     return
 
   elseOn "$macro"
@@ -3593,87 +3566,86 @@ parser
       consume_eols
     endIf
 
-    call define_macro
+    #FIXME call define_macro
     return
 
   elseOn "module"
     savePosition
-    call parse_module_id # adjusts Program.current_module
+    #FIXME call parse_module_id # adjusts Program.current_module
     restorePosition
-    call rewrite_cur_token
+    #FIXME call rewrite_cur_token
     return
 
   elseOn "$requireRogue"
     on STRING
-      call require_rogue_version
+      #FIXME call require_rogue_version
       return
     elseOnOthers
       syntaxError "Expected a literal string containing a version number."
     endOn
 
   elseOn "$rogueVersion"
-    call create_rogue_version_string
+    #FIXME call create_rogue_version_string
     return
 
   elseOn "$sourceFilepath"
-    call create_source_filepath
+    #FIXME call create_source_filepath
     return
 
   elseOn "$sourceLine"
-    call create_source_line
+    #FIXME call create_source_line
     return
 
   elseOn "$target"
     on '('
-      call check_target
+      #FIXME call check_target
       mustConsume ')'
     elseOnOthers
-      call check_target
+      #FIXME call check_target
     endOn
     return
 
   elseOn "$thisModule"
-    call write_this_module_id
+    #FIXME call write_this_module_id
     return
 
   elseOn "$string"
-    call begin_join_strings
+    #FIXME call begin_join_strings
       mustConsume '('
       process_another
       while (consume(',') or not nextIs(')'))
         process_another
       endWhile
       mustConsume ')'
-    call end_join_strings
+    #FIXME call end_join_strings
     return
 
   elseOn "$uppercase"
-    call begin_join_uppercase
+    #FIXME call begin_join_uppercase
       mustConsume '('
       process_another
       while (consume(',') or not nextIs(')'))
         process_another
       endWhile
       mustConsume ')'
-    call end_join_uppercase
+    #FIXME call end_join_uppercase
     return
 
   elseOn "uses"
-    call rewrite_cur_token
+    #FIXME call rewrite_cur_token
     collect_meta_filepath
     savePosition
     uses_attributes
     restorePosition
-    call uses_filepath # uses XYZ -> $include XYZ/XYZ.rogue
+    #FIXME call uses_filepath # uses XYZ -> $include XYZ/XYZ.rogue
     return
 
   elseOn IDENTIFIER
-    call insert_definition
+    #FIXME call insert_definition
     return
 
   endOn
-  call rewrite_token
-}#
+  #FIXME call rewrite_token
 
 - include_attributes
   on '['
@@ -3709,11 +3681,13 @@ parser
   syntaxError "Invalid metacondition."
 
 - collect_meta_filepath
-  call mark_token
+  #FIXME call mark_token
   buffer = ""
   on STRING
-    call collect_token_string
+    #FIXME call collect_token_string
   elseOnOthers
+#FIXME
+#{
     while (hasAnother and not nextIs('[') and not nextIs(EOL))
       on IDENTIFIER:      call collect_token_string
       elseOn INTEGER:     call collect_token_string
@@ -3725,6 +3699,7 @@ parser
       elseOn '\\':        call collect_token_string
       elseOnOthers:       syntaxError "Unsupported filepath character. Put the filepath in quotes."
     endWhile
+}#
   endOn
 
 - additional_node_types
@@ -3763,7 +3738,7 @@ parser
   create Escape
   create ForEachControl(name:String,optional_at:ForEachAt,collection:ForEachCollection)
   create FunctionReturnValue(operand)
-  create IfConditionalContext(conditional_context:ConditionalContext,statements)
+  #create IfConditionalContext(conditional_context:ConditionalContext,statements)
   create InlineAssignment(info:Local,value)
   create IntrospectionGetObjectProperty(info:Property,context)
   create Iterator(control,condition,statements,upkeep):Conditional
@@ -3773,8 +3748,8 @@ parser
   create GetThisProperty(info:Property)
   create GetSingleton(type:Type)
   create Literal
-  create LiteralNullOptional(optional_type:Type):Literal
   create LiteralPrimitive:Literal
+  create LiteralNullOptional(optional_type:Type):Literal
   create LiteralInt(value:Integer):LiteralInteger
   create LiteralInt32(value:Integer):LiteralInteger
   create LiteralInt64(value:Integer):LiteralInteger
@@ -3847,4 +3822,3 @@ parser
   create IncrementLocal(info:Local)
   create IncrementProperty(context,info:Property)
   create IncrementThisProperty(info:Property)
-}#

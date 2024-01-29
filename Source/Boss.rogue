@@ -6,6 +6,7 @@ $include CmdStore
 $include Module
 $include Parser       [optional]
 $include Program
+$include Resolver
 $include Scanner
 
 uses Boss

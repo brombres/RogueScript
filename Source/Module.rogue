@@ -2,19 +2,30 @@ module Boss
 
 class Module
   PROPERTIES
-    t         : Token
-    name      : String
+    t                 : Token
+    name              : String
     launch_statements : Statements
     used_modules      = [String:Module]
+    types             = [String:Type]
+
+    resolved          : Logical
 
   METHODS
     method init( t, name )
       Program.modules[ name ] = this
 
     method launch
+      resolve
       if (launch_statements)
         launch_statements.execute
       endIf
+
+    method resolve
+      if (resolved) return
+
+      Resolver( this ).visit( launch_statements )
+
+      resolved = true
 
     method use_module( t:Token, name:String )
       if (name == this.name) return
