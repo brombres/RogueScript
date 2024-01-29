@@ -167,13 +167,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.args)
       return result
 
-    method on_visit_children( cmd:CallPriorTemplatedMethod )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.template_args)
-      if (result?) return result
-      result = visit(cmd.args)
-      return result
-
     method on_visit_children( cmd:CallProcedure )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.args)
@@ -478,13 +471,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.of_type)
       return result
 
-    method on_visit_children( cmd:GlobalMethodTemplate )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.placeholders)
-      if (result?) return result
-      result = visit(cmd._tokens)
-      return result
-
     method on_visit_children( cmd:GlobalPropertyDeclarations )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.declarations)
@@ -691,13 +677,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.body)
       return result
 
-    method on_visit_children( cmd:MethodTemplate )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.placeholders)
-      if (result?) return result
-      result = visit(cmd._tokens)
-      return result
-
     method on_visit_children( cmd:ModuleQualifiedID )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.context)
@@ -877,22 +856,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.statements)
       return result
 
-    method on_visit_children( cmd:TemplatedAccess )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.type_args)
-      if (result?) return result
-      result = visit(cmd.args)
-      return result
-
-    method on_visit_children( cmd:TemplatedMethodContextAccess )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.context)
-      if (result?) return result
-      result = visit(cmd.type_args)
-      if (result?) return result
-      result = visit(cmd.args)
-      return result
-
     method on_visit_children( cmd:Temporarily )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.assignments)
@@ -930,8 +893,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.key_type)
       if (result?) return result
       result = visit(cmd.value_type)
-      if (result?) return result
-      result = visit(cmd.type_args)
       if (result?) return result
       result = visit(cmd.element_type)
       if (result?) return result

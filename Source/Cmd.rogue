@@ -835,26 +835,6 @@ class CallPriorMethod : Cmd
 
 endClass
 
-class CallPriorTemplatedMethod : Cmd
-  PROPERTIES
-    name          : String
-    template_args : TemplateArgs
-    args          : Args
-
-  METHODS
-    method init( t, name, template_args, args )
-
-    method init( existing:CallPriorTemplatedMethod )
-      prior.init( existing )
-      name = existing.name
-      if (existing.template_args) template_args = existing.template_args.cloned
-      if (existing.args) args = existing.args.cloned
-
-    method description->String
-      return "CallPriorTemplatedMethod($,$,$)" (%name,%template_args,%args)
-
-endClass
-
 class CallProcedure : Cmd
   PROPERTIES
     args : Cmd
@@ -1987,26 +1967,6 @@ class GlobalMethod : Procedure
 
 endClass
 
-class GlobalMethodTemplate : Cmd
-  PROPERTIES
-    name         : String
-    placeholders : Cmd
-    _tokens      : TokenList
-
-  METHODS
-    method init( t, name, placeholders, _tokens )
-
-    method init( existing:GlobalMethodTemplate )
-      prior.init( existing )
-      name = existing.name
-      if (existing.placeholders) placeholders = existing.placeholders.cloned
-      if (existing._tokens) _tokens = existing._tokens.cloned
-
-    method description->String
-      return "GlobalMethodTemplate($,$,$)" (%name,%placeholders,%_tokens)
-
-endClass
-
 class GlobalPropertyDeclarations : Cmd
   PROPERTIES
     declarations : Cmd
@@ -2527,44 +2487,6 @@ class LiteralInt : LiteralInteger
 
 endClass
 
-class LiteralInt32 : LiteralInteger
-  PROPERTIES
-    value : Int
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralInt32 )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralInt32($)" (%value)
-
-    method to->Int:       return value
-    method to->String:    return value
-
-endClass
-
-class LiteralInt64 : LiteralInteger
-  PROPERTIES
-    value : Int
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralInt64 )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralInt64($)" (%value)
-
-    method to->Int:       return value
-    method to->String:    return value
-
-endClass
-
 class LiteralInteger : LiteralPrimitive
   PROPERTIES
     content : String
@@ -2635,46 +2557,6 @@ class LiteralPi : Literal
   METHODS
     method description->String
       return "LiteralPi"
-endClass
-
-class LiteralReal32 : LiteralPrimitive
-  PROPERTIES
-    value : Real
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralReal32 )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralReal32($)" (%value)
-
-    method to->Int:    return value
-    method to->Real:   return value
-    method to->String: return value
-
-endClass
-
-class LiteralReal64 : LiteralPrimitive
-  PROPERTIES
-    value : Real
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralReal64 )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralReal64($)" (%value)
-
-    method to->Int:    return value
-    method to->Real:   return value
-    method to->String: return value
-
 endClass
 
 class LiteralRealNumber : LiteralPrimitive
@@ -2846,26 +2728,6 @@ class Method : Procedure
 
     method description->String
       return "Method($,$,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%source_tokens,%body)
-
-endClass
-
-class MethodTemplate : Cmd
-  PROPERTIES
-    name         : String
-    placeholders : Cmd
-    _tokens      : TokenList
-
-  METHODS
-    method init( t, name, placeholders, _tokens )
-
-    method init( existing:MethodTemplate )
-      prior.init( existing )
-      name = existing.name
-      if (existing.placeholders) placeholders = existing.placeholders.cloned
-      if (existing._tokens) _tokens = existing._tokens.cloned
-
-    method description->String
-      return "MethodTemplate($,$,$)" (%name,%placeholders,%_tokens)
 
 endClass
 
@@ -3525,54 +3387,6 @@ class Switch : Conditional
 
 endClass
 
-class TemplateArgs : CmdList
-  METHODS
-    method description->String
-      return "TemplateArgs" + list_description
-endClass
-
-class TemplatedAccess : Cmd
-  PROPERTIES
-    name      : String
-    type_args : TemplateArgs
-    args      : Cmd
-
-  METHODS
-    method init( t, name, type_args, args )
-
-    method init( existing:TemplatedAccess )
-      prior.init( existing )
-      name = existing.name
-      if (existing.type_args) type_args = existing.type_args.cloned
-      if (existing.args) args = existing.args.cloned
-
-    method description->String
-      return "TemplatedAccess($,$,$)" (%name,%type_args,%args)
-
-endClass
-
-class TemplatedMethodContextAccess : Cmd
-  PROPERTIES
-    context   : Cmd
-    name      : String
-    type_args : TemplateArgs
-    args      : Cmd
-
-  METHODS
-    method init( t, context, name, type_args, args )
-
-    method init( existing:TemplatedMethodContextAccess )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-      name = existing.name
-      if (existing.type_args) type_args = existing.type_args.cloned
-      if (existing.args) args = existing.args.cloned
-
-    method description->String
-      return "TemplatedMethodContextAccess($,$,$,$)" (%context,%name,%type_args,%args)
-
-endClass
-
 class Temporarily : ControlStructure
   PROPERTIES
     assignments : TemporaryAssignments
@@ -3666,7 +3480,6 @@ class Type : Cmd
     key_type           : Type
     value_type         : Type
     name               : String
-    type_args          : TemplateArgs
     element_type       : Type
     core_type          : Type
     optional           : Logical
@@ -3677,8 +3490,6 @@ class Type : Cmd
     method init( t, anonymous_elements )
 
     method init( t, key_type, value_type )
-
-    method init( t, name, type_args )
 
     method init( t, element_type )
 
@@ -3693,13 +3504,12 @@ class Type : Cmd
       if (existing.key_type) key_type = existing.key_type.cloned
       if (existing.value_type) value_type = existing.value_type.cloned
       name = existing.name
-      if (existing.type_args) type_args = existing.type_args.cloned
       if (existing.element_type) element_type = existing.element_type.cloned
       if (existing.core_type) core_type = existing.core_type.cloned
       optional = existing.optional
 
     method description->String
-      return "Type($,$,$,$,$,$,$,$,$)" (%named_elements,%anonymous_elements,%key_type,%value_type,%name,%type_args,%element_type,%core_type,%optional)
+      return "Type($,$,$,$,$,$,$,$)" (%named_elements,%anonymous_elements,%key_type,%value_type,%name,%element_type,%core_type,%optional)
 
 endClass
 

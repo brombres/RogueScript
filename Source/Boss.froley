@@ -632,7 +632,6 @@ parser
 
     consume("class")
     identifier
-    template_parameters
     class
     #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
 
@@ -648,7 +647,6 @@ parser
 
     consume("enum")
     identifier
-    template_parameters
     enum
     #FIXME call on_parsed_enum  # Pass 1: stores enum template tokens. Pass 2: does nothing.
 
@@ -708,7 +706,6 @@ parser
 
     consume("class")
     identifier
-    template_parameters
     class
     #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
 
@@ -724,7 +721,6 @@ parser
 
     consume "routine"
     procedure_name
-    if (nextIs("<<")) template_parameters
     procedure_parameters
     procedure_return_type
     procedure_attributes
@@ -1029,9 +1025,7 @@ parser
   produce NamedTupleTypeElement(name:String,of_type:Type)
 
 - remaining_type
-  if (nextIs("<<")) template_args
-  else              createNull
-  create Type(name:String,type_args:TemplateArgs)
+  create Type(name:String)
   list_or_optional_type
 
 - list_or_optional_type
@@ -1074,70 +1068,6 @@ parser
 - function_return_type
   on "->" type: return
   produceNull
-
-- remaining_template_access
-  template_args
-
-  if (nextIs("[]") or nextIs('?'))
-    # We now know we're parsing a templated type, not a templated method.
-    create Type(name:String,type_args:TemplateArgs)
-    while (nextIs("[]") or nextIs('?'))
-      on "[]"
-        create Type(element_type:Type)
-      elseOn '?'
-        create Type(core_type:Type,optional="true":Logical)
-      endOn
-    endWhile
-    type_access_or_typed_literal_list
-    return
-  endIf
-
-  access_args
-  create TemplatedAccess( name:String, type_args:TemplateArgs, args )
-  subclass
-
-- template_args
-  consume("<<")
-  beginList
-    consume_eols
-    if (not consume(">>"))
-      template_arg_tokens
-      consume_eols
-      while (consume(','))
-        consume_eols
-        template_arg_tokens
-        consume_eols
-      endWhile
-      mustConsume(">>")
-    endIf
-  createList TemplateArgs
-
-- template_arg_tokens
-  savePosition
-  while (hasAnother and not nextIs(',') and not nextIs(">>"))
-    if (nextIs('<<'))    nested_specializer_tokens
-    elseIf (nextIs('(')) nested_parens_tokens
-    else                 read
-  endWhile
-  produceTokenList
-
-- nested_specializer_tokens
-  read  # <<
-  while (hasAnother and not nextIs(">>"))
-    if (nextIs('<<'))    nested_specializer_tokens
-    elseIf (nextIs('(')) nested_parens_tokens
-    else                 read
-  endWhile
-  mustConsume ">>"
-
-- nested_parens_tokens
-  read  # (
-  while (hasAnother and not nextIs(')'))
-    if (nextIs('<<'))    nested_specializer_tokens
-    elseIf (nextIs('(')) nested_parens_tokens
-    else                 read
-  endWhile
-  mustConsume ')'
 
 - pathed_name
   savePosition
@@ -1272,20 +1202,6 @@ parser
 - placeholder
   on PLACEHOLDER -> Placeholder(name=content)
   syntaxError "'$Placeholder' name expected."
-
-- template_parameters
-  on "<<"
-    beginList
-      if (not consume(">>"))
-        placeholder
-        while (consume(','))
-          placeholder
-        endWhile
-        mustConsume ">>"
-      endIf
-    produceList
-  endOn
-  produceNull
 
 - constructor_properties
   if (not nextIs('(')) produceNull
@@ -1756,25 +1672,6 @@ parser
     else
       procedure_name
       is_def = false
-      if (nextIs("<<"))
-        # Method template
-        savePosition
-        consume "<<"
-        is_def = nextIs(PLACEHOLDER)
-        restorePosition
-
-        if (is_def)
-          # Method template definition, e.g. method name<<$Type>>(...)
-          is_method_template = true
-          template_parameters
-          savePosition
-          ++disable_output
-        else
-          # Method template instance, e.g. method name<<Rogue::Int32>>(...)
-          template_args
-          #FIXME call join_template_args  # name + <<type-args>>
-        endIf
-      endIf
       procedure_parameters
       procedure_return_type
     endIf
@@ -1785,19 +1682,8 @@ parser
 
     if (is_batch_augment)
       multi_line_statements
-      if (is_method_template)
-        is_method_template = false
-        --disable_output
-        discardPosition
-      endIf
       #FIXME call batch_augment_create_method
       discardPosition
-    elseIf (is_method_template)
-      multi_line_statements
-      is_method_template = false
-      --disable_output
-      createTokenList  # effective discardPosition
-      produce MethodTemplate(name:String,placeholders,_tokens:TokenList)
     else
       savePosition
 
@@ -1821,69 +1707,9 @@ parser
   multi_line_statements
   produce LocalScope(statements):ControlStructure
 
-- global_method_template_instance
-  procedure_parameters
-  procedure_return_type
-  procedure_attributes
-  consume(':')
-  #FIXME call parse_doc_comment
-
-  savePosition
-
-  scoped_multi_line_statements
-
-  create GlobalMethod(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,body:LocalScope):Procedure
-  return
-
-- method_template_instance
-  procedure_parameters
-  procedure_return_type
-  procedure_attributes
-  consume(':')
-  #FIXME call parse_doc_comment
-
-  savePosition
-
-  ++disable_output
-  multi_line_statements
-  --disable_output
-  createTokenList
-
-  createNull
-  create LocalScope(statements):ControlStructure
-  create Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,source_tokens:TokenList,body:LocalScope):Procedure
-  return
-
 - global_method
   on "method"
     procedure_name
-
-    if (nextIs("<<"))
-      is_def = false
-      savePosition
-      consume "<<"
-      is_def = nextIs(PLACEHOLDER)
-      restorePosition
-
-      if (is_def)
-        # Global method template definition, e.g. method name<<$Type>>(...)
-        template_parameters
-        savePosition
-        ++disable_output
-          procedure_parameters
-          procedure_return_type
-          procedure_attributes
-          consume(':')
-          multi_line_statements
-        --disable_output
-        createTokenList  # effective discardPosition
-        produce GlobalMethodTemplate(name:String,placeholders,_tokens:TokenList)
-      else
-        # Global method template instance, e.g. method name<<Int32>>(...)
-        template_args
-        #FIXME call join_identifiers  # name + <<type-args>>
-      endIf
-    endIf
 
     procedure_parameters
     procedure_return_type
@@ -2049,124 +1875,6 @@ parser
     endWhile
   endIf
   produceList Args
-
-- macro_args
-  # Produces a list of TokenLists
-  beginList
-
-  mustConsume '<<'
-  consume_eols
-  if (consume('>>')) produceList Args
-  consume_eols
-
-  while (hasAnother and not nextHasAttribute(structural))
-    savePosition
-    ++disable_output
-    macro_arg
-    --disable_output
-    createTokenList  # consumes saved position
-    consume_eols
-    consume ','
-    consume_eols
-  endWhile
-  mustConsume '>>'
-
-  produceList
-
-- macro_arg
-  while (hasAnother and not nextIs(',') and not nextIs('>>'))
-    if (consume('<<'))
-      nested_macro_arg_template
-      mustConsume('<<')
-    elseIf (consume('{'))
-      nested_macro_arg_curly_braces
-      mustConsume('}')
-    elseIf (consume('('))
-      nested_macro_arg_parens
-      mustConsume(')')
-    elseIf (consume('['))
-      nested_macro_arg_square_brackets
-      mustConsume(']')
-    else
-      read
-    endIf
-  endWhile
-
-- nested_macro_arg_template
-  while (hasAnother and not nextIs('>>'))
-    if (consume('<<'))
-      nested_macro_arg_template
-      mustConsume('<<')
-    elseIf (consume('{'))
-      nested_macro_arg_curly_braces
-      mustConsume('}')
-    elseIf (consume('('))
-      nested_macro_arg_parens
-      mustConsume(')')
-    elseIf (consume('['))
-      nested_macro_arg_square_brackets
-      mustConsume(']')
-    else
-      read
-    endIf
-  endWhile
-
-- nested_macro_arg_curly_braces
-  while (hasAnother and not nextIs('}'))
-    if (consume('<<'))
-      nested_macro_arg_template
-      mustConsume('<<')
-    elseIf (consume('{'))
-      nested_macro_arg_curly_braces
-      mustConsume('}')
-    elseIf (consume('('))
-      nested_macro_arg_parens
-      mustConsume(')')
-    elseIf (consume('['))
-      nested_macro_arg_square_brackets
-      mustConsume(']')
-    else
-      read
-    endIf
-  endWhile
-
-- nested_macro_arg_parens
-  while (hasAnother and not nextIs(')'))
-    if (consume('<<'))
-      nested_macro_arg_template
-      mustConsume('<<')
-    elseIf (consume('{'))
-      nested_macro_arg_curly_braces
-      mustConsume('}')
-    elseIf (consume('('))
-      nested_macro_arg_parens
-      mustConsume(')')
-    elseIf (consume('['))
-      nested_macro_arg_square_brackets
-      mustConsume(']')
-    else
-      read
-    endIf
-  endWhile
-
-- nested_macro_arg_square_brackets
-  while (hasAnother and not nextIs(']'))
-    if (consume('<<'))
-      nested_macro_arg_template
-      mustConsume('<<')
-    elseIf (consume('{'))
-      nested_macro_arg_curly_braces
-      mustConsume('}')
-    elseIf (consume('('))
-      nested_macro_arg_parens
-      mustConsume(')')
-    elseIf (consume('['))
-      nested_macro_arg_square_brackets
-      mustConsume(']')
-    else
-      read
-    endIf
-  endWhile
 
 - arg
   #FIXME call on_begin_arg # detect use of '$' and '$1' etc. generic fn args
@@ -2871,14 +2579,8 @@ parser
     create ContextDirectAccess(context,name:String)
   elseOnOthers
     procedure_name
-    if (nextIs("<<"))
-      template_args
-      access_args
-      create TemplatedMethodContextAccess(context,name:String,type_args:TemplateArgs,args)
-    else
-      access_args
-      create ContextAccess(context,name:String,args)
-    endIf
+    access_args
+    create ContextAccess(context,name:String,args)
   endOn
   access_inner
 
@@ -2923,10 +2625,7 @@ parser
 
   elseOnPeek IDENTIFIER
     pathed_name
-    if (nextIs("<<"))
-      remaining_template_access
-      return
-    elseIf (nextIs("[]"))
+    if (nextIs("[]"))
       remaining_type
       type_access_or_typed_literal_list
       return
@@ -2934,8 +2633,7 @@ parser
       on '?'
         if (nextIs('(') or nextIs('?') or nextIs("[]"))
           # Optional type constructor / optional type / optional list type
-          createNull
-          create Type(name:String,type_args:TemplateArgs)
+          create Type(name:String)
           create Type(core_type:Type,optional="true":Logical)
           list_or_optional_type
           type_access_or_typed_literal_list
@@ -2969,18 +2667,10 @@ parser
   on "prior"
     mustConsume '.'
     identifier
-    if (nextIs("<<"))
-      template_args
-      if (nextIs('(')) access_args
-      else             createNull
-      create CallPriorTemplatedMethod( name:String, template_args:TemplateArgs, args:Args )
-      access_inner
-    else
-      if (nextIs('(')) access_args
-      else             createNull
-      create CallPriorMethod( name:String, args:Args )
-      access_inner
-    endIf
+    if (nextIs('(')) access_args
+    else             createNull
+    create CallPriorMethod( name:String, args:Args )
+    access_inner
     return
   endOn
 
@@ -3751,11 +3441,7 @@ parser
   create LiteralPrimitive:Literal
   create LiteralNullOptional(optional_type:Type):Literal
   create LiteralInt(value:Integer):LiteralInteger
-  create LiteralInt32(value:Integer):LiteralInteger
-  create LiteralInt64(value:Integer):LiteralInteger
   create LiteralReal(value:Real):LiteralPrimitive
-  create LiteralReal32(value:Real):LiteralPrimitive
-  create LiteralReal64(value:Real):LiteralPrimitive
   create LocalDeclaration(info:Local)
   create Logicalized(operand):Unary
   create OpAndAssign(target,operand)

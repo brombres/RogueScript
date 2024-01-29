@@ -132,10 +132,6 @@ class Visitor
     method on_visit_children( cmd:CallPriorMethod )
       cmd.args = visit(cmd.args)->(as Args)
 
-    method on_visit_children( cmd:CallPriorTemplatedMethod )
-      cmd.template_args = visit(cmd.template_args)->(as TemplateArgs)
-      cmd.args = visit(cmd.args)->(as Args)
-
     method on_visit_children( cmd:CallProcedure )
       cmd.args = visit(cmd.args)
 
@@ -311,10 +307,6 @@ class Visitor
     method on_visit_children( cmd:GetTypeInfo )
       cmd.of_type = visit(cmd.of_type)->(as Type)
 
-    method on_visit_children( cmd:GlobalMethodTemplate )
-      cmd.placeholders = visit(cmd.placeholders)
-      cmd._tokens = visit(cmd._tokens)->(as TokenList)
-
     method on_visit_children( cmd:GlobalPropertyDeclarations )
       cmd.declarations = visit(cmd.declarations)
       cmd.type = visit(cmd.type)->(as Type)
@@ -433,10 +425,6 @@ class Visitor
       cmd.source_tokens = visit(cmd.source_tokens)->(as TokenList)
       cmd.body = visit(cmd.body)->(as LocalScope)
 
-    method on_visit_children( cmd:MethodTemplate )
-      cmd.placeholders = visit(cmd.placeholders)
-      cmd._tokens = visit(cmd._tokens)->(as TokenList)
-
     method on_visit_children( cmd:ModuleQualifiedID )
       cmd.context = visit(cmd.context)
 
@@ -539,15 +527,6 @@ class Visitor
       cmd.cases = visit(cmd.cases)->(as WhichCases)
       cmd.statements = visit(cmd.statements)
 
-    method on_visit_children( cmd:TemplatedAccess )
-      cmd.type_args = visit(cmd.type_args)->(as TemplateArgs)
-      cmd.args = visit(cmd.args)
-
-    method on_visit_children( cmd:TemplatedMethodContextAccess )
-      cmd.context = visit(cmd.context)
-      cmd.type_args = visit(cmd.type_args)->(as TemplateArgs)
-      cmd.args = visit(cmd.args)
-
     method on_visit_children( cmd:Temporarily )
       cmd.assignments = visit(cmd.assignments)->(as TemporaryAssignments)
       cmd.statements = visit(cmd.statements)
@@ -569,7 +548,6 @@ class Visitor
       cmd.anonymous_elements = visit(cmd.anonymous_elements)->(as AnonymousTupleTypeElements)
       cmd.key_type = visit(cmd.key_type)->(as Type)
       cmd.value_type = visit(cmd.value_type)->(as Type)
-      cmd.type_args = visit(cmd.type_args)->(as TemplateArgs)
       cmd.element_type = visit(cmd.element_type)->(as Type)
       cmd.core_type = visit(cmd.core_type)->(as Type)
 
