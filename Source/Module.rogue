@@ -1,0 +1,26 @@
+module Boss
+
+class Module
+  PROPERTIES
+    t         : Token
+    name      : String
+    launch_statements : Statements
+    used_modules      = [String:Module]
+
+  METHODS
+    method init( t, name )
+      Program.modules[ name ] = this
+
+    method launch
+      if (launch_statements)
+        launch_statements.execute
+      endIf
+
+    method use_module( t:Token, name:String )
+      if (name == this.name) return
+      if (used_modules.contains(name)) return
+
+      local mod = Program.modules[ name ]
+      if (not mod) mod = Module( t, name )
+      used_modules[ name ] = mod
+endClass

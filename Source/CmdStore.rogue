@@ -1,0 +1,14 @@
+module Boss
+
+augment
+  METHODS
+    method Cmd.store
+      throw t.error( "[INTERNAL] $.store() is undefined."(type_name) )
+
+    method Statements.store
+      if (Program.current_module.launch_statements)
+        Program.current_module.launch_statements.add( forEach in this )
+      else
+        Program.current_module.launch_statements = this
+      endIf
+endAugment

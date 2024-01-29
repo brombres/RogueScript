@@ -1,9 +1,13 @@
 module Boss
 
-$include "BossVariant.rogue"
-$include "CmdExecute.rogue"
-$include "Scanner.rogue"
-$include "Parser.rogue" [optional]
+$include BossVariant
+$include CmdExecute
+$include CmdStore
+$include Module
+$include Parser       [optional]
+$include Program
+$include Scanner
+
 uses Boss
 uses Console/CommandLineParser
 
@@ -34,27 +38,17 @@ class Boss
         System.exit 0
       endIf
 
-      if ($isDefined(PARSER_EXISTS)) parse_files
-      else                           scan_files
+      local program = Program()
 
-    method scan_files
       forEach (arg in command//args)
-        local filepath = arg->String
-        local scanner = Scanner( File(filepath) )
-        local tokens = scanner.tokenize
-        println (forEach in tokens)
+        local err = program.parse( File(arg->String) )
+        if (err)
+          err.display
+          System.exit 1
+        endIf
       endForEach
 
-    method parse_files
-      if ($isDefined(PARSER_EXISTS))
-        forEach (arg in command//args)
-          local filepath = arg->String
-          local parser = Parser( File(filepath) )
-          local ast = parser.parse
-          #@trace ast
-          if (ast) ast.execute
-        endForEach
-      endIf
+      program.launch
 
     method parse_args( args:String[] )->Rogue::Variant
       # This method is unrelated to the Froley Parser

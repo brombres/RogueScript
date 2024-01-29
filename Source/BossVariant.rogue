@@ -15,14 +15,16 @@ class Variant [compound]
     TYPE_REAL      =  4
     TYPE_LOGICAL   =  5
     TYPE_NULL      =  6
-    TYPE_XY        =  7
-    TYPE_XYZ       =  8
-    TYPE_XYZW      =  9
-    TYPE_BOX       = 10
-    TYPE_OBJECT    = 11
-    TYPE_STRING    = 12
-    TYPE_LIST      = 13
-    TYPE_TABLE     = 14
+    TYPE_ANCHOR    =  7
+    TYPE_BOX       =  8
+    TYPE_CIRCLE    =  9
+    TYPE_XY        = 10
+    TYPE_XYZ       = 11
+    TYPE_XYZW      = 12
+    TYPE_OBJECT    = 13
+    TYPE_STRING    = 14
+    TYPE_LIST      = 15
+    TYPE_TABLE     = 16
 
   NATIVE
     nativeHeader
@@ -33,14 +35,16 @@ class Variant [compound]
        |#define %NS%BOSS_VARIANT_TYPE_REAL       4
        |#define %NS%BOSS_VARIANT_TYPE_LOGICAL    5
        |#define %NS%BOSS_VARIANT_TYPE_NULL       6
-       |#define %NS%BOSS_VARIANT_TYPE_XY         7
-       |#define %NS%BOSS_VARIANT_TYPE_XYZ        8
-       |#define %NS%BOSS_VARIANT_TYPE_XYZW       9
-       |#define %NS%BOSS_VARIANT_TYPE_BOX       10
-       |#define %NS%BOSS_VARIANT_TYPE_OBJECT    11
-       |#define %NS%BOSS_VARIANT_TYPE_STRING    12
-       |#define %NS%BOSS_VARIANT_TYPE_LIST      13
-       |#define %NS%BOSS_VARIANT_TYPE_TABLE     14
+       |#define %NS%BOSS_VARIANT_TYPE_ANCHOR     7
+       |#define %NS%BOSS_VARIANT_TYPE_BOX        8
+       |#define %NS%BOSS_VARIANT_TYPE_CIRCLE     9
+       |#define %NS%BOSS_VARIANT_TYPE_XY        10
+       |#define %NS%BOSS_VARIANT_TYPE_XYZ       11
+       |#define %NS%BOSS_VARIANT_TYPE_XYZW      12
+       |#define %NS%BOSS_VARIANT_TYPE_OBJECT    13
+       |#define %NS%BOSS_VARIANT_TYPE_STRING    14
+       |#define %NS%BOSS_VARIANT_TYPE_LIST      15
+       |#define %NS%BOSS_VARIANT_TYPE_TABLE     16
 
   PROPERTIES
     # All properties should be considered INTERNAL USE ONLY because they are
@@ -51,6 +55,7 @@ class Variant [compound]
     box       : Box       [faux]
     byte      : Byte      [faux]
     character : Character [faux]
+    circle    : Circle    [faux]
     integer   : Int       [faux]
     logical   : Logical   [faux]
     real      : Real      [faux]
@@ -63,6 +68,7 @@ class Variant [compound]
             |  %Ns%GeometryBox    box;
             |  %Ns%RogueByte      byte;
             |  %Ns%RogueCharacter character;
+            |  %Ns%GeometryCircle circle;
             |  %Ns%RogueInt       integer;
             |  %Ns%RogueLogical   logical;
             |  %Ns%RogueReal      real;
@@ -99,8 +105,14 @@ class Variant [compound]
     method create( value:XYZW )->Variant
       return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_XYZW, 0, {.xyzw=$value} }" )->Variant
 
+    method create( value:Anchor )->Variant
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_ANCHOR, 0, {.xy=$value.position} }" )->Variant
+
     method create( value:Box )->Variant
       return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_BOX, 0, {.box=$value} }" )->Variant
+
+    method create( value:Circle )->Variant
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_CIRCLE, 0, {.circle=$value} }" )->Variant
 
     method create( value:Object )->Variant [preferred]
       if (value) return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_OBJECT, $value }" )->Variant
@@ -308,7 +320,9 @@ class Variant [compound]
         case TYPE_XY:        return xy.hash_code
         case TYPE_XYZ:       return xyz.hash_code
         case TYPE_XYZW:      return xyzw.hash_code
+        case TYPE_ANCHOR:    return xy.hash_code
         case TYPE_BOX:       return box.hash_code
+        case TYPE_CIRCLE:    return circle.hash_code
         case TYPE_OBJECT:    return object.hash_code
         case TYPE_STRING:    return object->(as String).hash_code
         case TYPE_LIST:      return object->(as Variant[]).hash_code
@@ -332,6 +346,9 @@ class Variant [compound]
           return false
       endWhich
 
+    method is_anchor->Logical
+      return (type == TYPE_ANCHOR)
+
     method is_box->Logical
       return (type == TYPE_BOX)
 
@@ -341,8 +358,14 @@ class Variant [compound]
     method is_character->Logical
       return (type == TYPE_CHARACTER)
 
+    method is_circle->Logical
+      return (type == TYPE_CIRCLE)
+
     method is_empty->Logical
       return (count == 0)
+
+    method is_geometry->Logical
+      return (type >= TYPE_ANCHOR and type <= TYPE_XYZW)
 
     method is_int->Logical
       return (type == TYPE_INT)
@@ -468,7 +491,7 @@ class Variant [compound]
           return logical <> other.logical
         case TYPE_NULL
           return 0  # equal
-        case TYPE_XY
+        case TYPE_XY, TYPE_ANCHOR
           return xy <> other.xy
         case TYPE_XYZ
           return xyz <> other.xyz
@@ -477,6 +500,8 @@ class Variant [compound]
         case TYPE_BOX
           if (box.size == other.box.size) return box.position <> other.box.position
           else                            return box.size <> other.box.size
+        case TYPE_CIRCLE
+          return circle <> other.circle
         case TYPE_OBJECT
           if (object == other.object) return 0
           return object.object_id <> other.object.object_id
@@ -658,7 +683,9 @@ class Variant [compound]
         case TYPE_XY:        xy.print_to( buffer )
         case TYPE_XYZ:       xyz.print_to( buffer )
         case TYPE_XYZW:      xyzw.print_to( buffer )
+        case TYPE_ANCHOR:    Anchor(xy).print_to( buffer )
         case TYPE_BOX:       box.print_to( buffer )
+        case TYPE_CIRCLE:    circle.print_to( buffer )
         case TYPE_OBJECT:    object.print_to( buffer )
         case TYPE_STRING:    buffer.print( object->(as String) )
         case TYPE_LIST:      object->(as Variant[]).print_to( buffer )
@@ -746,11 +773,18 @@ class Variant [compound]
           table.sort( (a,b) => compare_fn(a.key,b.key) )
       endWhich
 
+    method to->Anchor
+      which (type)
+        case TYPE_ANCHOR, TYPE_XY: return Anchor( xy )
+        others:                    return Anchor( this->XY )
+      endWhich
+
     method to->Box
       which (type)
-        case TYPE_BOX:       return box
-        case TYPE_XY:        return Box(xy)
-        others:              return $defaultValue<<Box>>
+        case TYPE_BOX:    return box
+        case TYPE_CIRCLE: return Box( box.position-box.radius, Vector2(box.radius*2) )
+        case TYPE_XY:     return Box(xy)
+        others:           return $defaultValue<<Box>>
       endWhich
 
     method to->Byte
@@ -777,6 +811,13 @@ class Variant [compound]
         others:              return 0
       endWhich
 
+    method to->Circle
+      which (type)
+        case TYPE_BOX:    return Circle( box.position + box.size/2, box.size/2 )
+        case TYPE_CIRCLE: return circle
+        others:           return $defaultValue<<Circle>>
+      endWhich
+
     method to->Logical
       which (type)
         case TYPE_LOGICAL:   return logical
@@ -784,10 +825,11 @@ class Variant [compound]
         case TYPE_CHARACTER: return character?
         case TYPE_INT:       return integer?
         case TYPE_REAL:      return real?
-        case TYPE_XY:        return xy.x? or xy.y?
+        case TYPE_XY, TYPE_ANCHOR: return xy.x? or xy.y?
         case TYPE_XYZ:       return xyz.x? or xyz.y? or xyz.z?
         case TYPE_XYZW:      return xyz.x? or xyz.y? or xyz.z? or xyz.w?
         case TYPE_BOX:       return box.size.x? or box.size.y?
+        case TYPE_CIRCLE:    return circle.radius?
         case TYPE_OBJECT:    return true
         case TYPE_STRING:    return true
         case TYPE_LIST:      return true
@@ -808,18 +850,32 @@ class Variant [compound]
 
     method to->XY
       which (type)
-        case TYPE_XY:        return xy
-        case TYPE_XYZ:       return xyz->XY
-        case TYPE_XYZW:      return xyzw->XY
-        others:              return $defaultValue<<XY>>
+        case TYPE_XY, TYPE_ANCHOR: return xy
+        case TYPE_XYZ:             return xyz->XY
+        case TYPE_XYZW:            return xyzw->XY
+        case TYPE_INT:             return XY(integer,integer)
+        case TYPE_REAL:            return XY(real,real)
+        others:                    return $defaultValue<<XY>>
       endWhich
 
     method to->XYZ
       which (type)
-        case TYPE_XY:        return XYZ(xy)
-        case TYPE_XYZ:       return xyz
-        case TYPE_XYZW:      return xyzw->XYZ
-        others:              return $defaultValue<<XYZ>>
+        case TYPE_XY:              return XYZ(xy)
+        case TYPE_XYZ:             return xyz
+        case TYPE_XYZW:            return xyzw->XYZ
+        case TYPE_INT:             return XYZ(integer,integer,integer)
+        case TYPE_REAL:            return XYZ(real,real,real)
+        others:                    return $defaultValue<<XYZ>>
+      endWhich
+
+    method to->XYZW
+      which (type)
+        case TYPE_XY:              return XYZW(xy)
+        case TYPE_XYZ:             return XYZW(xyz)
+        case TYPE_XYZW:            return xyzw
+        case TYPE_INT:             return XYZW(integer,integer,integer)
+        case TYPE_REAL:            return XYZW(real,real,real)
+        others:                    return $defaultValue<<XYZW>>
       endWhich
 
     method to<<$Type>>->$Type
@@ -861,6 +917,13 @@ class Variant [compound]
         if (type == TYPE_CHARACTER or other.type == TYPE_CHARACTER) return (Variant(this->Character),Variant(other->Character))
         return (Variant(this->Byte),Variant(other->Byte))
       endIf
+
+      if (type >= TYPE_XY and type <= TYPE_XYZW and other.type >= TYPE_XY and other.type <= TYPE_XYZW)
+        if (type == TYPE_XYZW or other.type == TYPE_XYZW) return (this->XYZW,other->XYZW)
+        if (type == TYPE_XYZ  or other.type == TYPE_XYZ)  return (this->XYZ, other->XYZ)
+        return (this->XY, other->XY)
+      endIf
+
 
       return (undefined,undefined)
 
@@ -906,9 +969,14 @@ class Variant [compound]
         case TYPE_XYZW
           builder.[ print('['), print(xyzw.x), print(','), print(xyzw.y), print(','), print(xyzw.z) ]
           builder.[ print(','), print(xyzw.w), print(']') ]
+        case TYPE_ANCHOR
+          write_json_string( Anchor(xy).name, builder )
         case TYPE_BOX
           builder.[ print('['), print(box.position.x), print(','), print(box.position.y) ]
           builder.[ print(','), print(box.size.x),     print(','), print(box.size.y), print(']') ]
+        case TYPE_CIRCLE
+          builder.[ print("[["), print(circle.position.x), print(','), print(circle.position.y) ]
+          builder.[ print("],"), print(circle.radius.x), print("]") ]
         case TYPE_OBJECT
           object.write_json( builder, &=formatted, &=omit_commas )
         case TYPE_STRING
