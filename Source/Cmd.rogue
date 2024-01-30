@@ -1963,7 +1963,7 @@ endClass
 class GlobalMethod : Procedure
   METHODS
     method description->String
-      return "GlobalMethod($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%body)
+      return "GlobalMethod($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
 
 endClass
 
@@ -2720,14 +2720,14 @@ class Method : Procedure
     source_tokens : TokenList
 
   METHODS
-    method init( t, name, parameters, return_type, attributes, doc, source_tokens, body )
+    method init( t, name, parameters, return_type, attributes, doc, source_tokens, statements )
 
     method init( existing:Method )
       prior.init( existing )
       if (existing.source_tokens) source_tokens = existing.source_tokens.cloned
 
     method description->String
-      return "Method($,$,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%source_tokens,%body)
+      return "Method($,$,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%source_tokens,%statements)
 
 endClass
 
@@ -3042,6 +3042,9 @@ endClass
 
 class Parameters : CmdList
   METHODS
+    method get( index:Int )->Local
+      return @list[index]->(as Local)
+
     method description->String
       return "Parameters" + list_description
 endClass
@@ -3092,17 +3095,21 @@ class PreDecrementLocal : Cmd
 
 endClass
 
-class Procedure : Cmd
+class Procedure : LocalScope
   PROPERTIES
-    name        : String
-    parameters  : Parameters
-    return_type : Type
-    attributes  : Attributes
-    body        : LocalScope
-    doc         : String
+    module_context : Module
+    name           : String
+    parameters     : Parameters
+    return_type    : Type
+    attributes     : Attributes
+    doc            : String
+    _signature     : String
 
   METHODS
-    method init( t, name, parameters, return_type, attributes, doc, body )
+    method init( t, name, parameters, return_type, attributes, doc, statements )
+
+    method init( t, module_context, name, parameters=null, return_type=null, statements=null )
+      if (not statements) statements = Statements( t )
 
     method init( existing:Procedure )
       prior.init( existing )
@@ -3111,10 +3118,25 @@ class Procedure : Cmd
       if (existing.return_type) return_type = existing.return_type.cloned
       if (existing.attributes) attributes = existing.attributes.cloned
       doc = existing.doc
-      if (existing.body) body = existing.body.cloned
 
     method description->String
-      return "Procedure($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%body)
+      return "Procedure($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
+
+    method signature->String
+      if (_signature) return _signature
+
+      _signature = String()
+      _signature.print( name )
+      _signature.print( '(' )
+      if (parameters)
+        forEach (param at i in parameters)
+          assert param.type
+          if (i) _signature.print ','
+          _signature.print param.type
+        endForEach
+      endIf
+      _signature.print( ')' )
+      return _signature
 
 endClass
 
@@ -3474,7 +3496,34 @@ class Try : ControlStructure
 endClass
 
 class Type : Cmd
+  GLOBAL METHODS
+    method init( t:Token, name:String )->Type
+      return Program.current_module.type( t, name )
+
+    method create( t:Token, named_elements:NamedTupleTypeElements )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, anonymous_elements:AnonymousTupleTypeElements )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, key_type:Type, value_type:Type )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, element_type:Type )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, core_type:Type, optional:Logical )->Type
+      trace "TODO"
+      return null
+
+
   PROPERTIES
+    module_context     : Module
+
     named_elements     : NamedTupleTypeElements
     anonymous_elements : AnonymousTupleTypeElements
     key_type           : Type
@@ -3484,18 +3533,11 @@ class Type : Cmd
     core_type          : Type
     optional           : Logical
 
+    global_methods         = [String:GlobalMethod]
+    global_methods_by_name = [String:GlobalMethod[]]
+
   METHODS
-    method init( t, named_elements )
-
-    method init( t, anonymous_elements )
-
-    method init( t, key_type, value_type )
-
-    method init( t, element_type )
-
-    method init( t, core_type, optional )
-
-    method init( t, name )
+    method init( t, module_context, name )
 
     method init( existing:Type )
       prior.init( existing )
@@ -3507,6 +3549,21 @@ class Type : Cmd
       if (existing.element_type) element_type = existing.element_type.cloned
       if (existing.core_type) core_type = existing.core_type.cloned
       optional = existing.optional
+
+    method add( m:GlobalMethod )
+      if (not m.module_context) m.module_context = this.module_context
+
+      local existing_m = global_methods[ m.signature ]
+      if (existing_m and existing_m.module_context is m.module_context)
+        local m_type = which{ name=="Routine":"routine" || "global method" }
+        throw m.t.error( "A $ $ already exists."(m_type,m.signature) )
+      endIf
+
+      global_methods[m.signature] = m
+      if (not global_methods_by_name.contains(m.name))
+        global_methods_by_name[m.name] = GlobalMethod[]
+      endIf
+      global_methods_by_name[m.name].add( m )
 
     method description->String
       return "Type($,$,$,$,$,$,$,$)" (%named_elements,%anonymous_elements,%key_type,%value_type,%name,%element_type,%core_type,%optional)

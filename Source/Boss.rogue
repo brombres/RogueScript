@@ -8,6 +8,7 @@ $include Parser       [optional]
 $include Program
 $include Resolver
 $include Scanner
+$include Task
 
 uses Boss
 uses Console/CommandLineParser

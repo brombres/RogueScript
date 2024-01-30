@@ -2,10 +2,15 @@ module Boss
 
 class Resolver : Visitor
   PROPERTIES
-    this_module : Module
+    this_module    : Module
+    this_procedure : Procedure
 
   METHODS
     method init( this_module )
+
+    method visit( this_procedure )->Cmd
+      prior.visit( this_procedure )
+      return this_procedure
 
     method on( cmd:Access )->Cmd
       which (cmd.name)

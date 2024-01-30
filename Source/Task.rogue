@@ -1,0 +1,19 @@
+module Boss
+
+class Task [singleton]
+  PROPERTIES
+    program : Program
+    stack   = Variant[]
+
+  METHODS
+    method init( program )
+
+    method execute( cmd:Cmd )
+      temporarily Program=program, Task=this
+        cmd.execute
+      endTemporarily
+
+    method run
+      temporarily Program=program, Task=this
+      endTemporarily
+endClass

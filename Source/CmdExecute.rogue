@@ -14,8 +14,13 @@ augment
         println arg.execute
       endForEach
 
+    method GlobalMethod.execute->Boss::Variant
+      return statements.execute
+
     method Statements.execute->Boss::Variant
+      local result : Variant
       forEach (statement in this)
-        statement.execute
+        result = statement.execute
       endForEach
+      return result
 endAugment

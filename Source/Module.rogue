@@ -4,28 +4,62 @@ class Module
   PROPERTIES
     t                 : Token
     name              : String
+
     launch_statements : Statements
+    m_on_launch       : GlobalMethod
+
     used_modules      = [String:Module]
     types             = [String:Type]
 
     resolved          : Logical
+    locked            : Logical
 
   METHODS
     method init( t, name )
       Program.modules[ name ] = this
 
+    method find_type( name:String )->Type
+      if (locked) return null
+
+      local result = types[ name ]
+      if (result) return result
+
+      temporarily locked = true
+        forEach (mod in used_modules)
+          result = mod.find_type( name )
+          if (result) return result
+        endForEach
+        return null
+      endTemporarily
+
     method launch
       resolve
-      if (launch_statements)
-        launch_statements.execute
+      if (m_on_launch)
+        Program.execute( m_on_launch )
       endIf
 
     method resolve
       if (resolved) return
 
-      Resolver( this ).visit( launch_statements )
+      if (launch_statements)
+        m_on_launch = GlobalMethod( t, this, "on_launch", &statements=launch_statements )
+        type( t, "Routine" ).add( m_on_launch )
+        launch_statements = null
+        Resolver( this ).visit( m_on_launch )
+      endIf
 
       resolved = true
+
+    method type( t:Token, name:String )->Type
+      local result = find_type( name )
+      if (result) return result
+
+      result = Type( t, this, name )
+      types[ name ] = result
+      return result
+
+    method type_Routine->Type
+      return type( t, "Routine" )
 
     method use_module( t:Token, name:String )
       if (name == this.name) return

@@ -1694,7 +1694,7 @@ parser
 
       createNull
       create LocalScope(statements):ControlStructure
-      create Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,source_tokens:TokenList,body:LocalScope):Procedure
+      create Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,source_tokens:TokenList,statements:Statements):Procedure
       return
     endIf
   endOn
@@ -1717,7 +1717,7 @@ parser
     consume(':')
     #FIXME call parse_doc_comment
     scoped_multi_line_statements
-    produce GlobalMethod(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,body:LocalScope):Procedure
+    produce GlobalMethod(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,statements:Statements):Procedure
   endOn
 
 - global_properties
@@ -1836,18 +1836,18 @@ parser
   produceList Statements
 
 - control_structure
-  #on     "local"       local_declarations: return
-  #onPeek "localize"    localize:           return
-  #onPeek "block"       block:              return
-  #onPeek "contingent"  contingent:         return
-  #onPeek "forEach"     forEach_loop:       return
-  #onPeek "if"          if_statement:       return
-  #onPeek "loop"        loop:               return
-  #onPeek "which"       which_conditional:  return
-  #onPeek "while"       while_loop:         return
-  #onPeek "temporarily" temporarily:        return
-  #onPeek "try"         try_catch:          return
-  #onPeek "use"         use:                return
+  on     "local"       local_declarations: return
+  onPeek "localize"    localize:           return
+  onPeek "block"       block:              return
+  onPeek "contingent"  contingent:         return
+  onPeek "forEach"     forEach_loop:       return
+  onPeek "if"          if_statement:       return
+  onPeek "loop"        loop:               return
+  onPeek "which"       which_conditional:  return
+  onPeek "while"       while_loop:         return
+  onPeek "temporarily" temporarily:        return
+  onPeek "try"         try_catch:          return
+  onPeek "use"         use:                return
   statement
 
 - optional_args
@@ -3446,7 +3446,7 @@ parser
   create Logicalized(operand):Unary
   create OpAndAssign(target,operand)
   create PreDecrementLocal(info:Local)  # Internal use
-  create Procedure(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc=`null`,body:LocalScope)
+  create Procedure(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc=`null`,statements:Statements):LocalScope
   create PushStackTraceCutoff
   create CreateRange(start,limit,step_size)
   create ReturnOnException

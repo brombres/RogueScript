@@ -24,6 +24,10 @@ class Program [singleton]
 
       type_Int = Type( t, "Int" )
 
+    method execute( procedure:Procedure )
+      local task = Task( this )
+      task.execute( procedure )
+
     method launch
       resolve
 
