@@ -991,7 +991,7 @@ parser
     endOn
 
   elseOn '['
-    # [Key:Variant] -> Table<<Key,Variant>>
+    # [Key:BossVariant] -> Table<<Key,BossVariant>>
     type
     mustConsume ':'
     type
@@ -2762,7 +2762,7 @@ parser
     expression
     if (nextIs(':'))
       restorePosition
-      type  # [Key:Variant] table
+      type  # [Key:BossVariant] table
       #FIXME call use_Table
       if (nextIs('{'))
         literal_table

@@ -2,27 +2,27 @@ module Boss
 
 augment
   METHODS
-    method Cmd.execute->Boss::Variant
+    method Cmd.execute->BossVariant
       println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
-    method AssignLocal.execute->Boss::Variant
+    method AssignLocal.execute->BossVariant
       local new_value = new_value.execute
       Task.stack[ Task.sp+target.index ] = new_value
       return new_value
 
-    method LiteralInt.execute->Boss::Variant
+    method LiteralInt.execute->BossVariant
       return value
 
-    method LiteralString.execute->Boss::Variant
+    method LiteralString.execute->BossVariant
       return value
 
-    method Println.execute->Boss::Variant
+    method Println.execute->BossVariant
       forEach (arg in args)
         println arg.execute
       endForEach
 
-    method GlobalMethod.execute->Boss::Variant
+    method GlobalMethod.execute->BossVariant
       local old_stack_count = Task.stack.count
       temporarily Task.sp = old_stack_count - this.param_count
         Task.stack.expand( this.local_count )
@@ -31,8 +31,8 @@ augment
         return result
       endTemporarily
 
-    method Statements.execute->Boss::Variant
-      local result : Variant
+    method Statements.execute->BossVariant
+      local result : BossVariant
       forEach (statement in this)
         result = statement.execute
       endForEach
