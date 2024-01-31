@@ -10,6 +10,8 @@ class Program [singleton]
     modules        = [String:Module]
 
     type_Int       : Type
+    type_Real      : Type
+    type_String    : Type
 
     configured     : Logical
 
@@ -22,7 +24,9 @@ class Program [singleton]
       default_module = Module( t, "Boss" )
       current_module = default_module
 
-      type_Int = Type( t, "Int" )
+      type_Int    = Type( t, "Int" )
+      type_Real   = Type( t, "Real" )
+      type_String = Type( t, "String" )
 
     method execute( procedure:Procedure )
       local task = Task( this )

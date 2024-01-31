@@ -17,10 +17,82 @@ class Resolver : Visitor
 
     method on( cmd:Access )->Cmd
       which (cmd.name)
-        case "print":   return Print( cmd.t, cmd.args )
-        case "println": return Println( cmd.t, cmd.args )
-        others:         return cmd
+        case "print":   return Print( cmd.t, visit(cmd.args) )
+        case "println": return Println( cmd.t, visit(cmd.args) )
       endWhich
+
+      forEach (scope in scope_stack step -1)
+        if local v = scope_stack.last.locals[cmd.name]
+          return visit( ReadLocal(cmd.t, v) )
+        endIf
+      endForEach
+
+      throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
+
+    method convert_to( cmd:Cmd, to_type:Type )->Cmd
+      local cmd_type = cmd.require_type
+
+      which (cmd_type)
+        case to_type
+          return cmd
+        case Program.type_Int
+          which (to_type)
+            case Program.type_Real
+              return validate( IntToReal(cmd.t,cmd) )
+          endWhich
+      endWhich
+
+      throw cmd.t.error( "Cannot convert type $ to type $."(cmd_type,to_type) )
+
+    method find_common_type( left:Cmd, right:Cmd )->Type
+      local left_type = left.require_type
+      local right_type = right.require_type
+      if (left_type is right_type) return left_type
+
+      if (left_type is Program.type_String or right_type is Program.type_String) return Program.type_String
+      if (left_type is Program.type_Real or right_type is Program.type_Real) return Program.type_Real
+      if (left_type is Program.type_Int or right_type is Program.type_Int) return Program.type_Int
+
+      throw left.t.error( "Types $ and $ are incompatible."(left_type,right_type) )
+
+    method on( cmd:Add )->Cmd
+      local left  = visit( cmd.left )
+      local right = visit( cmd.right )
+      local common_type = find_common_type( left, right )
+
+      left = convert_to( left, common_type )
+      right = convert_to( right, common_type )
+
+      if (common_type is Program.type_Real)
+        return validate( AddReal(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int)
+        return validate( AddInt(cmd.t,left,right) )
+      endIf
+
+      throw cmd.t.error( "[INTERNAL] Unhandled operation: $ + $"(common_type,common_type) )
+
+    method on_validate( cmd:AddInt )->Cmd
+      if local left_literal = cmd.left->(as LiteralInt)
+        if local right_literal = cmd.right->(as LiteralInt)
+          return LiteralInt( cmd.t, left_literal.value + right_literal.value )
+        endIf
+      endIf
+      return cmd
+
+    method on_validate( cmd:AddReal )->Cmd
+      if local left_literal = cmd.left->(as LiteralReal)
+        if local right_literal = cmd.right->(as LiteralReal)
+          return LiteralReal( cmd.t, left_literal.value + right_literal.value )
+        endIf
+      endIf
+      return cmd
+
+    method on_validate( cmd:IntToReal )->Cmd
+      if local literal_int = cmd.operand->(as LiteralInt)
+        return LiteralReal( cmd.operand.t, literal_int.value )
+      else
+        return cmd
+      endIf
 
     method on( cmd:LocalDeclarations )->Cmd
       local initialization = Statements( cmd.t )
@@ -47,7 +119,7 @@ class Resolver : Visitor
         scope_stack.last.locals[v.name] = v
 
         if (v.initial_value)
-          initialization.add( AssignLocal(cmd.t,v,v.initial_value.require_value) )
+          initialization.add( WriteLocal(cmd.t,v,v.initial_value.require_value) )
         else
           initialization.add( SetLocalToDefaultValue(cmd.t,v) )
         endIf
@@ -55,4 +127,14 @@ class Resolver : Visitor
       endForEach
 
       return initialization
+
+    method on( cmd:ReadLocal )->Cmd
+      which (cmd.info.type)
+        case Program.type_Int: return visit( ReadLocalInt(cmd.t,cmd.info) )
+        others
+          throw cmd.t.error( "[INTERNAL] Unhandled type $ in ReadLocal."(cmd.info.type) )
+      endWhich
+
+    method on( cmd:ReadLocalInt )->Cmd
+      return cmd
 endClass

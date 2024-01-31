@@ -251,26 +251,6 @@ class Negate : Unary
 
 endClass
 
-class LiteralReal : Cmd
-  PROPERTIES
-    value : Real
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralReal )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralReal($)" (%value)
-
-    method to->Int:    return value
-    method to->Real:   return value
-    method to->String: return value
-
-endClass
-
 class Print : Cmd
   PROPERTIES
     args : Cmd
@@ -2478,6 +2458,8 @@ class LiteralInt : LiteralPrimitive
     method init( t, content, base )
       value = content->Int( base )
 
+    method init( t, value )
+
     method init( existing:LiteralInt )
       prior.init( existing )
       content = existing.content
@@ -2485,7 +2467,8 @@ class LiteralInt : LiteralPrimitive
       value = existing.value
 
     method description->String
-      return "LiteralInt($,$)" (%content,%base)
+      if (content) return "LiteralInt($,$)" (%content,%base)
+      else         return value
 
 endClass
 
@@ -2541,29 +2524,6 @@ class LiteralPi : Literal
   METHODS
     method description->String
       return "LiteralPi"
-endClass
-
-class LiteralRealNumber : LiteralPrimitive
-  PROPERTIES
-    value : String
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralRealNumber )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralRealNumber($)" (%value)
-
-    method to->Character
-      return Cmd.to_character(value)
-
-    method to->Int:     return value
-    method to->Logical: return value?
-    method to->String: return value
-
 endClass
 
 class LiteralUndefined : Cmd
@@ -3538,7 +3498,7 @@ class Type : Cmd
       global_methods_by_name[m.name].add( m )
 
     method description->String
-      return "Type($,$,$,$,$,$,$,$)" (%named_elements,%anonymous_elements,%key_type,%value_type,%name,%element_type,%core_type,%optional)
+      return name
 
 endClass
 
@@ -4302,21 +4262,21 @@ class LocalDeclarations : Cmd
 endClass
 
 
-class AssignLocal : Cmd
+class WriteLocal : Cmd
   PROPERTIES
-    target    : Local
+    info      : Local
     new_value : Cmd
 
   METHODS
-    method init( t, target, new_value )
+    method init( t, info, new_value )
 
-    method init( existing:AssignLocal )
+    method init( existing:WriteLocal )
       prior.init( existing )
-      if (existing.target) target = existing.target.cloned
+      if (existing.info) info = existing.info.cloned
       if (existing.new_value) new_value = existing.new_value.cloned
 
     method description->String
-      return "AssignLocal($,$)" (%target,%new_value)
+      return "WriteLocal($,$)" (%info,%new_value)
 
 endClass
 
@@ -4333,5 +4293,71 @@ class SetLocalToDefaultValue : Cmd
 
     method description->String
       return "SetLocalToDefaultValue($)" (%info)
+
+endClass
+
+class ReadLocal : Cmd
+  PROPERTIES
+    info : Local
+
+  METHODS
+    method init( t, info )
+
+    method init( existing:ReadLocal )
+      prior.init( existing )
+      if (existing.info) info = existing.info.cloned
+
+    method description->String
+      return "ReadLocal($)" (%info)
+
+endClass
+
+class ReadLocalInt : ReadLocal
+  METHODS
+    method description->String
+      return "ReadLocalInt($)" (%info)
+
+endClass
+
+class AddInt : Add
+  METHODS
+    method description->String
+      return "AddInt($,$)" (%left,%right)
+
+endClass
+
+
+class LiteralReal : LiteralPrimitive
+  PROPERTIES
+    value : Real
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralReal )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralReal($)" (%value)
+
+    method to->Int:    return value
+    method to->Real:   return value
+    method to->String: return value
+
+endClass
+
+
+class IntToReal : Unary
+  METHODS
+    method description->String
+      return "IntToReal($)" (%operand)
+
+endClass
+
+class AddReal : Add
+  METHODS
+    method description->String
+      return "AddReal($,$)" (%left,%right)
 
 endClass

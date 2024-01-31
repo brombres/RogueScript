@@ -17,14 +17,26 @@ augment
     method Cmd.type->Type
       return null
 
+    method AddInt.type->Type
+      return Program.type_Int
+
+    method AddReal.type->Type
+      return Program.type_Real
+
     method GetSingleton.type->Type
       return @type
 
     method GlobalPropertyDeclarations.type->Type
       return @type
 
+    method IntToReal.type->Type
+      return Program.type_Real
+
     method LiteralInt.type->Type
       return Program.type_Int
+
+    method LiteralReal.type->Type
+      return Program.type_Real
 
     method Local.type->Type
       return @type
@@ -37,6 +49,9 @@ augment
 
     method PropertyDeclarations.type->Type
       return @type
+
+    method ReadLocalInt.type->Type
+      return Program.type_Int
 
     method TypeContext.type->Type
       return @type

@@ -2,27 +2,38 @@ module Boss
 
 augment
   METHODS
-    method Cmd.execute->BossVariant
+    method Cmd.execute->Variant
       println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
-    method AssignLocal.execute->BossVariant
-      local new_value = new_value.execute
-      Task.stack[ Task.sp+target.index ] = new_value
-      return new_value
+    method AddInt.execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.integer + right_value.integer )
 
-    method LiteralInt.execute->BossVariant
+    method AddReal.execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.real + right_value.real )
+
+    method IntToReal.execute->Variant
+      return operand.execute.integer->Real
+
+    method LiteralInt.execute->Variant
       return value
 
-    method LiteralString.execute->BossVariant
+    method LiteralReal.execute->Variant
       return value
 
-    method Println.execute->BossVariant
+    method LiteralString.execute->Variant
+      return value
+
+    method Println.execute->Variant
       forEach (arg in args)
         println arg.execute
       endForEach
 
-    method GlobalMethod.execute->BossVariant
+    method GlobalMethod.execute->Variant
       local old_stack_count = Task.stack.count
       temporarily Task.sp = old_stack_count - this.param_count
         Task.stack.expand( this.local_count )
@@ -31,10 +42,22 @@ augment
         return result
       endTemporarily
 
-    method Statements.execute->BossVariant
-      local result : BossVariant
+    method ReadLocal.execute->Variant
+      return Task.stack[ Task.sp+info.index ]
+
+    method ReadLocalInt.execute->Variant
+      return Task.stack[ Task.sp+info.index ]
+
+    method Statements.execute->Variant
+      local result : Variant
       forEach (statement in this)
         result = statement.execute
       endForEach
       return result
+
+    method WriteLocal.execute->Variant
+      local new_value = new_value.execute
+      Task.stack[ Task.sp+info.index ] = new_value
+      return new_value
+
 endAugment

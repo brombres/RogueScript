@@ -1072,14 +1072,19 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.type)
       return result
 
-    method on_visit_children( cmd:AssignLocal )->$ReturnType
+    method on_visit_children( cmd:WriteLocal )->$ReturnType
       local result : $ReturnType
-      result = visit(cmd.target)
+      result = visit(cmd.info)
       if (result?) return result
       result = visit(cmd.new_value)
       return result
 
     method on_visit_children( cmd:SetLocalToDefaultValue )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      return result
+
+    method on_visit_children( cmd:ReadLocal )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.info)
       return result

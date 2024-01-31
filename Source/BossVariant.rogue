@@ -5,7 +5,7 @@ $include Codec/JSON
 
 uses Geometry
 
-class BossVariant [compound]
+class Variant [compound]
   DEFINITIONS
     # Internal use.
     TYPE_UNDEFINED =  0
@@ -78,92 +78,92 @@ class BossVariant [compound]
             |};
 
   GLOBAL METHODS
-    method create->BossVariant
-      return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_UNDEFINED }" )->BossVariant  # undefined
+    method create->Boss::Variant
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_UNDEFINED }" )->Boss::Variant  # undefined
 
-    method create( value:Logical )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_LOGICAL, 0, {.logical=$value} }" )->BossVariant
+    method create( value:Logical )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_LOGICAL, 0, {.logical=$value} }" )->Boss::Variant
 
-    method create( value:Byte )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_BYTE, 0, {.byte=$value} }" )->BossVariant
+    method create( value:Byte )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_BYTE, 0, {.byte=$value} }" )->Boss::Variant
 
-    method create( value:Character )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_CHARACTER, 0, {.character=$value} }" )->BossVariant
+    method create( value:Character )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_CHARACTER, 0, {.character=$value} }" )->Boss::Variant
 
-    method create( value:Int )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_INT, 0, {.integer=$value} }" )->BossVariant
+    method create( value:Int )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_INT, 0, {.integer=$value} }" )->Boss::Variant
 
-    method create( value:Real )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_REAL, 0, {.real=$value} }" )->BossVariant
+    method create( value:Real )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_REAL, 0, {.real=$value} }" )->Boss::Variant
 
-    method create( value:XY )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_XY, 0, {.xy=$value} }" )->BossVariant
+    method create( value:XY )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_XY, 0, {.xy=$value} }" )->Boss::Variant
 
-    method create( value:XYZ )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_XYZ, 0, {.xyz=$value} }" )->BossVariant
+    method create( value:XYZ )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_XYZ, 0, {.xyz=$value} }" )->Boss::Variant
 
-    method create( value:XYZW )->BossVariant
-      return native( "(%Ns%BossBossVariant) {  %NS%BOSS_VARIANT_TYPE_XYZW, 0, {.xyzw=$value} }" )->BossVariant
+    method create( value:XYZW )->Boss::Variant
+      return native( "(%Ns%BossVariant) {  %NS%BOSS_VARIANT_TYPE_XYZW, 0, {.xyzw=$value} }" )->Boss::Variant
 
-    method create( value:Anchor )->BossVariant
-      return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_ANCHOR, 0, {.xy=$value.position} }" )->BossVariant
+    method create( value:Anchor )->Boss::Variant
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_ANCHOR, 0, {.xy=$value.position} }" )->Boss::Variant
 
-    method create( value:Box )->BossVariant
-      return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_BOX, 0, {.box=$value} }" )->BossVariant
+    method create( value:Box )->Boss::Variant
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_BOX, 0, {.box=$value} }" )->Boss::Variant
 
-    method create( value:Circle )->BossVariant
-      return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_CIRCLE, 0, {.circle=$value} }" )->BossVariant
+    method create( value:Circle )->Boss::Variant
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_CIRCLE, 0, {.circle=$value} }" )->Boss::Variant
 
-    method create( value:Object )->BossVariant [preferred]
-      if (value) return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_OBJECT, $value }" )->BossVariant
-      else       return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->BossVariant  # null value
+    method create( value:Object )->Boss::Variant [preferred]
+      if (value) return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_OBJECT, $value }" )->Boss::Variant
+      else       return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->Boss::Variant  # null value
 
-    method create( value:String )->BossVariant
-      if (value) return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_STRING, (%Ns%RogueObject*)$value }" )->BossVariant
-      else       return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->BossVariant  # null value
+    method create( value:String )->Boss::Variant
+      if (value) return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_STRING, (%Ns%RogueObject*)$value }" )->Boss::Variant
+      else       return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->Boss::Variant  # null value
 
-    method create( value:BossVariant[] )->BossVariant
-      if (value) return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_LIST, (%Ns%RogueObject*)$value }" )->BossVariant
-      else       return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->BossVariant  # null value
+    method create( value:Boss::Variant[] )->Boss::Variant
+      if (value) return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_LIST, (%Ns%RogueObject*)$value }" )->Boss::Variant
+      else       return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->Boss::Variant  # null value
 
-    method create( value:[BossVariant:BossVariant] )->BossVariant
-      if (value) return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_TABLE, (%Ns%RogueObject*)$value }" )->BossVariant
-      else       return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->BossVariant  # null value
+    method create( value:[Boss::Variant:Boss::Variant] )->Boss::Variant
+      if (value) return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_TABLE, (%Ns%RogueObject*)$value }" )->Boss::Variant
+      else       return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_NULL }" )->Boss::Variant  # null value
 
-    method create_list->BossVariant
-      # Convenience syntax: @[] is equivalent to BossVariant.create_list()
-      local data = BossVariant[]
-      return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_LIST, (%Ns%RogueObject*)$data }" )->BossVariant
+    method create_list->Boss::Variant
+      # Convenience syntax: @[] is equivalent to Boss::Variant.create_list()
+      local data = Boss::Variant[]
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_LIST, (%Ns%RogueObject*)$data }" )->Boss::Variant
 
-    method create_table->BossVariant
-      # Convenience syntax: @{} is equivalent to BossVariant.create_table()
-      local data = [BossVariant:BossVariant]
-      return native( "(%Ns%BossBossVariant) { %NS%BOSS_VARIANT_TYPE_TABLE, (%Ns%RogueObject*)$data }" )->BossVariant
+    method create_table->Boss::Variant
+      # Convenience syntax: @{} is equivalent to Boss::Variant.create_table()
+      local data = [Boss::Variant:Boss::Variant]
+      return native( "(%Ns%BossVariant) { %NS%BOSS_VARIANT_TYPE_TABLE, (%Ns%RogueObject*)$data }" )->Boss::Variant
 
   METHODS
-    method add( value:BossVariant )
+    method add( value:Boss::Variant )
       which (type)
         case TYPE_LIST
-          object->(as BossVariant[]).add( value )
+          object->(as Boss::Variant[]).add( value )
       endWhich
 
-    method add_all( value:BossVariant )
+    method add_all( value:Boss::Variant )
       which (type)
         case TYPE_LIST
-          local list = object->(as BossVariant[])
+          local list = object->(as Boss::Variant[])
           list.reserve( value.count )
           list.add( forEach in value )
       endWhich
 
-    method as_list->BossVariant[]
-      # If this value .is_list, returns the backing BossVariant[] list; otherwise returns null.
+    method as_list->Boss::Variant[]
+      # If this value .is_list, returns the backing Boss::Variant[] list; otherwise returns null.
       if (type != TYPE_LIST) return null
-      return object->(as BossVariant[])
+      return object->(as Boss::Variant[])
 
     method as_string->String
       # If this value .is_string, returns the backing String; otherwise returns null.
       #
-      #   BossVariant     | ->String  |  .as_string
+      #   Boss::Variant     | ->String  |  .as_string
       #   ----------|-----------|------------
       #   null      | "null"    | null
       #   undefined | ""        | null
@@ -173,15 +173,15 @@ class BossVariant [compound]
       if (type != TYPE_STRING) return null
       return object->(as String)
 
-    method as_table->[BossVariant:BossVariant]
-      # If this value .is_table, returns the backing [BossVariant:BossVariant] table; otherwise returns null.
+    method as_table->[Boss::Variant:Boss::Variant]
+      # If this value .is_table, returns the backing [Boss::Variant:Boss::Variant] table; otherwise returns null.
       if (type != TYPE_TABLE) return null
-      return object->(as [BossVariant:BossVariant])
+      return object->(as [Boss::Variant:Boss::Variant])
 
-    method at( index:Int )->BossVariant
+    method at( index:Int )->Boss::Variant
       which (type)
         case TYPE_LIST
-          local list = object->(as BossVariant[])
+          local list = object->(as Boss::Variant[])
           if (index < 0 or index >= list.count) return undefined
           return list[index]
 
@@ -191,7 +191,7 @@ class BossVariant [compound]
           return st[index]
 
         case TYPE_TABLE
-          local table = object->(as [BossVariant:BossVariant])
+          local table = object->(as [Boss::Variant:Boss::Variant])
           if (index < 0 or index >= table.count) return undefined
           return table.at(index)
 
@@ -203,12 +203,12 @@ class BossVariant [compound]
     method clear
       which (type)
         case TYPE_LIST
-          object->(as BossVariant[]).clear
+          object->(as Boss::Variant[]).clear
         case TYPE_TABLE
-          object->(as [BossVariant:BossVariant]).clear
+          object->(as [Boss::Variant:Boss::Variant]).clear
       endWhich
 
-    method contains( value:BossVariant )->Logical
+    method contains( value:Boss::Variant )->Logical
       which (type)
         case TYPE_STRING
           which (value.type)
@@ -217,9 +217,9 @@ class BossVariant [compound]
             others:              return false
           endWhich
         case TYPE_LIST
-          return object->(as BossVariant[]).contains( value )
+          return object->(as Boss::Variant[]).contains( value )
         case TYPE_TABLE
-          return object->(as [BossVariant:BossVariant]).contains( value->String )
+          return object->(as [Boss::Variant:Boss::Variant]).contains( value->String )
         others
           return false
       endWhich
@@ -229,20 +229,20 @@ class BossVariant [compound]
         case TYPE_STRING
           return object->(as String).count
         case TYPE_LIST
-          return object->(as BossVariant[]).count
+          return object->(as Boss::Variant[]).count
         case TYPE_TABLE
-          return object->(as [BossVariant:BossVariant]).count
+          return object->(as [Boss::Variant:Boss::Variant]).count
         case TYPE_UNDEFINED
           return 0
         others
           return 1
       endWhich
 
-    method entries->TableEntriesIterator<<BossVariant,BossVariant>>
-      if (type != TYPE_TABLE) return TableEntriesIterator<<BossVariant,BossVariant>>( null )
-      return object->(as [BossVariant:BossVariant]).entries
+    method entries->TableEntriesIterator<<Boss::Variant,Boss::Variant>>
+      if (type != TYPE_TABLE) return TableEntriesIterator<<Boss::Variant,Boss::Variant>>( null )
+      return object->(as [Boss::Variant:Boss::Variant]).entries
 
-    method ensure_list( name:String )->BossVariant
+    method ensure_list( name:String )->Boss::Variant
       if (not is_table) return @[]
 
       local list = this[name]
@@ -252,7 +252,7 @@ class BossVariant [compound]
       this[name] = list
       return list
 
-    method ensure_table( name:String )->BossVariant
+    method ensure_table( name:String )->Boss::Variant
       if (not is_table) return @{}
 
       local table = this[name]
@@ -262,10 +262,10 @@ class BossVariant [compound]
       this[name] = table
       return table
 
-    method first->BossVariant
+    method first->Boss::Variant
       which (type)
         case TYPE_LIST
-          local list = object->(as BossVariant[])
+          local list = object->(as Boss::Variant[])
           if (list.count == 0) return undefined
           return list[0]
 
@@ -275,7 +275,7 @@ class BossVariant [compound]
           return st[0]
 
         case TYPE_TABLE
-          local table = object->(as [BossVariant:BossVariant])
+          local table = object->(as [Boss::Variant:Boss::Variant])
           if (table.count == 0) return undefined
           return table.at(0)
 
@@ -283,22 +283,22 @@ class BossVariant [compound]
           return this
       endWhich
 
-    method first( query:Function(BossVariant)->Logical )->BossVariant
+    method first( query:Function(Boss::Variant)->Logical )->Boss::Variant
       forEach (value in this)
         if (query(value)) return value
       endForEach
       return undefined
 
-    method get( index:Int )->BossVariant
-      return get( BossVariant(index) )
+    method get( index:Int )->Boss::Variant
+      return get( Boss::Variant(index) )
 
-    method get( key:String )->BossVariant
-      return get( BossVariant(key) )
+    method get( key:String )->Boss::Variant
+      return get( Boss::Variant(key) )
 
-    method get( key:BossVariant )->BossVariant [preferred]
+    method get( key:Boss::Variant )->Boss::Variant [preferred]
       which (type)
         case TYPE_TABLE
-          local table = object->(as [BossVariant:BossVariant])
+          local table = object->(as [Boss::Variant:Boss::Variant])
           local entry = table.find( key )
           if (entry) return entry.value
           else       return undefined
@@ -325,17 +325,17 @@ class BossVariant [compound]
         case TYPE_CIRCLE:    return circle.hash_code
         case TYPE_OBJECT:    return object.hash_code
         case TYPE_STRING:    return object->(as String).hash_code
-        case TYPE_LIST:      return object->(as BossVariant[]).hash_code
-        case TYPE_TABLE:     return object->(as [BossVariant:BossVariant]).hash_code
+        case TYPE_LIST:      return object->(as Boss::Variant[]).hash_code
+        case TYPE_TABLE:     return object->(as [Boss::Variant:Boss::Variant]).hash_code
         others:
-          Global.error.print( "[BossVariant.hash_code()] Undefined type $"(type) )
+          Global.error.print( "[Boss::Variant.hash_code()] Undefined type $"(type) )
           return 0
       endWhich
 
-    method insert( value:BossVariant, before_index=0:Int )
+    method insert( value:Boss::Variant, before_index=0:Int )
       which (type)
         case TYPE_LIST
-          object->(as BossVariant[]).insert( value, before_index )
+          object->(as Boss::Variant[]).insert( value, before_index )
       endWhich
 
     method is_collection->Logical
@@ -409,14 +409,14 @@ class BossVariant [compound]
     method is_xyzw->Logical
       return (type == TYPE_XYZW)
 
-    method keys->TableKeysIterator<<BossVariant,BossVariant>>
-      if (type != TYPE_TABLE) return TableKeysIterator<<BossVariant,BossVariant>>( null )
-      return object->(as [BossVariant:BossVariant]).keys
+    method keys->TableKeysIterator<<Boss::Variant,Boss::Variant>>
+      if (type != TYPE_TABLE) return TableKeysIterator<<Boss::Variant,Boss::Variant>>( null )
+      return object->(as [Boss::Variant:Boss::Variant]).keys
 
-    method last->BossVariant
+    method last->Boss::Variant
       which (type)
         case TYPE_LIST
-          local list = object->(as BossVariant[])
+          local list = object->(as Boss::Variant[])
           if (list.count == 0) return undefined
           return list[list.count-1]
 
@@ -426,7 +426,7 @@ class BossVariant [compound]
           return st[st.count-1]
 
         case TYPE_TABLE
-          local table = object->(as [BossVariant:BossVariant])
+          local table = object->(as [Boss::Variant:Boss::Variant])
           if (table.count == 0) return undefined
           return table.at( table.count-1 )
 
@@ -434,13 +434,13 @@ class BossVariant [compound]
           return this
       endWhich
 
-    method last( query:Function(BossVariant)->Logical )->BossVariant
+    method last( query:Function(Boss::Variant)->Logical )->Boss::Variant
       forEach (value in this step -1)
         if (query(value)) return value
       endForEach
       return undefined
 
-    method locate( value:BossVariant, i1=null:Int? )->Int?
+    method locate( value:Boss::Variant, i1=null:Int? )->Int?
       which (type)
         case TYPE_STRING
           which (value.type)
@@ -449,12 +449,12 @@ class BossVariant [compound]
             others:              return null
           endWhich
         case TYPE_LIST
-          return object->(as BossVariant[]).locate( value, i1 )
+          return object->(as Boss::Variant[]).locate( value, i1 )
         others
           return null
       endWhich
 
-    method locate_last( value:BossVariant, i1=null:Int? )->Int?
+    method locate_last( value:Boss::Variant, i1=null:Int? )->Int?
       which (type)
         case TYPE_STRING
           which (value.type)
@@ -463,7 +463,7 @@ class BossVariant [compound]
             others:              return null
           endWhich
         case TYPE_LIST
-          return object->(as BossVariant[]).locate_last( value, i1 )
+          return object->(as Boss::Variant[]).locate_last( value, i1 )
         others
           return null
       endWhich
@@ -472,10 +472,10 @@ class BossVariant [compound]
       if (type == TYPE_NULL or type == TYPE_UNDEFINED) return false
       return this->Logical
 
-    method operator==(other:BossVariant)->Int
+    method operator==(other:Boss::Variant)->Int
       return (this <> other) == 0
 
-    method operator<>(other:BossVariant)->Int
+    method operator<>(other:Boss::Variant)->Int
       if (type == TYPE_UNDEFINED) return (other.type != TYPE_UNDEFINED)
 
       if (type <= TYPE_REAL and other.type <= TYPE_REAL)
@@ -508,165 +508,165 @@ class BossVariant [compound]
         case TYPE_STRING
           return object->(as String) <> other.object->(as String)
         case TYPE_LIST
-          if (object->(as BossVariant[]) == other.object->(as BossVariant[])) return 0
+          if (object->(as Boss::Variant[]) == other.object->(as Boss::Variant[])) return 0
           return object.object_id <> other.object.object_id
         case TYPE_TABLE
-          if (object->(as [BossVariant:BossVariant]) == other.object->(as [BossVariant:BossVariant])) return 0
+          if (object->(as [Boss::Variant:Boss::Variant]) == other.object->(as [Boss::Variant:Boss::Variant])) return 0
           return object.object_id <> other.object.object_id
         others
           return type <> other.type
       endWhich
 
-    method operator-()->BossVariant
+    method operator-()->Boss::Variant
       which (type)
-        case TYPE_BYTE:      return BossVariant( -byte )
-        case TYPE_INT:       return BossVariant( -integer )
-        case TYPE_REAL:      return BossVariant( -real )
-        case TYPE_LOGICAL:   return BossVariant( -logical )
-        case TYPE_XY:        return BossVariant( -xy )
-        case TYPE_XYZ:       return BossVariant( -xyz )
-        case TYPE_XYZW:      return BossVariant( -xyzw )
+        case TYPE_BYTE:      return Boss::Variant( -byte )
+        case TYPE_INT:       return Boss::Variant( -integer )
+        case TYPE_REAL:      return Boss::Variant( -real )
+        case TYPE_LOGICAL:   return Boss::Variant( -logical )
+        case TYPE_XY:        return Boss::Variant( -xy )
+        case TYPE_XYZ:       return Boss::Variant( -xyz )
+        case TYPE_XYZW:      return Boss::Variant( -xyzw )
         others
           return undefined
       endWhich
 
-    method operator!()->BossVariant
+    method operator!()->Boss::Variant
       if (this.is_number)
-        return BossVariant( !(this->Int) )
+        return Boss::Variant( !(this->Int) )
       else
         return undefined
       endIf
 
-    method operator+( other:BossVariant )->BossVariant
+    method operator+( other:Boss::Variant )->Boss::Variant
       local (a,b) = to_compatible_values( other )
       which (a.type)
-        case TYPE_BYTE:      return BossVariant( a.byte      + b.byte )
-        case TYPE_CHARACTER: return BossVariant( a.character + b.character )
-        case TYPE_INT:       return BossVariant( a.integer   + b.integer )
-        case TYPE_REAL:      return BossVariant( a.real      + b.real )
-        case TYPE_LOGICAL:   return BossVariant( a.logical or b.logical )
-        case TYPE_XY:        return BossVariant( a.xy        + b.xy )
-        case TYPE_XYZ:       return BossVariant( a.xyz       + b.xyz )
-        case TYPE_XYZW:      return BossVariant( a.xyzw      + b.xyzw )
-        case TYPE_STRING:    return BossVariant( a->String   + b->String )
+        case TYPE_BYTE:      return Boss::Variant( a.byte      + b.byte )
+        case TYPE_CHARACTER: return Boss::Variant( a.character + b.character )
+        case TYPE_INT:       return Boss::Variant( a.integer   + b.integer )
+        case TYPE_REAL:      return Boss::Variant( a.real      + b.real )
+        case TYPE_LOGICAL:   return Boss::Variant( a.logical or b.logical )
+        case TYPE_XY:        return Boss::Variant( a.xy        + b.xy )
+        case TYPE_XYZ:       return Boss::Variant( a.xyz       + b.xyz )
+        case TYPE_XYZW:      return Boss::Variant( a.xyzw      + b.xyzw )
+        case TYPE_STRING:    return Boss::Variant( a->String   + b->String )
         others
           return undefined
       endWhich
 
-    method operator-( other:BossVariant )->BossVariant
+    method operator-( other:Boss::Variant )->Boss::Variant
       local (a,b) = to_compatible_values( other )
       which (a.type)
-        case TYPE_BYTE:      return BossVariant( a.byte      - b.byte )
-        case TYPE_CHARACTER: return BossVariant( a.character - b.character )
-        case TYPE_INT:       return BossVariant( a.integer   - b.integer )
-        case TYPE_REAL:      return BossVariant( a.real      - b.real )
-        case TYPE_XY:        return BossVariant( a.xy        - b.xy )
-        case TYPE_XYZ:       return BossVariant( a.xyz       - b.xyz )
-        case TYPE_XYZW:      return BossVariant( a.xyzw      - b.xyzw )
+        case TYPE_BYTE:      return Boss::Variant( a.byte      - b.byte )
+        case TYPE_CHARACTER: return Boss::Variant( a.character - b.character )
+        case TYPE_INT:       return Boss::Variant( a.integer   - b.integer )
+        case TYPE_REAL:      return Boss::Variant( a.real      - b.real )
+        case TYPE_XY:        return Boss::Variant( a.xy        - b.xy )
+        case TYPE_XYZ:       return Boss::Variant( a.xyz       - b.xyz )
+        case TYPE_XYZW:      return Boss::Variant( a.xyzw      - b.xyzw )
         others
           return undefined
       endWhich
 
-    method operator*( other:BossVariant )->BossVariant
-      if (this.type == TYPE_STRING and other.is_number) return BossVariant( this->String * other->Int )
-      if (this.is_number and other.type == TYPE_STRING) return BossVariant( other->String * this->Int )
+    method operator*( other:Boss::Variant )->Boss::Variant
+      if (this.type == TYPE_STRING and other.is_number) return Boss::Variant( this->String * other->Int )
+      if (this.is_number and other.type == TYPE_STRING) return Boss::Variant( other->String * this->Int )
 
       local (a,b) = to_compatible_values( other )
       which (a.type)
-        case TYPE_BYTE:      return BossVariant( a.byte      * b.byte )
-        case TYPE_CHARACTER: return BossVariant( a.character * b.character )
-        case TYPE_INT:       return BossVariant( a.integer   * b.integer )
-        case TYPE_REAL:      return BossVariant( a.real      * b.real )
-        case TYPE_LOGICAL:   return BossVariant( a.logical and b.logical )
-        case TYPE_XY:        return BossVariant( a.xy        * b.xy )
-        case TYPE_XYZ:       return BossVariant( a.xyz       * b.xyz )
-        case TYPE_XYZW:      return BossVariant( a.xyzw      * b.xyzw )
+        case TYPE_BYTE:      return Boss::Variant( a.byte      * b.byte )
+        case TYPE_CHARACTER: return Boss::Variant( a.character * b.character )
+        case TYPE_INT:       return Boss::Variant( a.integer   * b.integer )
+        case TYPE_REAL:      return Boss::Variant( a.real      * b.real )
+        case TYPE_LOGICAL:   return Boss::Variant( a.logical and b.logical )
+        case TYPE_XY:        return Boss::Variant( a.xy        * b.xy )
+        case TYPE_XYZ:       return Boss::Variant( a.xyz       * b.xyz )
+        case TYPE_XYZW:      return Boss::Variant( a.xyzw      * b.xyzw )
         others
           return undefined
       endWhich
 
-    method operator/( other:BossVariant )->BossVariant
-      if (type == TYPE_STRING and other.type == TYPE_STRING) return BossVariant( this->String / other->String )
+    method operator/( other:Boss::Variant )->Boss::Variant
+      if (type == TYPE_STRING and other.type == TYPE_STRING) return Boss::Variant( this->String / other->String )
 
       local (a,b) = to_compatible_values( other )
       which (a.type)
-        case TYPE_BYTE:      return BossVariant( a.byte      / b.byte )
-        case TYPE_CHARACTER: return BossVariant( a.character / b.character )
-        case TYPE_INT:       return BossVariant( a.integer   / b.integer )
-        case TYPE_REAL:      return BossVariant( a.real      / b.real )
-        case TYPE_XY:        return BossVariant( a.xy        / b.xy )
-        case TYPE_XYZ:       return BossVariant( a.xyz       / b.xyz )
-        case TYPE_XYZW:      return BossVariant( a.xyzw      / b.xyzw )
+        case TYPE_BYTE:      return Boss::Variant( a.byte      / b.byte )
+        case TYPE_CHARACTER: return Boss::Variant( a.character / b.character )
+        case TYPE_INT:       return Boss::Variant( a.integer   / b.integer )
+        case TYPE_REAL:      return Boss::Variant( a.real      / b.real )
+        case TYPE_XY:        return Boss::Variant( a.xy        / b.xy )
+        case TYPE_XYZ:       return Boss::Variant( a.xyz       / b.xyz )
+        case TYPE_XYZW:      return Boss::Variant( a.xyzw      / b.xyzw )
         others
           return undefined
       endWhich
 
-    method operator%( other:BossVariant )->BossVariant
+    method operator%( other:Boss::Variant )->Boss::Variant
       local (a,b) = to_compatible_values( other )
       which (a.type)
-        case TYPE_BYTE:      return BossVariant( a.byte      % b.byte )
-        case TYPE_CHARACTER: return BossVariant( a.character % b.character )
-        case TYPE_INT:       return BossVariant( a.integer   % b.integer )
-        case TYPE_REAL:      return BossVariant( a.real      % b.real )
-        case TYPE_XY:        return BossVariant( a.xy        % b.xy )
-        case TYPE_XYZ:       return BossVariant( a.xyz       % b.xyz )
-        case TYPE_XYZW:      return BossVariant( a.xyzw      % b.xyzw )
+        case TYPE_BYTE:      return Boss::Variant( a.byte      % b.byte )
+        case TYPE_CHARACTER: return Boss::Variant( a.character % b.character )
+        case TYPE_INT:       return Boss::Variant( a.integer   % b.integer )
+        case TYPE_REAL:      return Boss::Variant( a.real      % b.real )
+        case TYPE_XY:        return Boss::Variant( a.xy        % b.xy )
+        case TYPE_XYZ:       return Boss::Variant( a.xyz       % b.xyz )
+        case TYPE_XYZW:      return Boss::Variant( a.xyzw      % b.xyzw )
         others
           return undefined
       endWhich
 
-    method operator^( other:BossVariant )->BossVariant
+    method operator^( other:Boss::Variant )->Boss::Variant
       local (a,b) = to_compatible_values( other )
       which (a.type)
-        case TYPE_BYTE:      return BossVariant( a.byte      ^ b.byte )
-        case TYPE_CHARACTER: return BossVariant( a.character ^ b.character )
-        case TYPE_INT:       return BossVariant( a.integer   ^ b.integer )
-        case TYPE_REAL:      return BossVariant( a.real      ^ b.real )
-        case TYPE_XY:        return BossVariant( a.xy        ^ b.xy )
-        case TYPE_XYZ:       return BossVariant( a.xyz       ^ b.xyz )
-        case TYPE_XYZW:      return BossVariant( a.xyzw      ^ b.xyzw )
+        case TYPE_BYTE:      return Boss::Variant( a.byte      ^ b.byte )
+        case TYPE_CHARACTER: return Boss::Variant( a.character ^ b.character )
+        case TYPE_INT:       return Boss::Variant( a.integer   ^ b.integer )
+        case TYPE_REAL:      return Boss::Variant( a.real      ^ b.real )
+        case TYPE_XY:        return Boss::Variant( a.xy        ^ b.xy )
+        case TYPE_XYZ:       return Boss::Variant( a.xyz       ^ b.xyz )
+        case TYPE_XYZW:      return Boss::Variant( a.xyzw      ^ b.xyzw )
         others
           return undefined
       endWhich
 
-    method operator&( other:BossVariant )->BossVariant
+    method operator&( other:Boss::Variant )->Boss::Variant
       if (this.is_number and other.is_number)
-        return BossVariant( this->Int & other->Int )
+        return Boss::Variant( this->Int & other->Int )
       else
         return undefined
       endIf
 
-    method operator|( other:BossVariant )->BossVariant
+    method operator|( other:Boss::Variant )->Boss::Variant
       if (this.is_number and other.is_number)
-        return BossVariant( this->Int | other->Int )
+        return Boss::Variant( this->Int | other->Int )
       else
         return undefined
       endIf
 
-    method operator~( other:BossVariant )->BossVariant
+    method operator~( other:Boss::Variant )->Boss::Variant
       if (this.is_number and other.is_number)
-        return BossVariant( this->Int ~ other->Int )
+        return Boss::Variant( this->Int ~ other->Int )
       else
         return undefined
       endIf
 
-    method operator:<<:( other:BossVariant )->BossVariant
+    method operator:<<:( other:Boss::Variant )->Boss::Variant
       if (this.is_number and other.is_number)
-        return BossVariant( this->Int :<<: other->Int )
+        return Boss::Variant( this->Int :<<: other->Int )
       else
         return undefined
       endIf
 
-    method operator:>>:( other:BossVariant )->BossVariant
+    method operator:>>:( other:Boss::Variant )->Boss::Variant
       if (this.is_number and other.is_number)
-        return BossVariant( this->Int :>>: other->Int )
+        return Boss::Variant( this->Int :>>: other->Int )
       else
         return undefined
       endIf
 
-    method operator:>>>:( other:BossVariant )->BossVariant
+    method operator:>>>:( other:Boss::Variant )->Boss::Variant
       if (this.is_number and other.is_number)
-        return BossVariant( this->Int :>>>: other->Int )
+        return Boss::Variant( this->Int :>>>: other->Int )
       else
         return undefined
       endIf
@@ -688,88 +688,88 @@ class BossVariant [compound]
         case TYPE_CIRCLE:    circle.print_to( buffer )
         case TYPE_OBJECT:    object.print_to( buffer )
         case TYPE_STRING:    buffer.print( object->(as String) )
-        case TYPE_LIST:      object->(as BossVariant[]).print_to( buffer )
-        case TYPE_TABLE:     object->(as [BossVariant:BossVariant]).print_to( buffer )
+        case TYPE_LIST:      object->(as Boss::Variant[]).print_to( buffer )
+        case TYPE_TABLE:     object->(as [Boss::Variant:Boss::Variant]).print_to( buffer )
         others
-          Global.error.print( "[BossVariant.print_to()] Undefined type $"(type) )
+          Global.error.print( "[Boss::Variant.print_to()] Undefined type $"(type) )
           buffer.print "undefined"
       endWhich
 
-    method remove( value:BossVariant )->BossVariant
+    method remove( value:Boss::Variant )->Boss::Variant
       which (type)
         case TYPE_LIST
-          return object->(as BossVariant[]).remove( value )
+          return object->(as Boss::Variant[]).remove( value )
         case TYPE_TABLE
-          return object->(as [BossVariant:BossVariant]).remove( value )
+          return object->(as [Boss::Variant:Boss::Variant]).remove( value )
         others
           return undefined
       endWhich
 
-    method remove_at( index:Int )->BossVariant
+    method remove_at( index:Int )->Boss::Variant
       which (type)
         case TYPE_LIST
-          return object->(as BossVariant[]).remove_at( index )
+          return object->(as Boss::Variant[]).remove_at( index )
         case TYPE_TABLE
-          return object->(as [BossVariant:BossVariant]).remove_at( index )
+          return object->(as [Boss::Variant:Boss::Variant]).remove_at( index )
         others
           return undefined
       endWhich
 
-    method remove_first->BossVariant
+    method remove_first->Boss::Variant
       if (count == 0) return undefined
       which (type)
         case TYPE_LIST
-          return object->(as BossVariant[]).remove_at( 0 )
+          return object->(as Boss::Variant[]).remove_at( 0 )
         case TYPE_TABLE
-          return object->(as [BossVariant:BossVariant]).remove_at( 0 )
+          return object->(as [Boss::Variant:Boss::Variant]).remove_at( 0 )
         others
           return undefined
       endWhich
 
-    method remove_last->BossVariant
+    method remove_last->Boss::Variant
       local n = count
       if (n == 0) return undefined
       which (type)
         case TYPE_LIST
-          return object->(as BossVariant[]).remove_at( n-1 )
+          return object->(as Boss::Variant[]).remove_at( n-1 )
         case TYPE_TABLE
-          return object->(as [BossVariant:BossVariant]).remove_at( n-1 )
+          return object->(as [Boss::Variant:Boss::Variant]).remove_at( n-1 )
         others
           return undefined
       endWhich
 
-    method set( index:Int, value:BossVariant )
+    method set( index:Int, value:Boss::Variant )
       which (type)
         case TYPE_LIST
-          local list = object->(as BossVariant[])
+          local list = object->(as Boss::Variant[])
           if (index < 0 or index >= list.count) return
           list[index] = value
         case TYPE_TABLE
-          set( BossVariant(index), value )
+          set( Boss::Variant(index), value )
       endWhich
 
-    method set( key:String, value:BossVariant ) [preferred]
-      set( BossVariant(key), value )
+    method set( key:String, value:Boss::Variant ) [preferred]
+      set( Boss::Variant(key), value )
 
-    method set( key:BossVariant, value:BossVariant )
+    method set( key:Boss::Variant, value:Boss::Variant )
       if (key.is_number)
         set( key->Int, value )
       else
         which (type)
           case TYPE_TABLE
-            object->(as [BossVariant:BossVariant])[ key ] = value
+            object->(as [Boss::Variant:Boss::Variant])[ key ] = value
         endWhich
       endIf
 
-    method sort( compare_fn:(Function(BossVariant,BossVariant)->Logical) )
+    method sort( compare_fn:(Function(Boss::Variant,Boss::Variant)->Logical) )
       # 'compare_fn' should return true if the first parameter should be positioned before the second parameter.
-      # The values passed will be keys for a BossVariant Table or elements for a BossVariant List.
+      # The values passed will be keys for a Boss::Variant Table or elements for a Boss::Variant List.
       which (type)
         case TYPE_LIST
-          local list = object->(as BossVariant[])
+          local list = object->(as Boss::Variant[])
           list.sort( compare_fn )
         case TYPE_TABLE
-          local table = object->(as [BossVariant:BossVariant])
+          local table = object->(as [Boss::Variant:Boss::Variant])
           table.sort( (a,b) => compare_fn(a.key,b.key) )
       endWhich
 
@@ -906,16 +906,16 @@ class BossVariant [compound]
       if (type == TYPE_NULL or type == TYPE_UNDEFINED) return null
       return to<<$Type>>
 
-    method to_compatible_values( other:BossVariant )->(BossVariant,BossVariant)
+    method to_compatible_values( other:Boss::Variant )->(Boss::Variant,Boss::Variant)
       if (type == other.type) return (this,other)
-      if (type == TYPE_STRING or other.type == TYPE_STRING) return (BossVariant(this->String),BossVariant(other->String))
+      if (type == TYPE_STRING or other.type == TYPE_STRING) return (Boss::Variant(this->String),Boss::Variant(other->String))
       if (type == TYPE_UNDEFINED or other.type == TYPE_UNDEFINED) return (undefined,undefined)
 
       if (type <= TYPE_REAL and other.type <= TYPE_REAL)
-        if (type == TYPE_REAL   or other.type == TYPE_REAL)   return (BossVariant(this->Real),  BossVariant(other->Real))
-        if (type == TYPE_INT   or other.type == TYPE_INT)     return (BossVariant(this->Int),   BossVariant(other->Int))
-        if (type == TYPE_CHARACTER or other.type == TYPE_CHARACTER) return (BossVariant(this->Character),BossVariant(other->Character))
-        return (BossVariant(this->Byte),BossVariant(other->Byte))
+        if (type == TYPE_REAL   or other.type == TYPE_REAL)   return (Boss::Variant(this->Real),  Boss::Variant(other->Real))
+        if (type == TYPE_INT   or other.type == TYPE_INT)     return (Boss::Variant(this->Int),   Boss::Variant(other->Int))
+        if (type == TYPE_CHARACTER or other.type == TYPE_CHARACTER) return (Boss::Variant(this->Character),Boss::Variant(other->Character))
+        return (Boss::Variant(this->Byte),Boss::Variant(other->Byte))
       endIf
 
       if (type >= TYPE_XY and type <= TYPE_XYZW and other.type >= TYPE_XY and other.type <= TYPE_XYZW)
@@ -939,9 +939,9 @@ class BossVariant [compound]
       endForEach
       return result
 
-    method values->TableValuesIterator<<BossVariant,BossVariant>>
-      if (type != TYPE_TABLE) return TableValuesIterator<<BossVariant,BossVariant>>( null )
-      return object->(as [BossVariant:BossVariant]).values
+    method values->TableValuesIterator<<Boss::Variant,Boss::Variant>>
+      if (type != TYPE_TABLE) return TableValuesIterator<<Boss::Variant,Boss::Variant>>( null )
+      return object->(as [Boss::Variant:Boss::Variant]).values
 
     method write_json( builder:String, &formatted, &omit_commas )
       which (type)
@@ -985,7 +985,7 @@ class BossVariant [compound]
           if (count)
             builder.print '['
             if (formatted) builder.indent+=2; builder.println
-            forEach (item at i in object->(as BossVariant[]))
+            forEach (item at i in object->(as Boss::Variant[]))
               if (i)
                 if (omit_commas) builder.print ' '
                 else             builder.print ','
@@ -1002,7 +1002,7 @@ class BossVariant [compound]
           if (count)
             builder.print '{'
             if (formatted) builder.indent+=2; builder.println
-            forEach (entry at i in object->(as [BossVariant:BossVariant]).entries)
+            forEach (entry at i in object->(as [Boss::Variant:Boss::Variant]).entries)
               if (i)
                 if (omit_commas) builder.print ' '
                 else             builder.print ','
@@ -1072,19 +1072,19 @@ endAugment
 
 augment Optional
   GLOBAL METHODS
-    method create_from( value:BossVariant )->$DataType?
+    method create_from( value:Boss::Variant )->$DataType?
       return $DataType?( value->$DataType )
 endAugment
 
-augment TableKeysIterator<<Rogue::BossVariant,Rogue::BossVariant>>
+augment TableKeysIterator<<Rogue::Boss::Variant,Rogue::Boss::Variant>>
   METHODS
-    method to->BossVariant
-      return BossVariant(to_list)
+    method to->Boss::Variant
+      return Boss::Variant(to_list)
 endAugment
 
-augment TableValuesIterator<<Rogue::BossVariant,Rogue::BossVariant>>
+augment TableValuesIterator<<Rogue::Boss::Variant,Rogue::Boss::Variant>>
   METHODS
-    method to->BossVariant
-      return BossVariant(to_list)
+    method to->Boss::Variant
+      return Boss::Variant(to_list)
 endAugment
 
