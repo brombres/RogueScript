@@ -308,7 +308,7 @@ class Visitor
       cmd.of_type = visit(cmd.of_type)->(as Type)
 
     method on_visit_children( cmd:GlobalPropertyDeclarations )
-      cmd.declarations = visit(cmd.declarations)
+      cmd.list = visit(cmd.list)
       cmd.type = visit(cmd.type)->(as Type)
       cmd.attributes = visit(cmd.attributes)->(as Attributes)
 
@@ -410,10 +410,6 @@ class Visitor
     method on_visit_children( cmd:LocalDeclaration )
       cmd.info = visit(cmd.info)->(as Local)
 
-    method on_visit_children( cmd:LocalDeclarations )
-      cmd.declarations = visit(cmd.declarations)
-      cmd.type = visit(cmd.type)->(as Type)
-
     method on_visit_children( cmd:Loop )
       cmd.loop_count = visit(cmd.loop_count)
       cmd.statements = visit(cmd.statements)
@@ -475,7 +471,7 @@ class Visitor
       cmd.type = visit(cmd.type)->(as Type)
 
     method on_visit_children( cmd:PropertyDeclarations )
-      cmd.declarations = visit(cmd.declarations)
+      cmd.list = visit(cmd.list)
       cmd.type = visit(cmd.type)->(as Type)
       cmd.attributes = visit(cmd.attributes)->(as Attributes)
 
@@ -512,7 +508,16 @@ class Visitor
       cmd.methods = visit(cmd.methods)->(as Methods)
 
     method on_visit_children( cmd:Statements )
-      on_visit_children( cmd->(as CmdList) )
+      forEach (element in writer=cmd.list.rewriter)
+        local visited_element = visit( element )
+        if (visited_element)
+          if local statements = visited_element->(as Statements)
+            writer.write( forEach in statements )
+          else
+            writer.write( visited_element )
+          endIf
+        endIf
+      endForEach
 
     method on_visit_children( cmd:Stepper )
       cmd.operand = visit(cmd.operand)
@@ -651,5 +656,16 @@ class Visitor
 
     method on_visit_children( cmd:Throw )
       cmd.exception = visit(cmd.exception)
+
+    method on_visit_children( cmd:LocalDeclarations )
+      cmd.list = visit(cmd.list)->(as LocalList)
+      cmd.type = visit(cmd.type)->(as Type)
+
+    method on_visit_children( cmd:AssignLocal )
+      cmd.target = visit(cmd.target)->(as Local)
+      cmd.new_value = visit(cmd.new_value)
+
+    method on_visit_children( cmd:SetLocalToDefaultValue )
+      cmd.info = visit(cmd.info)->(as Local)
 
 endClass

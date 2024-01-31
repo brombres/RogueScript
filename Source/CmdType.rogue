@@ -1,0 +1,48 @@
+module Boss
+
+================================================================================
+# type
+================================================================================
+augment
+  METHODS
+    method Cmd.require_type->Type
+      local result = this.type
+      if (not result) throw t.error( "Value expected." )
+      return result
+
+    method Cmd.require_value->Cmd
+      if (not this.type) throw t.error( "Value expected." )
+      return this
+
+    method Cmd.type->Type
+      return null
+
+    method GetSingleton.type->Type
+      return @type
+
+    method GlobalPropertyDeclarations.type->Type
+      return @type
+
+    method LiteralInt.type->Type
+      return Program.type_Int
+
+    method Local.type->Type
+      return @type
+
+    method LocalDeclarations.type->Type
+      return @type
+
+    method Property.type->Type
+      return @type
+
+    method PropertyDeclarations.type->Type
+      return @type
+
+    method TypeContext.type->Type
+      return @type
+
+    method TypedDestructuringLocal.type->Type
+      return @type
+
+
+endAugment

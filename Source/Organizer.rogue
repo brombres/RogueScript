@@ -1,0 +1,20 @@
+module Boss
+
+class Organizer : Visitor
+  PROPERTIES
+    this_module    : Module
+    this_procedure : Procedure
+    scope          = LocalScope[]
+
+  METHODS
+    method init( this_module )
+
+    method visit( this_procedure )->Cmd
+      scope.add( this_procedure )
+      prior.visit( this_procedure )
+      scope.remove_last
+      return this_procedure
+
+      #method on( cmd:LocalDeclarations )->Cmd
+
+endClass

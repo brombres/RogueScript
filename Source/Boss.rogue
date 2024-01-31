@@ -3,6 +3,7 @@ module Boss
 $include BossVariant
 $include CmdExecute
 $include CmdStore
+$include CmdType
 $include Module
 $include Parser       [optional]
 $include Program

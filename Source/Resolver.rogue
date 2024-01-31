@@ -4,12 +4,15 @@ class Resolver : Visitor
   PROPERTIES
     this_module    : Module
     this_procedure : Procedure
+    scope_stack    = LocalScope[]
 
   METHODS
     method init( this_module )
 
     method visit( this_procedure )->Cmd
+      scope_stack.add( this_procedure )
       prior.visit( this_procedure )
+      scope_stack.remove_last
       return this_procedure
 
     method on( cmd:Access )->Cmd
@@ -18,4 +21,38 @@ class Resolver : Visitor
         case "println": return Println( cmd.t, cmd.args )
         others:         return cmd
       endWhich
+
+    method on( cmd:LocalDeclarations )->Cmd
+      local initialization = Statements( cmd.t )
+
+      forEach (v in cmd.list)
+        v.initial_value = visit( v.initial_value )
+
+        if (cmd.type)
+          v.type = cmd.type
+        elseIf (v.initial_value)
+          v.type = v.initial_value.type
+          if (not v.type)
+            throw cmd.t.error( "Cannot implicitly determine type from initial value." )
+          endIf
+        else
+          throw cmd.t.error( "Local variable declarations must have an initial value assignment or an assigned ': Type'." )
+        endIf
+
+        if (scope_stack.last.locals.contains(v.name))
+          throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
+        endIf
+        v.index = this_procedure.local_count
+        ++this_procedure.local_count
+        scope_stack.last.locals[v.name] = v
+
+        if (v.initial_value)
+          initialization.add( AssignLocal(cmd.t,v,v.initial_value.require_value) )
+        else
+          initialization.add( SetLocalToDefaultValue(cmd.t,v) )
+        endIf
+
+      endForEach
+
+      return initialization
 endClass

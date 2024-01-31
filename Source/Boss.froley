@@ -1352,7 +1352,7 @@ parser
   on "nativeHeader"
     if (consume('('))
       on INTEGER
-        create LiteralInteger(content=content:String,base="10":Integer):LiteralPrimitive
+        create LiteralInt(content=content:String,base="10":Integer):LiteralPrimitive
       elseOnOthers
         syntaxError "Integer ordinal expected."
       endOn
@@ -1374,7 +1374,7 @@ parser
   elseOn "nativeCode"
     if (consume('('))
       on INTEGER
-        create LiteralInteger(content=content:String,base="10":Integer):LiteralPrimitive
+        create LiteralInt(content=content:String,base="10":Integer):LiteralPrimitive
       elseOnOthers
         syntaxError "Integer ordinal expected."
       endOn
@@ -1732,7 +1732,7 @@ parser
   optional_type
   global_property_attributes
   #FIXME call parse_doc_comment
-  produce GlobalPropertyDeclarations( declarations, type:Type, attributes:Attributes, doc:String )
+  produce GlobalPropertyDeclarations( list, type:Type, attributes:Attributes, doc:String )
 
 - properties
   beginList
@@ -1746,7 +1746,7 @@ parser
   optional_type
   property_attributes
   #FIXME call parse_doc_comment
-  produce PropertyDeclarations( declarations, type:Type, attributes:Attributes, doc:String )
+  produce PropertyDeclarations( list, type:Type, attributes:Attributes, doc:String )
 
 - property_declaration
   on IDENTIFIER
@@ -2031,10 +2031,10 @@ parser
       consume_eols
       local_declaration
     endWhile
-  createList
+  createList LocalList
   optional_type
 
-  produce LocalDeclarations( declarations, type:Type )
+  produce LocalDeclarations( declarations:LocalList, type:Type )
 
 - local_declaration
   on IDENTIFIER
@@ -2051,10 +2051,10 @@ parser
       while (consume(','))
         localize_declaration
       endWhile
-    createList
+    createList LocalList
 
     createNull
-    produce LocalDeclarations( declarations, type:Type )
+    produce LocalDeclarations( declarations:LocalList, type:Type )
   endOn
 
 - localize_declaration
@@ -2607,10 +2607,10 @@ parser
     endIf
     return
   endOn
-  on INTEGER        -> LiteralInteger(content=content:String,base="10":Integer):LiteralPrimitive
-  on HEX_INTEGER    -> LiteralInteger(content=content:String,base="16":Integer):LiteralPrimitive
-  on BINARY_INTEGER -> LiteralInteger(content=content:String,base="2":Integer):LiteralPrimitive
-  on OCTAL_INTEGER  -> LiteralInteger(content=content:String,base="8":Integer):LiteralPrimitive
+  on INTEGER        -> LiteralInt(content=content:String,base="10":Integer):LiteralPrimitive
+  on HEX_INTEGER    -> LiteralInt(content=content:String,base="16":Integer):LiteralPrimitive
+  on BINARY_INTEGER -> LiteralInt(content=content:String,base="2":Integer):LiteralPrimitive
+  on OCTAL_INTEGER  -> LiteralInt(content=content:String,base="8":Integer):LiteralPrimitive
   on REAL_NUMBER    -> LiteralRealNumber(value=content:String):LiteralPrimitive
   on CHARACTER      -> LiteralCharacter(value=content:Character):LiteralPrimitive
   on '@'
@@ -3440,7 +3440,6 @@ parser
   create Literal
   create LiteralPrimitive:Literal
   create LiteralNullOptional(optional_type:Type):Literal
-  create LiteralInt(value:Integer):LiteralInteger
   create LiteralReal(value:Real):LiteralPrimitive
   create LocalDeclaration(info:Local)
   create Logicalized(operand):Unary
@@ -3461,6 +3460,8 @@ parser
   create TypeIndex(of_type:Type)
   create WideningCast(operand,to_type:Type)
 
+  create AssignLocal(target:Local,new_value)
+  create SetLocalToDefaultValue(info:Local)
   create ResolvedOpAndAssignLocal(info:Local,operand)
   create ResolvedOpAndAssignProperty(info:Property,operand)
   create AddAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty

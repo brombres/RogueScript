@@ -1969,23 +1969,23 @@ endClass
 
 class GlobalPropertyDeclarations : Cmd
   PROPERTIES
-    declarations : Cmd
+    list : Cmd
     type         : Type
     attributes   : Attributes
     doc          : String
 
   METHODS
-    method init( t, declarations, type, attributes, doc )
+    method init( t, list, type, attributes, doc )
 
     method init( existing:GlobalPropertyDeclarations )
       prior.init( existing )
-      if (existing.declarations) declarations = existing.declarations.cloned
+      if (existing.list) list = existing.list.cloned
       if (existing.type) type = existing.type.cloned
       if (existing.attributes) attributes = existing.attributes.cloned
       doc = existing.doc
 
     method description->String
-      return "GlobalPropertyDeclarations($,$,$,$)" (%declarations,%type,%attributes,%doc)
+      return "GlobalPropertyDeclarations($,$,$,$)" (%list,%type,%attributes,%doc)
 
 endClass
 
@@ -2468,40 +2468,24 @@ class LiteralCharacter : LiteralPrimitive
 
 endClass
 
-class LiteralInt : LiteralInteger
-  PROPERTIES
-    value : Int
-
-  METHODS
-    method init( t, value )
-
-    method init( existing:LiteralInt )
-      prior.init( existing )
-      value = existing.value
-
-    method description->String
-      return "LiteralInt($)" (%value)
-
-    method to->Int:       return value
-    method to->String:    return value
-
-endClass
-
-class LiteralInteger : LiteralPrimitive
+class LiteralInt : LiteralPrimitive
   PROPERTIES
     content : String
+    value   : Int
     base    : Int
 
   METHODS
     method init( t, content, base )
+      value = content->Int( base )
 
-    method init( existing:LiteralInteger )
+    method init( existing:LiteralInt )
       prior.init( existing )
       content = existing.content
       base = existing.base
+      value = existing.value
 
     method description->String
-      return "LiteralInteger($,$)" (%content,%base)
+      return "LiteralInt($,$)" (%content,%base)
 
 endClass
 
@@ -2595,6 +2579,7 @@ class Local : Cmd
     initial_value_tokens : TokenList
     type                 : Type
     attribute            : String
+    index                : Int  # stack index within procedure
 
   METHODS
     method init( t, name, initial_value, initial_value_tokens, type, attribute )
@@ -2630,25 +2615,10 @@ class LocalDeclaration : Cmd
 
 endClass
 
-class LocalDeclarations : Cmd
-  PROPERTIES
-    declarations : Cmd
-    type         : Type
-
-  METHODS
-    method init( t, declarations, type )
-
-    method init( existing:LocalDeclarations )
-      prior.init( existing )
-      if (existing.declarations) declarations = existing.declarations.cloned
-      if (existing.type) type = existing.type.cloned
-
-    method description->String
-      return "LocalDeclarations($,$)" (%declarations,%type)
-
-endClass
-
 class LocalScope : ControlStructure
+  PROPERTIES
+    locals = [String:Local]
+
   METHODS
     method description->String
       return "LocalScope($)" (%statements)
@@ -3104,6 +3074,8 @@ class Procedure : LocalScope
     attributes     : Attributes
     doc            : String
     _signature     : String
+    param_count    : Int  # Includes 'this' context.
+    local_count    : Int  # Count of all non-parameter locals in this scope and all nested scopes.
 
   METHODS
     method init( t, name, parameters, return_type, attributes, doc, statements )
@@ -3162,23 +3134,23 @@ endClass
 
 class PropertyDeclarations : Cmd
   PROPERTIES
-    declarations : Cmd
+    list : Cmd
     type         : Type
     attributes   : Attributes
     doc          : String
 
   METHODS
-    method init( t, declarations, type, attributes, doc )
+    method init( t, list, type, attributes, doc )
 
     method init( existing:PropertyDeclarations )
       prior.init( existing )
-      if (existing.declarations) declarations = existing.declarations.cloned
+      if (existing.list) list = existing.list.cloned
       if (existing.type) type = existing.type.cloned
       if (existing.attributes) attributes = existing.attributes.cloned
       doc = existing.doc
 
     method description->String
-      return "PropertyDeclarations($,$,$,$)" (%declarations,%type,%attributes,%doc)
+      return "PropertyDeclarations($,$,$,$)" (%list,%type,%attributes,%doc)
 
 endClass
 
@@ -4298,5 +4270,68 @@ class Assign : Cmd
 
     method description->String
       return "Assign($,$)" (%target,%new_value)
+
+endClass
+
+class LocalList : CmdList
+  METHODS
+    method get( index:Int )->Local
+      return @list[index]->(as Local)
+
+    method description->String
+      return "LocalList" + list_description
+endClass
+
+
+class LocalDeclarations : Cmd
+  PROPERTIES
+    list : LocalList
+    type : Type
+
+  METHODS
+    method init( t, list, type )
+
+    method init( existing:LocalDeclarations )
+      prior.init( existing )
+      if (existing.list) list = existing.list.cloned
+      if (existing.type) type = existing.type.cloned
+
+    method description->String
+      return "LocalDeclarations($,$)" (%list,%type)
+
+endClass
+
+
+class AssignLocal : Cmd
+  PROPERTIES
+    target    : Local
+    new_value : Cmd
+
+  METHODS
+    method init( t, target, new_value )
+
+    method init( existing:AssignLocal )
+      prior.init( existing )
+      if (existing.target) target = existing.target.cloned
+      if (existing.new_value) new_value = existing.new_value.cloned
+
+    method description->String
+      return "AssignLocal($,$)" (%target,%new_value)
+
+endClass
+
+class SetLocalToDefaultValue : Cmd
+  PROPERTIES
+    info : Local
+
+  METHODS
+    method init( t, info )
+
+    method init( existing:SetLocalToDefaultValue )
+      prior.init( existing )
+      if (existing.info) info = existing.info.cloned
+
+    method description->String
+      return "SetLocalToDefaultValue($)" (%info)
 
 endClass

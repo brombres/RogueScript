@@ -3,7 +3,8 @@ module Boss
 class Task [singleton]
   PROPERTIES
     program : Program
-    stack   = Variant[]
+    stack   = Boss::Variant[]
+    sp      : Int
 
   METHODS
     method init( program )
