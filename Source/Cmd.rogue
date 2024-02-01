@@ -1160,6 +1160,7 @@ endClass
 
 class ControlStructure : Cmd
   PROPERTIES
+    locals     = [String:Local]
     statements : Cmd
 
   METHODS
@@ -2575,16 +2576,6 @@ class LocalDeclaration : Cmd
 
 endClass
 
-class LocalScope : ControlStructure
-  PROPERTIES
-    locals = [String:Local]
-
-  METHODS
-    method description->String
-      return "LocalScope($)" (%statements)
-
-endClass
-
 class LogicalAnd : Binary
   METHODS
     method description->String
@@ -3025,7 +3016,7 @@ class PreDecrementLocal : Cmd
 
 endClass
 
-class Procedure : LocalScope
+class Procedure : ControlStructure
   PROPERTIES
     module_context : Module
     name           : String

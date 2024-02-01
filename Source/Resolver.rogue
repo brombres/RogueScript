@@ -4,7 +4,7 @@ class Resolver : Visitor
   PROPERTIES
     this_module    : Module
     this_procedure : Procedure
-    scope_stack    = LocalScope[]
+    scope_stack    = ControlStructure[]
 
   METHODS
     method init( this_module )

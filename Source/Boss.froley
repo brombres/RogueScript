@@ -1692,8 +1692,6 @@ parser
       --disable_output
       createTokenList
 
-      createNull
-      create LocalScope(statements):ControlStructure
       create Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,source_tokens:TokenList,statements:Statements):Procedure
       return
     endIf
@@ -1701,11 +1699,9 @@ parser
 
 - scoped_single_line_statements
   single_line_statements
-  produce LocalScope(statements):ControlStructure
 
 - scoped_multi_line_statements
   multi_line_statements
-  produce LocalScope(statements):ControlStructure
 
 - global_method
   on "method"
@@ -3395,6 +3391,7 @@ parser
 - additional_node_types
   create AddInt(left,right):Add
   create AddReal(left,right):Add
+  create ControlStructure(statements)
   create IntToReal(operand):Unary
   create ReadLocal(info:Local)
   create ReadLocalInt(info:Local):ReadLocal
@@ -3413,7 +3410,6 @@ parser
   create CleanupBlock(statements,cleanup):ControlStructure
   create Compare(left,right):Binary
   create Conditional(condition,statements):ControlStructure
-  create ControlStructure(statements)
   create Convert(operand)
   create ConvertToByte(operand):Convert
   create ConvertToCharacter(operand):Convert
@@ -3452,7 +3448,7 @@ parser
   create Logicalized(operand):Unary
   create OpAndAssign(target,operand)
   create PreDecrementLocal(info:Local)  # Internal use
-  create Procedure(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc=`null`,statements:Statements):LocalScope
+  create Procedure(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc=`null`,statements:Statements):ControlStructure
   create PushStackTraceCutoff
   create CreateRange(start,limit,step_size)
   create ReturnOnException
