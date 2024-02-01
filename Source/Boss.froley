@@ -3398,6 +3398,8 @@ parser
   create IntToReal(operand):Unary
   create ReadLocal(info:Local)
   create ReadLocalInt(info:Local):ReadLocal
+  create WriteLocal(info:Local,new_value)
+  create WriteLocalInt(info:Local,new_value):WriteLocal
 
   create CallDynamicMethod(context,args):CallProcedure
   create CallGlobalMethod(args):CallProcedure
@@ -3465,7 +3467,6 @@ parser
   create TypeIndex(of_type:Type)
   create WideningCast(operand,to_type:Type)
 
-  create WriteLocal(target:Local,new_value)
   create SetLocalToDefaultValue(info:Local)
   create ResolvedOpAndAssignLocal(info:Local,operand)
   create ResolvedOpAndAssignProperty(info:Property,operand)

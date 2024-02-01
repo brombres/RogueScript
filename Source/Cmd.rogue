@@ -4361,3 +4361,11 @@ class AddReal : Add
       return "AddReal($,$)" (%left,%right)
 
 endClass
+
+
+class WriteLocalInt : WriteLocal
+  METHODS
+    method description->String
+      return "WriteLocalInt($,$)" (%info,%new_value)
+
+endClass

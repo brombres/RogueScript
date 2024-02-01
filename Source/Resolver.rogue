@@ -15,19 +15,40 @@ class Resolver : Visitor
       scope_stack.remove_last
       return this_procedure
 
+
+    method find_local( name:String )->Local
+      forEach (scope in scope_stack step -1)
+        if local v = scope_stack.last.locals[name]
+          return v
+        endIf
+      endForEach
+      return null
+
     method on( cmd:Access )->Cmd
       which (cmd.name)
         case "print":   return Print( cmd.t, visit(cmd.args) )
         case "println": return Println( cmd.t, visit(cmd.args) )
       endWhich
 
-      forEach (scope in scope_stack step -1)
-        if local v = scope_stack.last.locals[cmd.name]
-          return visit( ReadLocal(cmd.t, v) )
-        endIf
-      endForEach
+      if local v = find_local( cmd.name )
+        return visit( ReadLocal(cmd.t, v) )
+      endIf
 
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
+
+    method on( cmd:Assign )->Cmd
+      return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
+
+    method on( cmd:WriteLocal )->Cmd
+      local new_value = convert_to( visit(cmd.new_value), cmd.info.type )
+
+      which (cmd.info.type)
+        case Program.type_Int
+          return WriteLocalInt( cmd.t, cmd.info, new_value )
+        others
+          trace cmd.info.type
+          throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
+      endWhich
 
     method convert_to( cmd:Cmd, to_type:Type )->Cmd
       local cmd_type = cmd.require_type
@@ -136,5 +157,9 @@ class Resolver : Visitor
       endWhich
 
     method on( cmd:ReadLocalInt )->Cmd
+      return cmd
+
+    method on_validate( cmd:While )->Cmd
+      cmd.condition.require_value
       return cmd
 endClass

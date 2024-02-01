@@ -10,6 +10,7 @@ class Program [singleton]
     modules        = [String:Module]
 
     type_Int       : Type
+    type_Logical   : Type
     type_Real      : Type
     type_String    : Type
 
@@ -27,9 +28,10 @@ class Program [singleton]
       default_module = Module( t, "Boss" )
       current_module = default_module
 
-      type_Int    = Type( t, "Int" )
-      type_Real   = Type( t, "Real" )
-      type_String = Type( t, "String" )
+      type_Int     = Type( t, "Int" )
+      type_Logical = Type( t, "Logical" )
+      type_Real    = Type( t, "Real" )
+      type_String  = Type( t, "String" )
 
     method execute( cmd:Cmd )
       temporarily Program = this

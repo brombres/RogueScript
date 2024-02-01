@@ -1,0 +1,12 @@
+module Boss
+
+augment
+  METHODS
+    method Cmd.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
+      throw t.error( "Invalid assignment." )
+
+    method Access.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
+      local v = resolver.find_local( name )
+      if (v) return resolver.visit( WriteLocal(t,v,new_value) )
+      throw t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
+endAugment

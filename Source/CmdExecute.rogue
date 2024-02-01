@@ -55,6 +55,8 @@ augment
       endForEach
       return result
 
+      #method While.execute->Variant
+
     method WriteLocal.execute->Variant
       local new_value = new_value.execute
       Program.stack[ Program.sp+info.index ] = new_value
