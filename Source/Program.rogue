@@ -15,6 +15,9 @@ class Program [singleton]
 
     configured     : Logical
 
+    stack   = Variant[]
+    sp      : Int
+
   METHODS
     method init
       Program = this
@@ -28,9 +31,10 @@ class Program [singleton]
       type_Real   = Type( t, "Real" )
       type_String = Type( t, "String" )
 
-    method execute( procedure:Procedure )
-      local task = Task( this )
-      task.execute( procedure )
+    method execute( cmd:Cmd )
+      temporarily Program = this
+        cmd.execute
+      endTemporarily
 
     method launch
       resolve
