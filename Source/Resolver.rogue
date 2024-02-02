@@ -1,6 +1,6 @@
 module Boss
 
-$localMacro MATH_OP<<$Cmd,$op>>
+$localMacro GENERAL_OP_RESOLVE<<$Cmd,$op>>
 augment Resolver
   METHODS
     method on( cmd:$Cmd )->Cmd
@@ -18,7 +18,39 @@ augment Resolver
       endIf
 
       throw cmd.t.error( $string("[INTERNAL] Unhandled operation: $ ",$op," $")(common_type,common_type) )
+endAugment
+$endLocalMacro
 
+
+$localMacro GENERAL_OP_EXECUTE<<$Cmd,$op>>
+augment
+  METHODS
+    method $id($Cmd,Int).type->Type
+      return Program.type_Int
+
+    method $id($Cmd,Int).execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.integer $op right_value.integer )
+
+    method $id($Cmd,Real).type->Type
+      return Program.type_Real
+
+    method $id($Cmd,Real).execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.real $op right_value.real )
+endAugment
+$endLocalMacro
+
+
+$localMacro MATH_OP<<$Cmd,$op>>
+
+GENERAL_OP_RESOLVE<< $Cmd, $op >>
+GENERAL_OP_EXECUTE<< $Cmd, $op >>
+
+augment Resolver
+  METHODS
     method on_validate( cmd:$id($Cmd,Int) )->Cmd
       if local left_literal = cmd.left->(as LiteralInt)
         if local right_literal = cmd.right->(as LiteralInt)
@@ -35,65 +67,12 @@ augment Resolver
       endIf
       return cmd
 endAugment
-
-augment $id($Cmd,Int)
-  METHODS
-    method type->Type
-      return Program.type_Int
-
-    method execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.integer $op right_value.integer )
-endAugment
-
-augment $id($Cmd,Real)
-  METHODS
-    method type->Type
-      return Program.type_Real
-
-    method execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.real $op right_value.real )
-endAugment
 $endLocalMacro
 
-$localMacro COMPARISON_OP<<$Cmd,$op>>
-augment Resolver
-  METHODS
-    method on( cmd:$Cmd )->Cmd
-      local left  = visit( cmd.left )
-      local right = visit( cmd.right )
-      local common_type = find_common_type( left, right )
 
-      left = convert_to( left, common_type )
-      right = convert_to( right, common_type )
+$localMacro LOGICAL_OP<<$Cmd,$op>>
 
-      if (common_type is Program.type_Real)
-        return validate( $id($Cmd,Real)(cmd.t,left,right) )
-      elseIf (common_type is Program.type_Int)
-        return validate( $id($Cmd,Int)(cmd.t,left,right) )
-      endIf
-
-      throw cmd.t.error( $string("[INTERNAL] Unhandled operation: $ ",$op," $")(common_type,common_type) )
-
-    method on_validate( cmd:$id($Cmd,Int) )->Cmd
-      if local left_literal = cmd.left->(as LiteralInt)
-        if local right_literal = cmd.right->(as LiteralInt)
-          return LiteralLogical( cmd.t, left_literal.value $op right_literal.value )
-        endIf
-      endIf
-      return cmd
-
-    method on_validate( cmd:$id($Cmd,Real) )->Cmd
-      if local left_literal = cmd.left->(as LiteralReal)
-        if local right_literal = cmd.right->(as LiteralReal)
-          return LiteralLogical( cmd.t, left_literal.value $op right_literal.value )
-        endIf
-      endIf
-      return cmd
-endAugment
+GENERAL_OP_RESOLVE<< $Cmd, $op >>
 
 augment $id($Cmd,Int)
   METHODS
@@ -125,12 +104,12 @@ MATH_OP<< Divide,   / >>
 MATH_OP<< Mod,      % >>
 MATH_OP<< Power,    ^ >>
 
-COMPARISON_OP<< CompareEQ, == >>
-COMPARISON_OP<< CompareNE, != >>
-COMPARISON_OP<< CompareLT, <  >>
-COMPARISON_OP<< CompareLE, <= >>
-COMPARISON_OP<< CompareGT, >  >>
-COMPARISON_OP<< CompareGE, >= >>
+LOGICAL_OP<< CompareEQ, == >>
+LOGICAL_OP<< CompareNE, != >>
+LOGICAL_OP<< CompareLT, <  >>
+LOGICAL_OP<< CompareLE, <= >>
+LOGICAL_OP<< CompareGT, >  >>
+LOGICAL_OP<< CompareGE, >= >>
 
 augment
   METHODS
@@ -156,51 +135,29 @@ class Resolver : Visitor
   PROPERTIES
     this_module    : Module
     this_procedure : Procedure
-    control_stack  = ControlStructure[]
+    scope_stack  = ControlStructure[]
 
   METHODS
     method init( this_module )
 
     method visit( this_procedure )->Cmd
-      control_stack.add( this_procedure )
+      scope_stack.add( this_procedure )
       prior.visit( this_procedure )
-      control_stack.remove_last
+      scope_stack.remove_last
       return this_procedure
 
+    method add_local( t:Token, name:String, type:Type )->Local
+      local v = Local( t, name, type )
+      add_local( v )
+      return v
 
-    method find_local( name:String )->Local
-      forEach (scope in control_stack step -1)
-        if local v = scope.locals[name]
-          return v
-        endIf
-      endForEach
-      return null
-
-    method on( cmd:Access )->Cmd
-      which (cmd.name)
-        case "print":   return Print( cmd.t, visit(cmd.args) )
-        case "println": return Println( cmd.t, visit(cmd.args) )
-      endWhich
-
-      if local v = find_local( cmd.name )
-        return visit( ReadLocal(cmd.t, v) )
+    method add_local( v:Local )
+      if (find_local(v.name))
+        throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
       endIf
-
-      throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
-
-    method on( cmd:Assign )->Cmd
-      return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
-
-    method on( cmd:WriteLocal )->Cmd
-      local new_value = convert_to( visit(cmd.new_value), cmd.info.type )
-
-      which (cmd.info.type)
-        case Program.type_Int
-          return WriteLocalInt( cmd.t, cmd.info, new_value )
-        others
-          trace cmd.info.type
-          throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
-      endWhich
+      v.index = this_procedure.local_count
+      ++this_procedure.local_count
+      scope_stack.last.locals[v.name] = v
 
     method convert_to( cmd:Cmd, to_type:Type )->Cmd
       local cmd_type = cmd.require_type
@@ -228,6 +185,46 @@ class Resolver : Visitor
 
       throw left.t.error( "Types $ and $ are incompatible."(left_type,right_type) )
 
+    method find_local( name:String )->Local
+      forEach (scope in scope_stack step -1)
+        if local v = scope.locals[name]
+          return v
+        endIf
+      endForEach
+      return null
+
+    method on( cmd:Access )->Cmd
+      which (cmd.name)
+        case "print":   return Print( cmd.t, visit(cmd.args) )
+        case "println": return Println( cmd.t, visit(cmd.args) )
+      endWhich
+
+      if local v = find_local( cmd.name )
+        return visit( ReadLocal(cmd.t, v) )
+      endIf
+
+      throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
+
+    method on( cmd:Assign )->Cmd
+      return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
+
+    method on( cmd:ForEach )->Cmd
+      return cmd.control.resolve_foreach( cmd, this )
+
+    method on( cmd:ForEachIn )->Cmd
+      scope_stack.add( cmd )
+
+      cmd.collection = visit( cmd.collection )->(as ForEachCollection)
+      local element_type = cmd.collection.element_type
+      cmd.iterator = add_local( cmd.t, cmd.iterator_name, element_type )
+      visit( cmd.statements )
+
+      scope_stack.remove_last
+      return cmd
+
+    #method on( cmd:ForEachInAnonymous )->Cmd
+      #return cmd.control.resolve_foreach( cmd, this )
+
     method on_validate( cmd:IntToReal )->Cmd
       if local literal_int = cmd.operand->(as LiteralInt)
         return LiteralReal( cmd.operand.t, literal_int.value )
@@ -252,12 +249,7 @@ class Resolver : Visitor
           throw cmd.t.error( "Local variable declarations must have an initial value assignment or an assigned ': Type'." )
         endIf
 
-        if (control_stack.last.locals.contains(v.name))
-          throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
-        endIf
-        v.index = this_procedure.local_count
-        ++this_procedure.local_count
-        control_stack.last.locals[v.name] = v
+        add_local( v )
 
         if (v.initial_value)
           initialization.add( WriteLocal(cmd.t,v,v.initial_value.require_value) )
@@ -280,11 +272,23 @@ class Resolver : Visitor
       return cmd
 
     method on( cmd:While )->Cmd
-      control_stack.add( cmd )
+      scope_stack.add( cmd )
 
       visit_children( cmd )
       cmd.condition.require_value
 
-      control_stack.remove_last
+      scope_stack.remove_last
       return cmd
+
+    method on( cmd:WriteLocal )->Cmd
+      local new_value = convert_to( visit(cmd.new_value), cmd.info.type )
+
+      which (cmd.info.type)
+        case Program.type_Int
+          return WriteLocalInt( cmd.t, cmd.info, new_value )
+        others
+          trace cmd.info.type
+          throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
+      endWhich
+
 endClass

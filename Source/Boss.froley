@@ -1421,7 +1421,7 @@ parser
     else
       single_line_statements
     endIf
-    produce ForEach(control:ForEachControl,statements)
+    produce ForEach(control:ForEachControl,statements:Statements)
   endOn
 
 - forEach_control
@@ -3406,6 +3406,8 @@ parser
   create CompareLEReal(left,right):CompareLE
   create CompareGTReal(left,right):CompareGT
   create CompareGEReal(left,right):CompareGE
+  create ForEachIn(iterator_name:String,collection:ForEachCollection,statements:Statements)
+  create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
   create IntToReal(operand):Unary
   create ModInt(left,right):Mod
   create ModReal(left,right):Mod

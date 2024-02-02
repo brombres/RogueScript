@@ -2,7 +2,7 @@ module Boss
 
 $include BossVariant
 $include CmdExecute
-$include CmdResolveAssignment
+$include CmdResolve
 $include CmdStore
 $include CmdType
 $include Module

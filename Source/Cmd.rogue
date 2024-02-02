@@ -1646,24 +1646,6 @@ class ExplicitCast : Cmd
 
 endClass
 
-class ForEach : Cmd
-  PROPERTIES
-    control    : ForEachControl
-    statements : Cmd
-
-  METHODS
-    method init( t, control, statements )
-
-    method init( existing:ForEach )
-      prior.init( existing )
-      if (existing.control) control = existing.control.cloned
-      if (existing.statements) statements = existing.statements.cloned
-
-    method description->String
-      return "ForEach($,$)" (%control,%statements)
-
-endClass
-
 class ForEachAt : Cmd
   PROPERTIES
     name : String
@@ -2546,6 +2528,8 @@ class Local : Cmd
     method init( t, name, initial_value, initial_value_tokens, type, attribute )
 
     method init( t, name, initial_value, initial_value_tokens, type )
+
+    method init( t, name, type )
 
     method init( existing:Local )
       prior.init( existing )
@@ -3773,23 +3757,6 @@ class WhichCases : CmdList
       return "WhichCases" + list_description
 endClass
 
-class While : ControlStructure
-  PROPERTIES
-    condition  : Cmd
-    statements : Cmd
-
-  METHODS
-    method init( t, condition, statements )
-
-    method init( existing:While )
-      prior.init( existing )
-      if (existing.condition) condition = existing.condition.cloned
-
-    method description->String
-      return "While($,$)" (%condition,%statements)
-
-endClass
-
 class WideningCast : Cmd
   PROPERTIES
     operand : Cmd
@@ -4512,5 +4479,78 @@ class PowerReal : Power
   METHODS
     method description->String
       return "PowerReal($,$)" (%left,%right)
+
+endClass
+
+class ForEach : Cmd
+  PROPERTIES
+    control    : ForEachControl
+    statements : Statements
+
+  METHODS
+    method init( t, control, statements )
+
+    method init( existing:ForEach )
+      prior.init( existing )
+      if (existing.control) control = existing.control.cloned
+      if (existing.statements) statements = existing.statements.cloned
+
+    method description->String
+      return "ForEach($,$)" (%control,%statements)
+
+endClass
+
+class ForEachIn : Cmd
+  PROPERTIES
+    iterator      : Local
+    iterator_name : String
+    collection    : ForEachCollection
+    statements    : Statements
+
+  METHODS
+    method init( t, iterator_name, collection, statements )
+
+    method init( existing:ForEachIn )
+      prior.init( existing )
+      iterator_name = existing.iterator_name
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.statements) statements = existing.statements.cloned
+
+    method description->String
+      return "ForEachIn($,$,$)" (%iterator_name,%collection,%statements)
+
+endClass
+
+class While : ControlStructure
+  PROPERTIES
+    condition : Cmd
+
+  METHODS
+    method init( t, condition, statements )
+
+    method init( existing:While )
+      prior.init( existing )
+      if (existing.condition) condition = existing.condition.cloned
+
+    method description->String
+      return "While($,$)" (%condition,%statements)
+
+endClass
+
+class ForEachInAnonymous : Cmd
+  PROPERTIES
+    collection : ForEachCollection
+    statements : Statements
+
+  METHODS
+    method init( t, collection, statements )
+
+    method init( existing:ForEachInAnonymous )
+      prior.init( existing )
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.statements) statements = existing.statements.cloned
+
+    method description->String
+      return "ForEachInAnonymous($,$)" (%collection,%statements)
 
 endClass
