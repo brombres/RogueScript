@@ -827,7 +827,7 @@ class Variant [compound]
         case TYPE_REAL:      return real?
         case TYPE_XY, TYPE_ANCHOR: return xy.x? or xy.y?
         case TYPE_XYZ:       return xyz.x? or xyz.y? or xyz.z?
-        case TYPE_XYZW:      return xyz.x? or xyz.y? or xyz.z? or xyz.w?
+        case TYPE_XYZW:      return xyzw.x? or xyzw.y? or xyzw.z? or xyzw.w?
         case TYPE_BOX:       return box.size.x? or box.size.y?
         case TYPE_CIRCLE:    return circle.radius?
         case TYPE_OBJECT:    return true

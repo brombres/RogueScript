@@ -1,24 +1,176 @@
 module Boss
 
+$localMacro MATH_OP<<$Cmd,$op>>
+augment Resolver
+  METHODS
+    method on( cmd:$Cmd )->Cmd
+      local left  = visit( cmd.left )
+      local right = visit( cmd.right )
+      local common_type = find_common_type( left, right )
+
+      left = convert_to( left, common_type )
+      right = convert_to( right, common_type )
+
+      if (common_type is Program.type_Real)
+        return validate( $id($Cmd,Real)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int)
+        return validate( $id($Cmd,Int)(cmd.t,left,right) )
+      endIf
+
+      throw cmd.t.error( $string("[INTERNAL] Unhandled operation: $ ",$op," $")(common_type,common_type) )
+
+    method on_validate( cmd:$id($Cmd,Int) )->Cmd
+      if local left_literal = cmd.left->(as LiteralInt)
+        if local right_literal = cmd.right->(as LiteralInt)
+          return LiteralInt( cmd.t, left_literal.value $op right_literal.value )
+        endIf
+      endIf
+      return cmd
+
+    method on_validate( cmd:$id($Cmd,Real) )->Cmd
+      if local left_literal = cmd.left->(as LiteralReal)
+        if local right_literal = cmd.right->(as LiteralReal)
+          return LiteralReal( cmd.t, left_literal.value $op right_literal.value )
+        endIf
+      endIf
+      return cmd
+endAugment
+
+augment $id($Cmd,Int)
+  METHODS
+    method type->Type
+      return Program.type_Int
+
+    method execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.integer $op right_value.integer )
+endAugment
+
+augment $id($Cmd,Real)
+  METHODS
+    method type->Type
+      return Program.type_Real
+
+    method execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.real $op right_value.real )
+endAugment
+$endLocalMacro
+
+$localMacro COMPARISON_OP<<$Cmd,$op>>
+augment Resolver
+  METHODS
+    method on( cmd:$Cmd )->Cmd
+      local left  = visit( cmd.left )
+      local right = visit( cmd.right )
+      local common_type = find_common_type( left, right )
+
+      left = convert_to( left, common_type )
+      right = convert_to( right, common_type )
+
+      if (common_type is Program.type_Real)
+        return validate( $id($Cmd,Real)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int)
+        return validate( $id($Cmd,Int)(cmd.t,left,right) )
+      endIf
+
+      throw cmd.t.error( $string("[INTERNAL] Unhandled operation: $ ",$op," $")(common_type,common_type) )
+
+    method on_validate( cmd:$id($Cmd,Int) )->Cmd
+      if local left_literal = cmd.left->(as LiteralInt)
+        if local right_literal = cmd.right->(as LiteralInt)
+          return LiteralLogical( cmd.t, left_literal.value $op right_literal.value )
+        endIf
+      endIf
+      return cmd
+
+    method on_validate( cmd:$id($Cmd,Real) )->Cmd
+      if local left_literal = cmd.left->(as LiteralReal)
+        if local right_literal = cmd.right->(as LiteralReal)
+          return LiteralLogical( cmd.t, left_literal.value $op right_literal.value )
+        endIf
+      endIf
+      return cmd
+endAugment
+
+augment $id($Cmd,Int)
+  METHODS
+    method type->Type
+      return Program.type_Logical
+
+    method execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.integer $op right_value.integer )
+endAugment
+
+augment $id($Cmd,Real)
+  METHODS
+    method type->Type
+      return Program.type_Logical
+
+    method execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.real $op right_value.real )
+endAugment
+$endLocalMacro
+
+MATH_OP<< Add,      + >>
+MATH_OP<< Subtract, - >>
+MATH_OP<< Multiply, * >>
+MATH_OP<< Divide,   / >>
+MATH_OP<< Mod,      % >>
+MATH_OP<< Power,    ^ >>
+
+COMPARISON_OP<< CompareEQ, == >>
+COMPARISON_OP<< CompareNE, != >>
+COMPARISON_OP<< CompareLT, <  >>
+COMPARISON_OP<< CompareLE, <= >>
+COMPARISON_OP<< CompareGT, >  >>
+COMPARISON_OP<< CompareGE, >= >>
+
+augment
+  METHODS
+    method Resolver.on_validate( cmd:DivideInt )->Cmd
+      if local right_literal = cmd.right->(as LiteralInt)
+        if (right_literal.value == 0) throw cmd.t.error( "Integer division by 0." )
+        if local left_literal = cmd.left->(as LiteralInt)
+          return LiteralInt( cmd.t, left_literal.value / right_literal.value )
+        endIf
+      endIf
+      return cmd
+
+    method DivideInt.execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      if (right_value) return Variant( left_value.integer / right_value.integer )
+      Global.error.println "[Integer division by 0]"
+      return left_value
+
+endAugment
+
 class Resolver : Visitor
   PROPERTIES
     this_module    : Module
     this_procedure : Procedure
-    scope_stack    = ControlStructure[]
+    control_stack  = ControlStructure[]
 
   METHODS
     method init( this_module )
 
     method visit( this_procedure )->Cmd
-      scope_stack.add( this_procedure )
+      control_stack.add( this_procedure )
       prior.visit( this_procedure )
-      scope_stack.remove_last
+      control_stack.remove_last
       return this_procedure
 
 
     method find_local( name:String )->Local
-      forEach (scope in scope_stack step -1)
-        if local v = scope_stack.last.locals[name]
+      forEach (scope in control_stack step -1)
+        if local v = scope.locals[name]
           return v
         endIf
       endForEach
@@ -76,38 +228,6 @@ class Resolver : Visitor
 
       throw left.t.error( "Types $ and $ are incompatible."(left_type,right_type) )
 
-    method on( cmd:Add )->Cmd
-      local left  = visit( cmd.left )
-      local right = visit( cmd.right )
-      local common_type = find_common_type( left, right )
-
-      left = convert_to( left, common_type )
-      right = convert_to( right, common_type )
-
-      if (common_type is Program.type_Real)
-        return validate( AddReal(cmd.t,left,right) )
-      elseIf (common_type is Program.type_Int)
-        return validate( AddInt(cmd.t,left,right) )
-      endIf
-
-      throw cmd.t.error( "[INTERNAL] Unhandled operation: $ + $"(common_type,common_type) )
-
-    method on_validate( cmd:AddInt )->Cmd
-      if local left_literal = cmd.left->(as LiteralInt)
-        if local right_literal = cmd.right->(as LiteralInt)
-          return LiteralInt( cmd.t, left_literal.value + right_literal.value )
-        endIf
-      endIf
-      return cmd
-
-    method on_validate( cmd:AddReal )->Cmd
-      if local left_literal = cmd.left->(as LiteralReal)
-        if local right_literal = cmd.right->(as LiteralReal)
-          return LiteralReal( cmd.t, left_literal.value + right_literal.value )
-        endIf
-      endIf
-      return cmd
-
     method on_validate( cmd:IntToReal )->Cmd
       if local literal_int = cmd.operand->(as LiteralInt)
         return LiteralReal( cmd.operand.t, literal_int.value )
@@ -132,12 +252,12 @@ class Resolver : Visitor
           throw cmd.t.error( "Local variable declarations must have an initial value assignment or an assigned ': Type'." )
         endIf
 
-        if (scope_stack.last.locals.contains(v.name))
+        if (control_stack.last.locals.contains(v.name))
           throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
         endIf
         v.index = this_procedure.local_count
         ++this_procedure.local_count
-        scope_stack.last.locals[v.name] = v
+        control_stack.last.locals[v.name] = v
 
         if (v.initial_value)
           initialization.add( WriteLocal(cmd.t,v,v.initial_value.require_value) )
@@ -159,7 +279,12 @@ class Resolver : Visitor
     method on( cmd:ReadLocalInt )->Cmd
       return cmd
 
-    method on_validate( cmd:While )->Cmd
+    method on( cmd:While )->Cmd
+      control_stack.add( cmd )
+
+      visit_children( cmd )
       cmd.condition.require_value
+
+      control_stack.remove_last
       return cmd
 endClass

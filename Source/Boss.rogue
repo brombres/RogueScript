@@ -19,7 +19,7 @@ try
 catch (error:CompileError)
   Console.error.println error
   System.exit 1
-catch (error:Error)
+catch (error:Exception)
   Console.error.println error
   Console.error.println error.stack_trace
   System.exit 1

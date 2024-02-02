@@ -2201,7 +2201,7 @@ parser
     expression
     if (consume(EOL)) multi_line_statements; mustConsume "endWhile"
     else              single_line_statements
-    produce While(condition,statements)
+    produce While(condition,statements):ControlStructure
   endOn
 
 - try_catch
@@ -3391,10 +3391,32 @@ parser
 - additional_node_types
   create AddInt(left,right):Add
   create AddReal(left,right):Add
+  create DivideInt(left,right):Divide
+  create DivideReal(left,right):Divide
   create ControlStructure(statements)
+  create CompareEQInt(left,right):CompareEQ
+  create CompareNEInt(left,right):CompareNE
+  create CompareLTInt(left,right):CompareLT
+  create CompareLEInt(left,right):CompareLE
+  create CompareGTInt(left,right):CompareGT
+  create CompareGEInt(left,right):CompareGE
+  create CompareEQReal(left,right):CompareEQ
+  create CompareNEReal(left,right):CompareNE
+  create CompareLTReal(left,right):CompareLT
+  create CompareLEReal(left,right):CompareLE
+  create CompareGTReal(left,right):CompareGT
+  create CompareGEReal(left,right):CompareGE
   create IntToReal(operand):Unary
+  create ModInt(left,right):Mod
+  create ModReal(left,right):Mod
+  create MultiplyInt(left,right):Multiply
+  create MultiplyReal(left,right):Multiply
+  create PowerInt(left,right):Power
+  create PowerReal(left,right):Power
   create ReadLocal(info:Local)
   create ReadLocalInt(info:Local):ReadLocal
+  create SubtractInt(left,right):Subtract
+  create SubtractReal(left,right):Subtract
   create WriteLocal(info:Local,new_value)
   create WriteLocalInt(info:Local,new_value):WriteLocal
 

@@ -1,8 +1,9 @@
-println "Hello World!"
-
-local x=3, y=4
-println x
-x = 5
-println x
-x = x + 1
-println x
+local cur=0, next=1
+local i = 0
+while (i < 10)
+  println cur
+  local prev = cur
+  cur = next
+  next = prev + cur
+  i = i + 1
+endWhile

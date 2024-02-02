@@ -3773,7 +3773,7 @@ class WhichCases : CmdList
       return "WhichCases" + list_description
 endClass
 
-class While : Cmd
+class While : ControlStructure
   PROPERTIES
     condition  : Cmd
     statements : Cmd
@@ -3784,7 +3784,6 @@ class While : Cmd
     method init( existing:While )
       prior.init( existing )
       if (existing.condition) condition = existing.condition.cloned
-      if (existing.statements) statements = existing.statements.cloned
 
     method description->String
       return "While($,$)" (%condition,%statements)
@@ -4358,5 +4357,160 @@ class WriteLocalInt : WriteLocal
   METHODS
     method description->String
       return "WriteLocalInt($,$)" (%info,%new_value)
+
+endClass
+
+class SubtractInt : Add
+  METHODS
+    method description->String
+      return "SubtractInt($,$)" (%left,%right)
+
+endClass
+
+class SubtractReal : Add
+  METHODS
+    method description->String
+      return "SubtractReal($,$)" (%left,%right)
+
+endClass
+
+
+class CompareEQInt : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQInt($,$)" (%left,%right)
+
+endClass
+
+class CompareEQReal : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQReal($,$)" (%left,%right)
+
+endClass
+
+class CompareGEInt : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEInt($,$)" (%left,%right)
+
+endClass
+
+class CompareGEReal : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEReal($,$)" (%left,%right)
+
+endClass
+
+class CompareGTInt : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTInt($,$)" (%left,%right)
+
+endClass
+
+class CompareGTReal : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTReal($,$)" (%left,%right)
+
+endClass
+
+class CompareLEInt : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEInt($,$)" (%left,%right)
+
+endClass
+
+class CompareLEReal : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEReal($,$)" (%left,%right)
+
+endClass
+
+class CompareLTInt : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTInt($,$)" (%left,%right)
+
+endClass
+
+class CompareLTReal : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTReal($,$)" (%left,%right)
+
+endClass
+
+class CompareNEInt : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEInt($,$)" (%left,%right)
+
+endClass
+
+class CompareNEReal : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEReal($,$)" (%left,%right)
+
+endClass
+
+class DivideInt : Divide
+  METHODS
+    method description->String
+      return "DivideInt($,$)" (%left,%right)
+
+endClass
+
+class DivideReal : Divide
+  METHODS
+    method description->String
+      return "DivideReal($,$)" (%left,%right)
+
+endClass
+
+class ModInt : Mod
+  METHODS
+    method description->String
+      return "ModInt($,$)" (%left,%right)
+
+endClass
+
+class ModReal : Mod
+  METHODS
+    method description->String
+      return "ModReal($,$)" (%left,%right)
+
+endClass
+
+class MultiplyInt : Multiply
+  METHODS
+    method description->String
+      return "MultiplyInt($,$)" (%left,%right)
+
+endClass
+
+class MultiplyReal : Multiply
+  METHODS
+    method description->String
+      return "MultiplyReal($,$)" (%left,%right)
+
+endClass
+
+class PowerInt : Power
+  METHODS
+    method description->String
+      return "PowerInt($,$)" (%left,%right)
+
+endClass
+
+class PowerReal : Power
+  METHODS
+    method description->String
+      return "PowerReal($,$)" (%left,%right)
 
 endClass

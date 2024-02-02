@@ -17,12 +17,6 @@ augment
     method Cmd.type->Type
       return null
 
-    method AddInt.type->Type
-      return Program.type_Int
-
-    method AddReal.type->Type
-      return Program.type_Real
-
     method GetSingleton.type->Type
       return @type
 

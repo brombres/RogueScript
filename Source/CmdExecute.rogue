@@ -6,16 +6,6 @@ augment
       println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
-    method AddInt.execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.integer + right_value.integer )
-
-    method AddReal.execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.real + right_value.real )
-
     method IntToReal.execute->Variant
       return operand.execute.integer->Real
 
@@ -55,7 +45,14 @@ augment
       endForEach
       return result
 
-      #method While.execute->Variant
+    method While.execute->Variant
+      localize condition
+      localize statements
+      local result = Variant()
+      while (condition.execute?)
+        result = statements.execute
+      endWhile
+      return result
 
     method WriteLocal.execute->Variant
       local new_value = new_value.execute
