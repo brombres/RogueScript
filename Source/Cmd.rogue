@@ -1646,85 +1646,6 @@ class ExplicitCast : Cmd
 
 endClass
 
-class ForEachAt : Cmd
-  PROPERTIES
-    name : String
-
-  METHODS
-    method init( t, name )
-
-    method init( existing:ForEachAt )
-      prior.init( existing )
-      name = existing.name
-
-    method description->String
-      return "ForEachAt($)" (%name)
-
-    method to->Character
-      return Cmd.to_character(name)
-
-    method to->Int:     return name
-    method to->Logical: return name?
-    method to->String: return name
-
-endClass
-
-class ForEachCollection : Cmd
-  PROPERTIES
-    name           : String
-    data           : Cmd
-    starting_index : Cmd
-    step_size      : Cmd
-
-  METHODS
-    method init( t, name, data, starting_index, step_size )
-
-    method init( existing:ForEachCollection )
-      prior.init( existing )
-      name = existing.name
-      if (existing.data) data = existing.data.cloned
-      if (existing.starting_index) starting_index = existing.starting_index.cloned
-      if (existing.step_size) step_size = existing.step_size.cloned
-
-    method description->String
-      return "ForEachCollection($,$,$,$)" (%name,%data,%starting_index,%step_size)
-
-endClass
-
-class ForEachControl : Cmd
-  PROPERTIES
-    name        : String
-    optional_at : ForEachAt
-    collection  : ForEachCollection
-
-  METHODS
-    method init( t, name, optional_at, collection )
-
-    method init( existing:ForEachControl )
-      prior.init( existing )
-      name = existing.name
-      if (existing.optional_at) optional_at = existing.optional_at.cloned
-      if (existing.collection) collection = existing.collection.cloned
-
-    method description->String
-      return "ForEachControl($,$,$)" (%name,%optional_at,%collection)
-
-endClass
-
-class ForEachInControl : ForEachControl
-  METHODS
-    method description->String
-      return "ForEachInControl($,$,$)" (%name,%optional_at,%collection)
-
-endClass
-
-class ForEachOfControl : ForEachControl
-  METHODS
-    method description->String
-      return "ForEachOfControl($,$,$)" (%name,%optional_at,%collection)
-
-endClass
-
 class FormattedString : Cmd
   PROPERTIES
     format : String
@@ -2142,22 +2063,6 @@ class InlineAssignment : Cmd
 
     method description->String
       return "InlineAssignment($,$)" (%info,%value)
-
-endClass
-
-class InlineForEach : Cmd
-  PROPERTIES
-    control : ForEachControl
-
-  METHODS
-    method init( t, control )
-
-    method init( existing:InlineForEach )
-      prior.init( existing )
-      if (existing.control) control = existing.control.cloned
-
-    method description->String
-      return "InlineForEach($)" (%control)
 
 endClass
 
@@ -4482,45 +4387,6 @@ class PowerReal : Power
 
 endClass
 
-class ForEach : Cmd
-  PROPERTIES
-    control    : ForEachControl
-    statements : Statements
-
-  METHODS
-    method init( t, control, statements )
-
-    method init( existing:ForEach )
-      prior.init( existing )
-      if (existing.control) control = existing.control.cloned
-      if (existing.statements) statements = existing.statements.cloned
-
-    method description->String
-      return "ForEach($,$)" (%control,%statements)
-
-endClass
-
-class ForEachIn : Cmd
-  PROPERTIES
-    iterator      : Local
-    iterator_name : String
-    collection    : ForEachCollection
-    statements    : Statements
-
-  METHODS
-    method init( t, iterator_name, collection, statements )
-
-    method init( existing:ForEachIn )
-      prior.init( existing )
-      iterator_name = existing.iterator_name
-      if (existing.collection) collection = existing.collection.cloned
-      if (existing.statements) statements = existing.statements.cloned
-
-    method description->String
-      return "ForEachIn($,$,$)" (%iterator_name,%collection,%statements)
-
-endClass
-
 class While : ControlStructure
   PROPERTIES
     condition : Cmd
@@ -4534,23 +4400,5 @@ class While : ControlStructure
 
     method description->String
       return "While($,$)" (%condition,%statements)
-
-endClass
-
-class ForEachInAnonymous : Cmd
-  PROPERTIES
-    collection : ForEachCollection
-    statements : Statements
-
-  METHODS
-    method init( t, collection, statements )
-
-    method init( existing:ForEachInAnonymous )
-      prior.init( existing )
-      if (existing.collection) collection = existing.collection.cloned
-      if (existing.statements) statements = existing.statements.cloned
-
-    method description->String
-      return "ForEachInAnonymous($,$)" (%collection,%statements)
 
 endClass

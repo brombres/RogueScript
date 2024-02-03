@@ -208,19 +208,19 @@ class Resolver : Visitor
     method on( cmd:Assign )->Cmd
       return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
 
-    method on( cmd:ForEach )->Cmd
-      return cmd.control.resolve_foreach( cmd, this )
+    #method on( cmd:ForEach )->Cmd
+    #  return cmd.control.resolve_foreach( cmd, this )
 
-    method on( cmd:ForEachIn )->Cmd
-      scope_stack.add( cmd )
+    #method on( cmd:ForEachIn )->Cmd
+    #  scope_stack.add( cmd )
 
-      cmd.collection = visit( cmd.collection )->(as ForEachCollection)
-      local element_type = cmd.collection.element_type
-      cmd.iterator = add_local( cmd.t, cmd.iterator_name, element_type )
-      visit( cmd.statements )
+    #  cmd.collection = visit( cmd.collection )->(as ForEachCollection)
+    #  local element_type = cmd.collection.element_type
+    #  cmd.iterator = add_local( cmd.t, cmd.iterator_name, element_type )
+    #  visit( cmd.statements )
 
-      scope_stack.remove_last
-      return cmd
+    #  scope_stack.remove_last
+    #  return cmd
 
     #method on( cmd:ForEachInAnonymous )->Cmd
       #return cmd.control.resolve_foreach( cmd, this )

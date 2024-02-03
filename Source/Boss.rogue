@@ -1,6 +1,5 @@
 module Boss
 
-$include BossVariant
 $include CmdExecute
 $include CmdResolve
 $include CmdStore

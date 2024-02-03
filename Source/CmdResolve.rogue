@@ -10,17 +10,17 @@ augment
       if (v) return resolver.visit( WriteLocal(t,v,new_value) )
       throw t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
 
-    method Cmd.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
-      throw t.error( "[INTERNAL] resolve_foreach() not defined for $."(type_name) )
+    #method Cmd.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
+    #  throw t.error( "[INTERNAL] resolve_foreach() not defined for $."(type_name) )
 
-    method ForEachInControl.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
-      local result : Cmd
-      if (name)
-        result = ForEachIn( cmd_foreach.t, name, collection, cmd_foreach.statements )
-      else
-        result = ForEachInAnonymous( cmd_foreach.t, collection, cmd_foreach.statements )
-      endIf
-      return resolver.visit( result )
+    #method ForEachInControl.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
+    #  local result : Cmd
+    #  if (name)
+    #    result = ForEachIn( cmd_foreach.t, name, collection, cmd_foreach.statements )
+    #  else
+    #    result = ForEachInAnonymous( cmd_foreach.t, collection, cmd_foreach.statements )
+    #  endIf
+    #  return resolver.visit( result )
 
     method Cmd.element_type->Type
       trace this

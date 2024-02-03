@@ -991,7 +991,7 @@ parser
     endOn
 
   elseOn '['
-    # [Key:Boss::Variant] -> Table<<Key,Boss::Variant>>
+    # [Key:Variant] -> Table<<Key,Variant>>
     type
     mustConsume ':'
     type
@@ -1406,9 +1406,13 @@ parser
 
 
 - forEach_loop
+#{
+  # 'forEach' '(' [id] ['in'|'of'] ['id' =] expression ['from' expression] ['step' expression] ')' statements
+  # 'forEach' [id] ['in'|'of'] ['id' =] expression ['from' expression] ['step' expression] statements
   on "forEach"
     if consume('(')
       consume_eols
+      savePosition
       forEach_control
       consume_eols
       mustConsume(')')
@@ -1447,8 +1451,10 @@ parser
   createNull  # optional_at
   forEach_collection
   produce ForEachInControl(name:String,optional_at:ForEachAt,collection:ForEachCollection):ForEachControl
+}#
 
 - inline_forEach
+#{
   on "forEach"
     createNull  # name
     createNull  # optional_at
@@ -1490,6 +1496,7 @@ parser
   else                  createNull
 
   produce ForEachCollection(name:String,data,starting_index,step_size)
+}#
 
 - if_statement
   on "if"
@@ -2758,7 +2765,7 @@ parser
     expression
     if (nextIs(':'))
       restorePosition
-      type  # [Key:Boss::Variant] table
+      type  # [Key:Variant] table
       #FIXME call use_Table
       if (nextIs('{'))
         literal_table
@@ -3406,8 +3413,8 @@ parser
   create CompareLEReal(left,right):CompareLE
   create CompareGTReal(left,right):CompareGT
   create CompareGEReal(left,right):CompareGE
-  create ForEachIn(iterator_name:String,collection:ForEachCollection,statements:Statements)
-  create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
+  #create ForEachIn(iterator_name:String,collection:ForEachCollection,statements:Statements)
+  #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
   create IntToReal(operand):Unary
   create ModInt(left,right):Mod
   create ModReal(left,right):Mod
@@ -3454,7 +3461,7 @@ parser
   create EnumValueDef(value)
   create EmptyCompound(of_type:Type)
   create Escape
-  create ForEachControl(name:String,optional_at:ForEachAt,collection:ForEachCollection)
+  #create ForEachControl(name:String,optional_at:ForEachAt,collection:ForEachCollection)
   create FunctionReturnValue(operand)
   #create IfConditionalContext(conditional_context:ConditionalContext,statements)
   create InlineAssignment(info:Local,value)
