@@ -6,6 +6,9 @@ augment
       println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
+    method Else.execute->Variant
+      return statements.execute
+
     method ForEachElementInRangeUpToInt.execute->Variant
       local v_index = Program.sp + element_info.index
       localize statements
@@ -18,7 +21,19 @@ augment
     method IntToReal.execute->Variant
       return operand.execute.integer->Real
 
+    method If.execute->Variant
+      if (condition.execute?)
+        return statements.execute
+      elseIf (cmd_else)
+        return cmd_else.execute
+      else
+        return false
+      endIf
+
     method LiteralInt.execute->Variant
+      return value
+
+    method LiteralLogical.execute->Variant
       return value
 
     method LiteralReal.execute->Variant
@@ -26,6 +41,9 @@ augment
 
     method LiteralString.execute->Variant
       return value
+
+    method LogicalNot.execute->Variant
+      return not operand.execute?
 
     method Println.execute->Variant
       forEach (arg in args)

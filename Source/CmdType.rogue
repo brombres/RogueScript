@@ -29,6 +29,9 @@ augment
     method LiteralInt.type->Type
       return Program.type_Int
 
+    method LiteralLogical.type->Type
+      return Program.type_Logical
+
     method LiteralReal.type->Type
       return Program.type_Real
 
@@ -37,6 +40,12 @@ augment
 
     method LocalDeclarations.type->Type
       return @type
+
+    method LogicalBinary.type->Type
+      return Program.type_Logical
+
+    method LogicalUnary.type->Type
+      return Program.type_Logical
 
     method Property.type->Type
       return @type

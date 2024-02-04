@@ -27,20 +27,4 @@ augment
       result.add_local( v, resolver.this_procedure )
       return resolver.visit( result )
 
-    #method ForEachInControl.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
-    #  local result : Cmd
-    #  if (name)
-    #    result = ForEachIn( cmd_foreach.t, name, collection, cmd_foreach.statements )
-    #  else
-    #    result = ForEachInAnonymous( cmd_foreach.t, collection, cmd_foreach.statements )
-    #  endIf
-    #  return resolver.visit( result )
-
-    method Cmd.element_type->Type
-      trace this
-      throw t.error( "Invalid collection - cannot iterate over type $."(type_name) )
-
-    #method Cmd.resolve_foreach_collection( collection:ForEachCollection, resolver:Resolver )->Cmd
-      #throw t.error( "[INTERNAL] resolve_foreach() not defined for $."(type_name) )
-
 endAugment

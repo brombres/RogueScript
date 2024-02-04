@@ -3428,9 +3428,12 @@ parser
   create CompareLEReal(left,right):CompareLE
   create CompareGTReal(left,right):CompareGT
   create CompareGEReal(left,right):CompareGE
+  create Else(statements:Statements)
   create ForEachElementInRangeUpToInt(element_info:Local,start,limit,statements:Statements):ControlStructure
   #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
   create IntToReal(operand):Unary
+  create LogicalBinary(left,right):Binary
+  create LogicalUnary(operand):Unary
   create ModInt(left,right):Mod
   create ModReal(left,right):Mod
   create MultiplyInt(left,right):Multiply

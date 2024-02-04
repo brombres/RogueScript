@@ -2448,28 +2448,28 @@ class LocalDeclaration : Cmd
 
 endClass
 
-class LogicalAnd : Binary
+class LogicalAnd : LogicalBinary
   METHODS
     method description->String
       return "LogicalAnd($,$)" (%left,%right)
 
 endClass
 
-class LogicalNot : Unary
+class LogicalNot : LogicalUnary
   METHODS
     method description->String
       return "LogicalNot($)" (%operand)
 
 endClass
 
-class LogicalOr : Binary
+class LogicalOr : LogicalBinary
   METHODS
     method description->String
       return "LogicalOr($,$)" (%left,%right)
 
 endClass
 
-class LogicalXor : Binary
+class LogicalXor : LogicalBinary
   METHODS
     method description->String
       return "LogicalXor($,$)" (%left,%right)
@@ -4551,5 +4551,35 @@ class ForEachElementInRangeUpToInt : ControlStructure
 
     method description->String
       return "ForEachElementInRangeUpToInt($,$,$,$)" (%element_info,%start,%limit,%statements)
+
+endClass
+
+class LogicalBinary : Binary
+  METHODS
+    method description->String
+      return "LogicalBinary($,$)" (%left,%right)
+
+endClass
+
+class LogicalUnary : Unary
+  METHODS
+    method description->String
+      return "LogicalUnary($)" (%operand)
+
+endClass
+
+class Else : Cmd
+  PROPERTIES
+    statements : Statements
+
+  METHODS
+    method init( t, statements )
+
+    method init( existing:Else )
+      prior.init( existing )
+      if (existing.statements) statements = existing.statements.cloned
+
+    method description->String
+      return "Else($)" (%statements)
 
 endClass
