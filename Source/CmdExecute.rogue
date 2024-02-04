@@ -6,6 +6,15 @@ augment
       println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
+    method ForEachElementInRangeUpToInt.execute->Variant
+      local v_index = Program.sp + element_info.index
+      localize statements
+      forEach (i in start.execute->Int..limit.execute->Int)
+        Program.stack[ v_index ] = i
+        statements.execute
+      endForEach
+      return undefined
+
     method IntToReal.execute->Variant
       return operand.execute.integer->Real
 

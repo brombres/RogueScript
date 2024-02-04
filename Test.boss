@@ -1,2 +1,5 @@
-#forEach (i in 1..10) println i
-println "Hello World"
+#println "Hello World!"
+forEach (i in 1..10)
+  println i
+endForEach
+

@@ -1406,97 +1406,112 @@ parser
 
 
 - forEach_loop
-#{
-  # 'forEach' '(' [id] ['in'|'of'] ['id' =] expression ['from' expression] ['step' expression] ')' statements
-  # 'forEach' [id] ['in'|'of'] ['id' =] expression ['from' expression] ['step' expression] statements
+  # 'forEach' '(' [id [['at' id] 'in'|'of']] ['id' =] expression ['from' expression] ['step' expression] ')' statements
+  # 'forEach'     [id [['at' id] 'in'|'of']] ['id' =] expression ['from' expression] ['step' expression]     statements
   on "forEach"
+    consume_eols
+
     if consume('(')
       consume_eols
+
       savePosition
-      forEach_control
-      consume_eols
-      mustConsume(')')
+      expression
+      if (nextIs(@"in") or nextIs(@"at"))
+        restorePosition
+        identifier
+        if (consume(@"at")) identifier
+        else                createNull
+        mustConsume @"in"
+        forEach_assignable_expression
+        consume_eols
+        mustConsume(')')
+        forEach_body
+        produce ForEachIn(element_name,index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      elseIf (nextIs(@"of"))
+        restorePosition
+        identifier
+        mustConsume @"of"
+        forEach_assignable_expression
+        consume_eols
+        mustConsume(')')
+        forEach_body
+        produce ForEachOf(index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      else
+        restorePosition
+        forEach_assignable_expression
+        consume_eols
+        mustConsume(')')
+        forEach_body
+        produce ForEachAnonymous(collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      endIf
     else
-      forEach_control
+      savePosition
+      expression
+      if (nextIs(@"in") or nextIs(@"at"))
+        restorePosition
+        identifier
+        if (consume(@"at")) identifier
+        else                createNull
+        mustConsume @"in"
+        forEach_assignable_expression
+        forEach_body
+        produce ForEachIn(element_name,index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      elseIf (nextIs(@"of"))
+        restorePosition
+        identifier
+        mustConsume @"of"
+        forEach_assignable_expression
+        forEach_body
+        produce ForEachOf(index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      else
+        restorePosition
+        forEach_assignable_expression
+        forEach_body
+        produce ForEachAnonymous(collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      endIf
     endIf
-    if (consume(EOL))
-      multi_line_statements
-      mustConsume "endForEach"
-    else
-      single_line_statements
-    endIf
-    produce ForEach(control:ForEachControl,statements:Statements)
   endOn
 
-- forEach_control
-  savePosition
-  onPeek IDENTIFIER
-    identifier
-    forEach_optional_at
-    if (consume(@"in"))
-      forEach_collection
-      discardPosition
-      produce ForEachInControl(name:String,optional_at:ForEachAt,collection:ForEachCollection):ForEachControl
-    elseIf (consume(@"of"))
-      forEach_collection
-      discardPosition
-      produce ForEachOfControl(name:String,optional_at:ForEachAt,collection:ForEachCollection):ForEachControl
-    endIf
-  endOn
-
-  # Anonymous forEach
-  restorePosition
-
-  createNull  # identifier
-  createNull  # optional_at
+- forEach_assignable_expression
+  # ['id' =] expression ['from' expression] ['step' expression]
+  if (nextIs(IDENTIFIER)) identifier; mustConsume('=')
+  else                    createNull
   forEach_collection
-  produce ForEachInControl(name:String,optional_at:ForEachAt,collection:ForEachCollection):ForEachControl
-}#
-
-- inline_forEach
-#{
-  on "forEach"
-    createNull  # name
-    createNull  # optional_at
-    if (consume(@"in"))
-      forEach_collection
-      create ForEachInControl(name:String,optional_at:ForEachAt,collection:ForEachCollection):ForEachControl
-    elseIf (consume(@"of"))
-      forEach_collection
-      create ForEachOfControl(name:String,optional_at:ForEachAt,collection:ForEachCollection):ForEachControl
-    else
-      syntaxError "Expected 'in' or 'of'."
-    endIf
-    produce InlineForEach(control:ForEachControl)
-  endOn
-
-
-- forEach_optional_at
-  if (not consume(@"at")) produceNull
-  identifier
-  produce ForEachAt(name:String)
 
 - forEach_collection
-  savePosition
-  createNull  # collection_name
-  expression  # collection
-  if (nextIs('='))
-    restorePosition  # whoops
-    identifier       # collection_name
-    mustConsume('=')
-    expression       # collection
-  else
-    discardPosition
-  endIf
+  expression
 
   if (consume(@"from")) expression
   else                  createNull
-
   if (consume(@"step")) expression
   else                  createNull
 
-  produce ForEachCollection(name:String,data,starting_index,step_size)
-}#
+- forEach_body
+  if (consume(EOL))
+    multi_line_statements
+    mustConsume "endForEach"
+  else
+    single_line_statements
+  endIf
+
+- inline_forEach
+  # 'forEach' ['in'|'of'] expression ['from' expression] ['step' expression]
+  on "forEach"
+    on @"in"
+      forEach_collection
+      produce InlineForEachIn(collection,starting_index,step_size)
+    endOn
+    on @"of"
+      forEach_collection
+      produce InlineForEachOf(collection,starting_index,step_size)
+    elseOnOthers
+      syntaxError "Expected 'in' or 'of'."
+    endOn
+  endOn
 
 - if_statement
   on "if"
@@ -1525,7 +1540,7 @@ parser
       scoped_single_line_statements
       if_statement_single_line_elseIf_else
     endIf
-    produce If(condition,statements,cmd_else):Conditional
+    produce If(condition,statements:Statements,cmd_else):Conditional
   endOn
 
 - if_local_elseifs_or_else
@@ -1561,7 +1576,7 @@ parser
       discardPosition
       scoped_multi_line_statements
       if_statement_multi_line_elseIf_else
-      create If(condition,statements,cmd_else):Conditional
+      create If(condition,statements:Statements,cmd_else):Conditional
       produce Statements(element)
     else
       # This single-line elseIf is outside the scope of the 'if' we're currently parsing.
@@ -1575,7 +1590,7 @@ parser
       createNull
       scoped_multi_line_statements
       createNull
-      create If(condition,statements,cmd_else):Conditional
+      create If(condition,statements:Statements,cmd_else):Conditional
       produce Statements(element)
     else
       # This single-line else is outside the scope of the 'if' we're currently parsing.
@@ -1601,7 +1616,7 @@ parser
       discardPosition
       scoped_single_line_statements
       if_statement_single_line_elseIf_else
-      create If(condition,statements,cmd_else):Conditional
+      create If(condition,statements:Statements,cmd_else):Conditional
       produce Statements(element)
     endIf
   elseOn "else"
@@ -1615,7 +1630,7 @@ parser
       createNull
       scoped_single_line_statements
       createNull
-      create If(condition,statements,cmd_else):Conditional
+      create If(condition,statements:Statements,cmd_else):Conditional
       produce Statements(element)
     endIf
   elseOnOthers
@@ -2132,7 +2147,7 @@ parser
     multi_line_statements
     mustConsume "endBlock"
   endOn
-  produce Block(assignments,statements):ControlStructure
+  produce Block(assignments,statements:Statements):ControlStructure
 
 - block_assignment
   identifier
@@ -2155,7 +2170,7 @@ parser
       createNull
     endOn
     mustConsume "endContingent"
-    produce Contingent(statements,satisfied_statements,unsatisfied_statements):ControlStructure
+    produce Contingent(statements:Statements,satisfied_statements:Statements,unsatisfied_statements:Statements):ControlStructure
   endOn
 
 - loop
@@ -2189,7 +2204,7 @@ parser
             if (not consume(':')) mustConsume EOL
           createList Args
           scoped_multi_line_statements
-          create WhichCase(args,statements)
+          create WhichCase(args,statements:Statements)
         endOn
       endWhile
     createList WhichCases
@@ -2200,7 +2215,7 @@ parser
       createNull
     endOn
     mustConsume "endWhich"
-    produce Which(condition,cases:WhichCases,statements):Conditional
+    produce Which(condition,cases:WhichCases,statements:Statements):Conditional
   endOn
 
 - while_loop
@@ -2208,7 +2223,7 @@ parser
     expression
     if (consume(EOL)) multi_line_statements; mustConsume "endWhile"
     else              single_line_statements
-    produce While(condition,statements):ControlStructure
+    produce While(condition,statements:Statements):ControlStructure
   endOn
 
 - try_catch
@@ -2216,7 +2231,7 @@ parser
     multi_line_statements
     catches
     mustConsume "endTry"
-    produce Try(statements,catches:Catches):ControlStructure
+    produce Try(statements:Statements,catches:Catches):ControlStructure
   endOn
 
 - catches
@@ -2230,7 +2245,7 @@ parser
           catch_clause
         endIf
         multi_line_statements
-        create Catch(var_name:String,exception_type:Type,statements):ControlStructure
+        create Catch(var_name:String,exception_type:Type,statements:Statements):ControlStructure
       endOn
     endWhile
   produceList Catches
@@ -2259,7 +2274,7 @@ parser
     must_consume_eols
     multi_line_statements
     mustConsume "endTemporarily"
-    produce Temporarily(assignments:TemporaryAssignments,statements):ControlStructure
+    produce Temporarily(assignments:TemporaryAssignments,statements:Statements):ControlStructure
   endOn
 
 - temporary_assignment
@@ -2282,7 +2297,7 @@ parser
     must_consume_eols
     multi_line_statements
     mustConsume "endUse"
-    produce Use(resources:UsedResources,statements):ControlStructure
+    produce Use(resources:UsedResources,statements:Statements):ControlStructure
   endOn
 
 - used_resource
@@ -3400,7 +3415,7 @@ parser
   create AddReal(left,right):Add
   create DivideInt(left,right):Divide
   create DivideReal(left,right):Divide
-  create ControlStructure(statements)
+  create ControlStructure(statements:Statements)
   create CompareEQInt(left,right):CompareEQ
   create CompareNEInt(left,right):CompareNE
   create CompareLTInt(left,right):CompareLT
@@ -3413,7 +3428,7 @@ parser
   create CompareLEReal(left,right):CompareLE
   create CompareGTReal(left,right):CompareGT
   create CompareGEReal(left,right):CompareGE
-  #create ForEachIn(iterator_name:String,collection:ForEachCollection,statements:Statements)
+  create ForEachElementInRangeUpToInt(element_info:Local,start,limit,statements:Statements):ControlStructure
   #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
   create IntToReal(operand):Unary
   create ModInt(left,right):Mod
@@ -3438,9 +3453,9 @@ parser
   create CallThisStaticMethod(args):CallProcedure
   create CallVirtualMethod(context,args):CallProcedure
   create CallThisVirtualMethod(args):CallProcedure
-  create CleanupBlock(statements,cleanup):ControlStructure
+  create CleanupBlock(statements:Statements,cleanup):ControlStructure
   create Compare(left,right):Binary
-  create Conditional(condition,statements):ControlStructure
+  create Conditional(condition,statements:Statements):ControlStructure
   create Convert(operand)
   create ConvertToByte(operand):Convert
   create ConvertToCharacter(operand):Convert
@@ -3466,7 +3481,7 @@ parser
   #create IfConditionalContext(conditional_context:ConditionalContext,statements)
   create InlineAssignment(info:Local,value)
   create IntrospectionGetObjectProperty(info:Property,context)
-  create Iterator(control,condition,statements,upkeep):Conditional
+  create Iterator(control,condition,statements:Statements,upkeep):Conditional
   create GetGlobalProperty(info:Property)
   create GetLocal(info:Local)
   create GetProperty(context,info:Property)
@@ -3489,7 +3504,7 @@ parser
   create SetSingleton(of_type:Type,new_value)
   create SetThisProperty(info:Property,new_value)
   create Stepper(operand)
-  create Switch(condition,cases:WhichCases,statements):Conditional
+  create Switch(condition,cases:WhichCases,statements:Statements):Conditional
   create TypeContext(type:Type)
   create TypeIndex(of_type:Type)
   create WideningCast(operand,to_type:Type)

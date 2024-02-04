@@ -10,8 +10,22 @@ augment
       if (v) return resolver.visit( WriteLocal(t,v,new_value) )
       throw t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
 
-    #method Cmd.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
-    #  throw t.error( "[INTERNAL] resolve_foreach() not defined for $."(type_name) )
+    method Cmd.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
+      throw t.error( "TODO: resolve_foreach_in($)"(type_name) )
+
+    method CreateRangeUpTo.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
+      local type = resolver.find_compatible_type( start, limit )
+      if (step_size) type = resolver.find_compatible_type( type, step_size )
+
+      local v = Local( cmd_foreach_in.element_name.t, cmd_foreach_in.element_name->String, type )
+
+      if (step_size)
+        throw t.error( "TODO: resolve_foreach_in($) with step size"(type_name) )
+      endIf
+
+      local result = ForEachElementInRangeUpToInt( cmd_foreach_in.t, v, start, limit, cmd_foreach_in.statements )
+      result.add_local( v, resolver.this_procedure )
+      return resolver.visit( result )
 
     #method ForEachInControl.resolve_foreach( cmd_foreach:ForEach, resolver:Resolver )->Cmd
     #  local result : Cmd

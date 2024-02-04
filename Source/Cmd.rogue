@@ -1158,23 +1158,6 @@ class Contingent : ControlStructure
 
 endClass
 
-class ControlStructure : Cmd
-  PROPERTIES
-    locals     = [String:Local]
-    statements : Cmd
-
-  METHODS
-    method init( t, statements )
-
-    method init( existing:ControlStructure )
-      prior.init( existing )
-      if (existing.statements) statements = existing.statements.cloned
-
-    method description->String
-      return "ControlStructure($)" (%statements)
-
-endClass
-
 class Convert : Cmd
   PROPERTIES
     operand : Cmd
@@ -4400,5 +4383,173 @@ class While : ControlStructure
 
     method description->String
       return "While($,$)" (%condition,%statements)
+
+endClass
+
+class InlineForEachIn : Cmd
+  PROPERTIES
+    collection     : Cmd
+    starting_index : Cmd
+    step_size      : Cmd
+
+  METHODS
+    method init( t, collection, starting_index, step_size )
+
+    method init( existing:InlineForEachIn )
+      prior.init( existing )
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.starting_index) starting_index = existing.starting_index.cloned
+      if (existing.step_size) step_size = existing.step_size.cloned
+
+    method description->String
+      return "InlineForEachIn($,$,$)" (%collection,%starting_index,%step_size)
+
+endClass
+
+class InlineForEachOf : Cmd
+  PROPERTIES
+    collection     : Cmd
+    starting_index : Cmd
+    step_size      : Cmd
+
+  METHODS
+    method init( t, collection, starting_index, step_size )
+
+    method init( existing:InlineForEachOf )
+      prior.init( existing )
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.starting_index) starting_index = existing.starting_index.cloned
+      if (existing.step_size) step_size = existing.step_size.cloned
+
+    method description->String
+      return "InlineForEachOf($,$,$)" (%collection,%starting_index,%step_size)
+
+endClass
+
+class ForEachAnonymous : ControlStructure
+  PROPERTIES
+    collection_name : Cmd
+    collection      : Cmd
+    starting_index  : Cmd
+    step_size       : Cmd
+
+  METHODS
+    method init( t, collection_name, collection, starting_index, step_size, statements )
+
+    method init( existing:ForEachAnonymous )
+      prior.init( existing )
+      if (existing.collection_name) collection_name = existing.collection_name.cloned
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.starting_index) starting_index = existing.starting_index.cloned
+      if (existing.step_size) step_size = existing.step_size.cloned
+
+    method description->String
+      return "ForEachAnonymous($,$,$,$,$)" (%collection_name,%collection,%starting_index,%step_size,%statements)
+
+endClass
+
+class ForEachIn : ControlStructure
+  PROPERTIES
+    element_name    : Cmd
+    index_name      : Cmd
+    collection_name : Cmd
+    collection      : Cmd
+    starting_index  : Cmd
+    step_size       : Cmd
+
+  METHODS
+    method init( t, element_name, index_name, collection_name, collection, starting_index, step_size, statements )
+
+    method init( existing:ForEachIn )
+      prior.init( existing )
+      if (existing.element_name) element_name = existing.element_name.cloned
+      if (existing.index_name) index_name = existing.index_name.cloned
+      if (existing.collection_name) collection_name = existing.collection_name.cloned
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.starting_index) starting_index = existing.starting_index.cloned
+      if (existing.step_size) step_size = existing.step_size.cloned
+
+    method description->String
+      return "ForEachIn($,$,$,$,$,$,$)" (%element_name,%index_name,%collection_name,%collection,%starting_index,%step_size,%statements)
+
+endClass
+
+class ForEachOf : ControlStructure
+  PROPERTIES
+    index_name      : Cmd
+    collection_name : Cmd
+    collection      : Cmd
+    starting_index  : Cmd
+    step_size       : Cmd
+
+  METHODS
+    method init( t, index_name, collection_name, collection, starting_index, step_size, statements )
+
+    method init( existing:ForEachOf )
+      prior.init( existing )
+      if (existing.index_name) index_name = existing.index_name.cloned
+      if (existing.collection_name) collection_name = existing.collection_name.cloned
+      if (existing.collection) collection = existing.collection.cloned
+      if (existing.starting_index) starting_index = existing.starting_index.cloned
+      if (existing.step_size) step_size = existing.step_size.cloned
+
+    method description->String
+      return "ForEachOf($,$,$,$,$,$)" (%index_name,%collection_name,%collection,%starting_index,%step_size,%statements)
+
+endClass
+
+class ControlStructure : Cmd
+  PROPERTIES
+    locals     = [String:Local]
+    statements : Statements
+
+  METHODS
+    method init( t, statements )
+
+    method init( existing:ControlStructure )
+      prior.init( existing )
+      if (existing.statements) statements = existing.statements.cloned
+
+    method add_local( t:Token, name:String, type:Type, proc:Procedure )->Local
+      local v = Local( t, name, type )
+      add_local( v, proc )
+      return v
+
+    method add_local( identifier:Cmd, type:Type, proc:Procedure )->Local
+      local v = Local( identifier.t, identifier->String, type )
+      add_local( v, proc )
+      return v
+
+    method add_local( v:Local, proc:Procedure )
+      if (locals.contains(v.name))
+        throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
+      endIf
+      v.index = proc.local_count
+      ++proc.local_count
+      locals[v.name] = v
+
+    method description->String
+      return "ControlStructure($)" (%statements)
+
+endClass
+
+
+class ForEachElementInRangeUpToInt : ControlStructure
+  PROPERTIES
+    element_info : Local
+    start        : Cmd
+    limit        : Cmd
+
+  METHODS
+    method init( t, element_info, start, limit, statements )
+
+    method init( existing:ForEachElementInRangeUpToInt )
+      prior.init( existing )
+      if (existing.element_info) element_info = existing.element_info.cloned
+      if (existing.start) start = existing.start.cloned
+      if (existing.limit) limit = existing.limit.cloned
+
+    method description->String
+      return "ForEachElementInRangeUpToInt($,$,$,$)" (%element_info,%start,%limit,%statements)
 
 endClass

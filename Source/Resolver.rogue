@@ -6,7 +6,7 @@ augment Resolver
     method on( cmd:$Cmd )->Cmd
       local left  = visit( cmd.left )
       local right = visit( cmd.right )
-      local common_type = find_common_type( left, right )
+      local common_type = find_compatible_type( left, right )
 
       left = convert_to( left, common_type )
       right = convert_to( right, common_type )
@@ -151,6 +151,11 @@ class Resolver : Visitor
       add_local( v )
       return v
 
+    method add_local( identifier:Cmd, type:Type )->Local
+      local v = Local( identifier.t, identifier->String, type )
+      add_local( v )
+      return v
+
     method add_local( v:Local )
       if (find_local(v.name))
         throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
@@ -174,7 +179,7 @@ class Resolver : Visitor
 
       throw cmd.t.error( "Cannot convert type $ to type $."(cmd_type,to_type) )
 
-    method find_common_type( left:Cmd, right:Cmd )->Type
+    method find_compatible_type( left:Cmd, right:Cmd )->Type
       local left_type = left.require_type
       local right_type = right.require_type
       if (left_type is right_type) return left_type
@@ -208,22 +213,15 @@ class Resolver : Visitor
     method on( cmd:Assign )->Cmd
       return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
 
-    #method on( cmd:ForEach )->Cmd
-    #  return cmd.control.resolve_foreach( cmd, this )
+    method on( cmd:ForEachIn )->Cmd
+      cmd.collection = visit( cmd.collection )
+      return cmd.collection.resolve_foreach_in( cmd, this )
 
-    #method on( cmd:ForEachIn )->Cmd
-    #  scope_stack.add( cmd )
-
-    #  cmd.collection = visit( cmd.collection )->(as ForEachCollection)
-    #  local element_type = cmd.collection.element_type
-    #  cmd.iterator = add_local( cmd.t, cmd.iterator_name, element_type )
-    #  visit( cmd.statements )
-
-    #  scope_stack.remove_last
-    #  return cmd
-
-    #method on( cmd:ForEachInAnonymous )->Cmd
-      #return cmd.control.resolve_foreach( cmd, this )
+    method on( cmd:ForEachElementInRangeUpToInt )->Cmd
+      scope_stack.add( cmd )
+      visit( cmd.statements )
+      scope_stack.remove_last
+      return cmd
 
     method on_validate( cmd:IntToReal )->Cmd
       if local literal_int = cmd.operand->(as LiteralInt)
