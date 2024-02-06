@@ -1,11 +1,27 @@
 #println "Hello World!"
-forEach (i in 1..15)
-  if (i % 3 == 0)
-    if (i % 5 == 0) println "FizzBuzz"
-    else            println "Fizz"
-  elseIf (i % 5 == 0)
-    println "Buzz"
-  else
-    println i
-  endIf
-endForEach
+#forEach (i in 1..15)
+#  if (i % 3 == 0)
+#    if (i % 5 == 0) println "FizzBuzz"
+#    else            println "Fizz"
+#  elseIf (i % 5 == 0)
+#    println "Buzz"
+#  else
+#    println i
+#  endIf
+#endForEach
+
+class Test
+  GLOBAL METHODS
+    method marco
+      println "polo"
+
+  #METHODS
+  #  method marco
+  #    println "polo"
+
+  #  method to->String
+  #    println "hey"
+
+endClass
+
+Test.marco

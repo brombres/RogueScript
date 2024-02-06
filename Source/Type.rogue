@@ -1,0 +1,109 @@
+module Boss
+
+class Type : Cmd
+  GLOBAL METHODS
+    method init( t:Token, name:String )->Type
+      return Program.current_module.type( t, name )
+
+    method create( t:Token, named_elements:NamedTupleTypeElements )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, anonymous_elements:AnonymousTupleTypeElements )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, key_type:Type, value_type:Type )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, element_type:Type )->Type
+      trace "TODO"
+      return null
+
+    method create( t:Token, core_type:Type, optional:Logical )->Type
+      trace "TODO"
+      return null
+
+
+  PROPERTIES
+    module_context     : Module
+
+    named_elements     : NamedTupleTypeElements
+    anonymous_elements : AnonymousTupleTypeElements
+    key_type           : Type
+    value_type         : Type
+    name               : String
+    element_type       : Type
+    core_type          : Type
+    optional           : Logical
+
+    global_methods         = [String:GlobalMethod]
+    global_methods_by_name = [String:GlobalMethod[]]
+    methods                = [String:Method]
+    methods_by_name        = [String:Method[]]
+
+    defined            : Logical
+
+  METHODS
+    method init( t, module_context, name )
+
+    method init( existing:Type )
+      prior.init( existing )
+      if (existing.named_elements) named_elements = existing.named_elements.cloned
+      if (existing.anonymous_elements) anonymous_elements = existing.anonymous_elements.cloned
+      if (existing.key_type) key_type = existing.key_type.cloned
+      if (existing.value_type) value_type = existing.value_type.cloned
+      name = existing.name
+      if (existing.element_type) element_type = existing.element_type.cloned
+      if (existing.core_type) core_type = existing.core_type.cloned
+      optional = existing.optional
+
+    method add( m:GlobalMethod )
+      if (not m.type_context) m.type_context = this
+
+      block existing_m = global_methods[ m.signature ]
+        if (existing_m and existing_m.type_context is m.type_context)
+          local m_type = which{ name=="Routine":"routine " || "global method $."(this) }
+          throw m.t.error( "A $$ already exists."(m_type,m.signature) )
+        endIf
+      endBlock
+
+      block existing_m = methods[ m.signature ]
+        if (existing_m and existing_m.type_context is m.type_context)
+          throw m.t.error( "A method $.$ already exists."(this,m.signature) )
+        endIf
+      endBlock
+
+      global_methods[m.signature] = m
+      if (not global_methods_by_name.contains(m.name))
+        global_methods_by_name[m.name] = GlobalMethod[]
+      endIf
+      global_methods_by_name[m.name].add( m )
+
+    method add( m:Method )
+      if (not m.type_context) m.type_context = this
+
+      block existing_m = global_methods[ m.signature ]
+        if (existing_m)
+          throw m.t.error( "A global method $.$ already exists."(this,m.signature) )
+        endIf
+      endBlock
+
+      block existing_m = methods[ m.signature ]
+        if (existing_m and existing_m.type_context is m.type_context)
+          throw m.t.error( "A method $.$ already exists."(this,m.signature) )
+        endIf
+      endBlock
+
+      methods[m.signature] = m
+      if (not methods_by_name.contains(m.name))
+        methods_by_name[m.name] = Method[]
+      endIf
+      methods_by_name[m.name].add( m )
+
+    method description->String
+      return name
+
+endClass
+

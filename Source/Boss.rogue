@@ -1,7 +1,6 @@
 module Boss
 
 $include CmdExecute
-$include CmdResolve
 $include CmdStore
 $include CmdType
 $include Module
@@ -9,6 +8,7 @@ $include Parser       [optional]
 $include Program
 $include Resolver
 $include Scanner
+$include Type
 
 uses Boss
 uses Console/CommandLineParser
@@ -42,15 +42,19 @@ class Boss
 
       local program = Program()
 
+      local err : Exception
       forEach (arg in command//args)
-        local err = program.parse( File(arg->String) )
-        if (err)
-          err.display
-          System.exit 1
-        endIf
+        err = program.parse( File(arg->String) )
+        if (err) escapeForEach
       endForEach
 
-      program.launch
+      if (not err) err = program.launch
+
+      if (err)
+        #err.display
+        Global.error.println err
+        System.exit 1
+      endIf
 
     method parse_args( args:String[] )->Rogue::Variant
       # This method is unrelated to the Froley Parser

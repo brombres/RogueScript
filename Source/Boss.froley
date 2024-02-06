@@ -562,8 +562,8 @@ scanner
 #  produceList Statements
 #
 #- statement
-#  on @"print"   arg_list -> Print(args)
-#  on @"println" arg_list -> Println(args):Print
+#  on @"print"   arg_list -> Print(args:Args)
+#  on @"println" arg_list -> Println(args:Args):Print
 #  expression
 #
 #- consume_eols
@@ -627,17 +627,7 @@ parser
   if (not hasAnother) return
 
   if (nextIs("class"))
-    savePosition     # Pass 1: save position to scan template tokens from (node output already disabled)
-    ++disable_output # Pass 2: also disable output; just parse to get past
-
-    consume("class")
-    identifier
     class
-    #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
-
-    --disable_output
-    discardPosition
-
     return
   endIf
 
@@ -892,11 +882,16 @@ parser
 
 - procedure_return_type
   if (not consume('->')) produceNull
-  if (consume("this") or consume("ThisType"))
-    procedure_returns_this = true
-    produceNull
-  endIf
   type
+
+- procedure_doc_comment_and_statements
+  if consume(EOL)
+    call parse_doc_comment
+    multi_line_statements
+  else
+    single_line_statements
+    call parse_doc_comment
+  endIf
 
 - function_definition
   on "function"
@@ -1159,17 +1154,22 @@ parser
   syntaxError "Illegal class attribute. Expected one or more of [abstract api aspect compound essential primitive singleton]."
 
 - class
-  constructor_properties
-  base_types
-  class_attributes
-  #FIXME call parse_doc_comment
-  if (consume(';'))
-    createNull
-  else
-    class_sections
-    mustConsume "endClass"
-  endIf
-  produce Class( constructor_properties:Parameters, base_types:TypeList, attributes:Attributes, doc:String, sections )
+  on "class"
+    identifier
+    constructor_properties
+    base_types
+    class_attributes
+
+    call parse_doc_comment
+
+    if (consume(';'))
+      createNull
+    else
+      class_sections
+      mustConsume "endClass"
+    endIf
+    produce Class( name:Identifier, constructor_properties:Parameters, base_types:TypeList, attributes:Attributes, doc:String, members )
+  endOn
 
 - enum_attributes
   beginList
@@ -1190,14 +1190,16 @@ parser
   constructor_properties
   base_types
   enum_attributes
-  #FIXME call parse_doc_comment
+
+  call parse_doc_comment
+
   if (consume(';'))
     createNull
   else
     enum_sections
     mustConsume "endEnum"
   endIf
-  produce Class( constructor_properties:Parameters, base_types:TypeList, attributes:Attributes, doc:String, sections )
+  produce Class( name:Identifier, constructor_properties:Parameters, base_types:TypeList, attributes:Attributes, doc:String, members )
 
 - placeholder
   on PLACEHOLDER -> Placeholder(name=content)
@@ -1337,7 +1339,7 @@ parser
       createNull
     endOn
     #FIXME call parse_doc_comment
-    produce Category(name:String,args,value,doc:String)
+    produce Category(name:String,args:Args,value,doc:String)
   endOn
   identifier  # syntax error
 
@@ -1665,58 +1667,23 @@ parser
 
 - method
   on "method"
-    is_batch_augment = false # FIXME
-    if (is_batch_augment)
-      savePosition
+    if consume(@"to")
+      mustConsume '->'
       type
-      #FIXME call set_augment_context_name
-      discardPosition
-      mustConsume '.'
-      savePosition
-    endIf
-
-    next_is_to_type = false
-    if (nextIs(@"to"))
-      savePosition
-      consume @"to"
-      next_is_to_type = not nextIs("<<")
-      restorePosition
-    endIf
-
-    if next_is_to_type
-      on @"to"
-        create Identifier(name=content)
-        procedure_return_type
-        procedure_parameters
-        #FIXME call swap
-      endOn
-
-    else
-      procedure_name
-      is_def = false
       procedure_parameters
-      procedure_return_type
+      procedure_attributes
+      consume(':')
+      procedure_doc_comment_and_statements
+      produce ToTypeMethod(to_type:Type,parameters:Parameters,attributes:Attributes,doc:String,statements:Statements)
     endIf
 
+    procedure_name
+    procedure_parameters
+    procedure_return_type
     procedure_attributes
     consume(':')
-    #FIXME call parse_doc_comment
-
-    if (is_batch_augment)
-      multi_line_statements
-      #FIXME call batch_augment_create_method
-      discardPosition
-    else
-      savePosition
-
-      ++disable_output
-      multi_line_statements
-      --disable_output
-      createTokenList
-
-      create Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,source_tokens:TokenList,statements:Statements):Procedure
-      return
-    endIf
+    procedure_doc_comment_and_statements
+    produce Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,statements:Statements):Procedure
   endOn
 
 - scoped_single_line_statements
@@ -1728,13 +1695,11 @@ parser
 - global_method
   on "method"
     procedure_name
-
     procedure_parameters
     procedure_return_type
     procedure_attributes
     consume(':')
-    #FIXME call parse_doc_comment
-    scoped_multi_line_statements
+    procedure_doc_comment_and_statements
     produce GlobalMethod(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,statements:Statements):Procedure
   endOn
 
@@ -1939,8 +1904,8 @@ parser
   on "necessary" expression       -> Necessary(condition)
   on "nextIteration"              -> NextIteration
   on "noAction":                     return
-  on @"print"   args              -> Access(name=content,args)
-  on @"println" args              -> Access(name=content,args)
+  on @"print"   args              -> Access(name=content,args:Args)
+  on @"println" args              -> Access(name=content,args:Args)
   on "return" optional_expression -> Return(result)
   on "sufficient" expression      -> Sufficient(condition)
   on "swapValues" '(' expression ',' expression ')' -> SwapValues(a,b)
@@ -1993,7 +1958,7 @@ parser
     elseOnOthers
       procedure_name
       access_args
-      create ContextAccess(context,name:String,args)
+      create ContextAccess(context,name:String,args:Args)
     endOn
     access_inner  # parse any further accesses
     produce AccessAndAssign(operand)
@@ -2083,7 +2048,7 @@ parser
 
   #FIXME call clone
   createNull
-  create Access(name:String,args)
+  create Access(name:String,args:Args)
   subclass
 
   push initial_value_tokens
@@ -2204,7 +2169,7 @@ parser
             if (not consume(':')) mustConsume EOL
           createList Args
           scoped_multi_line_statements
-          create WhichCase(args,statements:Statements)
+          create WhichCase(args:Args,statements:Statements)
         endOn
       endWhile
     createList WhichCases
@@ -2518,7 +2483,7 @@ parser
     type
     if (nextIs('('))
       args
-      create ConvertToTypeWithArgs( operand, to_type:Type, args )
+      create ConvertToTypeWithArgs( operand, to_type:Type, args:Args )
     else
       create ConvertToType(operand,to_type:Type)
     endIf
@@ -2543,7 +2508,7 @@ parser
         consume_eols
       endWhile
       createList
-      create ListIndexedAccess(context,args)
+      create ListIndexedAccess(context,args:Args)
     endIf
     access_inner
   elseOn "//"
@@ -2570,7 +2535,7 @@ parser
     createList Args
     consume_eols
     mustConsume ']'
-    produce ContextAccess(context,name="set_state":String,args)
+    produce ContextAccess(context,name="set_state":String,args:Args)
   endOn
 
 - context_block
@@ -2598,7 +2563,7 @@ parser
   elseOnOthers
     procedure_name
     access_args
-    create ContextAccess(context,name:String,args)
+    create ContextAccess(context,name:String,args:Args)
   endOn
   access_inner
 
@@ -2606,7 +2571,7 @@ parser
   create ContextBlockContext
   procedure_name
   access_args
-  create ContextAccess(context,name:String,args)
+  create ContextAccess(context,name:String,args:Args)
   access_inner
   on "=" expression -> Assign(target,new_value)
 
@@ -2621,7 +2586,7 @@ parser
     endWhile
     if (nextIs('('))
       args
-      produce FormattedString(format:String,args)
+      produce FormattedString(format:String,args:Args)
     endIf
     return
   endOn
@@ -2639,7 +2604,7 @@ parser
   onPeek @"operator"
     procedure_name
     access_args
-    produce Access( name:String, args )
+    produce Access( name:String, args:Args )
 
   elseOnPeek IDENTIFIER
     pathed_name
@@ -2659,13 +2624,13 @@ parser
         else
           # Logicalize
           createNull
-          create Access( name:String, args )
+          create Access( name:String, args:Args )
           produce Logicalize(operand):Unary
         endIf
       endOn
     else
       access_args
-      create Access( name:String, args )
+      create Access( name:String, args:Args )
       subclass
       return
     endIf
@@ -2673,7 +2638,7 @@ parser
   onPeek PLACEHOLDER
     id_or_type
     access_args
-    create Access( name:String, args )
+    create Access( name:String, args:Args )
     subclass
     return
   endOn
@@ -2697,7 +2662,7 @@ parser
     if (nextIs('('))
       create Identifier(name="call")
       args
-      produce ContextAccess(context,name:String,args)
+      produce ContextAccess(context,name:String,args:Args)
     endIf
     return
   endOn
@@ -2712,7 +2677,7 @@ parser
         type             # parse '(Function(...)->...)'
         list_or_optional_type
         access_args
-        produce TypeAccess(of_type:Type,args)
+        produce TypeAccess(of_type:Type,args:Args)
       endOn
     endOn
     restorePosition
@@ -2787,7 +2752,7 @@ parser
         create TypedLiteralTable( of_type:Type, table:KeyValuePairList )
       else
         access_args
-        create TypeAccess( of_type:Type, args )
+        create TypeAccess( of_type:Type, args:Args )
       endIf
       return
     else
@@ -2824,7 +2789,7 @@ parser
       expression
     createList Args
     mustConsume ']'
-    produce Access(name="set_state":String,args)
+    produce Access(name="set_state":String,args:Args)
   endOn
 
   on "native"
@@ -2860,7 +2825,7 @@ parser
   onPeek "Function"
     type
     optional_args
-    produce TypeAccess(of_type:Type,args)
+    produce TypeAccess(of_type:Type,args:Args)
   endOn
 
   on "<<"
@@ -2902,7 +2867,7 @@ parser
   syntaxError
 
 - create_InvokeContext
-  produce InvokeContext( context, args )
+  produce InvokeContext( context, args:Args )
 
 - variant_expression
   on '{' variant_table: return
@@ -2926,7 +2891,7 @@ parser
     mustConsume ']'
   createList Args
 
-  produce VariantList(args)
+  produce VariantList(args:Args)
 
 - variant_table
   #FIXME call use_Variant
@@ -2952,7 +2917,7 @@ parser
     on IDENTIFIER
       create LiteralString(name=content)
       createNull
-      create Access(name=content,args)
+      create Access(name=content,args:Args)
     elseOn STRING
       create LiteralString(name=content)
       println "FIXME"
@@ -2983,7 +2948,7 @@ parser
     remaining_typed_literal_list
   else
     access_args
-    create TypeAccess( of_type:Type, args )
+    create TypeAccess( of_type:Type, args:Args )
     subclass
   endIf
 
@@ -3440,6 +3405,8 @@ parser
   create MultiplyReal(left,right):Multiply
   create PowerInt(left,right):Power
   create PowerReal(left,right):Power
+  create Print(args:Args)
+  create Println(args:Args)
   create ReadLocal(info:Local)
   create ReadLocalInt(info:Local):ReadLocal
   create SubtractInt(left,right):Subtract
@@ -3447,15 +3414,15 @@ parser
   create WriteLocal(info:Local,new_value)
   create WriteLocalInt(info:Local,new_value):WriteLocal
 
-  create CallDynamicMethod(context,args):CallProcedure
-  create CallGlobalMethod(args):CallProcedure
-  create CallMethodPointer(pointer,param_types:TypeList,args,return_type:Type)
-  create CallProcedure(args)
-  create CallStaticMethod(context,args):CallProcedure
-  create CallThisDynamicMethod(args):CallProcedure
-  create CallThisStaticMethod(args):CallProcedure
-  create CallVirtualMethod(context,args):CallProcedure
-  create CallThisVirtualMethod(args):CallProcedure
+  create CallDynamicMethod(context,args:Args):CallProcedure
+  create CallGlobalMethod(args:Args):CallProcedure
+  create CallMethodPointer(pointer,param_types:TypeList,args:Args,return_type:Type)
+  create CallProcedure(args:Args)
+  create CallStaticMethod(context,args:Args):CallProcedure
+  create CallThisDynamicMethod(args:Args):CallProcedure
+  create CallThisStaticMethod(args:Args):CallProcedure
+  create CallVirtualMethod(context,args:Args):CallProcedure
+  create CallThisVirtualMethod(args:Args):CallProcedure
   create CleanupBlock(statements:Statements,cleanup):ControlStructure
   create Compare(left,right):Binary
   create Conditional(condition,statements:Statements):ControlStructure
@@ -3469,7 +3436,7 @@ parser
   create ConvertToReal32(operand):Convert
   create ConvertToReal(operand):Convert
   create ConvertToReal64(operand):Convert
-  create CreateObject(of_type:Type,args)
+  create CreateObject(of_type:Type,args:Args)
   create CreateObject(of_type:Type,info:Local)
   create CreateCompound(of_type:Type,args:Args)
   create DefaultArg(operand):Unary

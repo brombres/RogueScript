@@ -42,13 +42,16 @@ class Module
       if (resolved) return
 
       if (launch_statements)
-        m_on_launch = GlobalMethod( t, this, "on_launch", &statements=launch_statements )
+        m_on_launch = GlobalMethod( t, "on_launch", &statements=launch_statements )
         type( t, "Routine" ).add( m_on_launch )
         launch_statements = null
         Resolver( this ).visit( m_on_launch )
       endIf
 
       resolved = true
+
+    method to->String
+      return name
 
     method type( t:Token, name:String )->Type
       local result = find_type( name )

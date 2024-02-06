@@ -200,8 +200,8 @@ class Resolver : Visitor
 
     method on( cmd:Access )->Cmd
       which (cmd.name)
-        case "print":   return Print( cmd.t, visit(cmd.args) )
-        case "println": return Println( cmd.t, visit(cmd.args) )
+        case "print":   return Print( cmd.t, visit(cmd.args)->(as Args) )
+        case "println": return Println( cmd.t, visit(cmd.args)->(as Args) )
       endWhich
 
       if local v = find_local( cmd.name )
@@ -223,6 +223,9 @@ class Resolver : Visitor
       visit( cmd.statements )
       scope_stack.remove_last
       return cmd
+
+    method on( cmd:ContextAccess )->Cmd
+      return cmd.context.resolve_context_access( cmd, this )
 
     method on( cmd:ForEachIn )->Cmd
       cmd.collection = visit( cmd.collection )
@@ -321,4 +324,46 @@ class Resolver : Visitor
           throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
       endWhich
 
+    method resolve_access( t:Token, context_type:Type, context:Cmd, name:String, args:Args )->Cmd
+      throw t.error("TODO")
 endClass
+
+augment
+  METHODS
+    method Cmd.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
+      throw t.error( "Invalid assignment." )
+
+    method Access.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
+      local v = resolver.find_local( name )
+      if (v) return resolver.visit( WriteLocal(t,v,new_value) )
+      throw t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
+
+    method Cmd.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
+      throw t.error( "Invalid access - type or routine name expected." )
+
+    method Access.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
+      local type = Program.current_module.find_type( name )
+      if (type) return TypeContext( t, type ).resolve_context_access( access, resolver )
+      throw t.error( "Invalid access - type or routine name expected." )
+
+    method TypeContext.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
+      return resolver.resolve_access( access.t, @type, null, access.name, access.args )
+
+    method Cmd.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
+      throw t.error( "TODO: resolve_foreach_in($)"(type_name) )
+
+    method CreateRangeUpTo.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
+      local type = resolver.find_compatible_type( start, limit )
+      if (step_size) type = resolver.find_compatible_type( type, step_size )
+
+      local v = Local( cmd_foreach_in.element_name.t, cmd_foreach_in.element_name->String, type )
+
+      if (step_size)
+        throw t.error( "TODO: resolve_foreach_in($) with step size"(type_name) )
+      endIf
+
+      local result = ForEachElementInRangeUpToInt( cmd_foreach_in.t, v, start, limit, cmd_foreach_in.statements )
+      result.add_local( v, resolver.this_procedure )
+      return resolver.visit( result )
+
+endAugment

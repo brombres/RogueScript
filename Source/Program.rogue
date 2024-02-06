@@ -1,8 +1,11 @@
 module Boss
 
+class TokenizedFile( filepath:String, tokens:Token[], is_api:Logical ) [compound];
+
 class Program [singleton]
   PROPERTIES
     parsed_file_timestamps = [String:Timestamp]
+    tokenized_files        = TokenizedFile[]
 
     t              : Token
     current_module : Module
@@ -38,12 +41,22 @@ class Program [singleton]
         cmd.execute
       endTemporarily
 
-    method launch
-      resolve
+    method launch->CompileError
+      try
+        local err = resolve
+        if (err) return err
 
-      forEach (mod in modules)
-        mod.launch
-      endForEach
+        forEach (mod in modules)
+          mod.launch
+        endForEach
+
+        return null
+
+      catch (err:CompileError)
+        return err
+      catch (err:Error)
+        return CompileError( "[INTERNAL ERROR] " + err )
+      endTry
 
     method parse( file:File )->CompileError
       temporarily Program = this
@@ -61,21 +74,48 @@ class Program [singleton]
       endTemporarily
 
     method parse( filepath:String, source:String, timestamp=Timestamp():Timestamp )->CompileError
-      try
-        local parser = Parser( File(filepath) )
-        if (not configured) configure
+      if (not configured) configure
 
-        temporarily Program=this, current_module=default_module
-          local elements = parser.parse
-          (forEach in elements).store
-        endTemporarily
+      try
+        local is_api = false
+
+        local tokens = Scanner( File(filepath) ).tokenize
+        tokenized_files.add( TokenizedFile(filepath,tokens,is_api) )
+
+        Parser(tokens).[collecting_types=true,disable_output=1].parse
 
       catch (err:CompileError)
         return err
-      catch (err:Error)
+      catch (err:Exception)
         return CompileError( "[INTERNAL ERROR] " + err, filepath )
       endTry
 
-    method resolve
-      (forEach in modules).resolve
+      return null
+
+    method resolve->CompileError
+      try
+        while (tokenized_files.count)
+          local files = tokenized_files.cloned
+          tokenized_files.clear
+          forEach (file in files)
+            local is_api = false
+
+            local parser = Parser( File(file.filepath) )
+
+            temporarily Program=this, current_module=default_module
+              local elements = parser.parse
+              (forEach in elements).store
+            endTemporarily
+          endForEach
+        endWhile
+
+        (forEach in modules).resolve
+
+      catch (err:CompileError)
+        return err
+      catch (err:Exception)
+        return CompileError( "[INTERNAL ERROR] " + err )
+      endTry
+
+      return null
 endClass

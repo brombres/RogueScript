@@ -4,5 +4,10 @@ module Boss
 $include "ParserCore.rogue"
 
 class Parser : ParserCore
+  PROPERTIES
+    collecting_types : Logical
+
   METHODS
+    method parse_doc_comment
+      _push( null )
 endClass
