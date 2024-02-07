@@ -131,7 +131,7 @@ augment
 
 endAugment
 
-class Resolver : Visitor
+class Resolver : RebuildVisitor
   PROPERTIES
     this_module    : Module
     this_procedure : Procedure

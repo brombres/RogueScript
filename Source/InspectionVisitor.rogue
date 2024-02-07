@@ -10,11 +10,11 @@ class InspectionVisitor<<$ReturnType>>
       if (cmd is null) return $ReturnType.meta.default_value
       return cmd.dispatch<<on,ThisType,$ReturnType>>( this )
 
-    method visit_content( cmd:Cmd ) [propagated]
-      cmd.dispatch<<on_visit,ThisType>>( this )
+    method visit_node( cmd:Cmd ) [propagated]
+      cmd.dispatch<<on_visit_node,ThisType>>( this )
 
     method visit_children( cmd:Cmd )->$ReturnType [propagated]
-      # Call from 'on()' or 'on_visit()' handler to visit subtrees.
+      # Call from 'on()' or 'on_visit_node()' handler to visit subtrees.
       return cmd.dispatch<<on_visit_children,ThisType,$ReturnType>>( this )
 
     method on( cmd:Cmd )->$ReturnType
@@ -23,12 +23,12 @@ class InspectionVisitor<<$ReturnType>>
       #   CALL                                   OVERLOADABLE METHOD
       #   --------------------                   ------------------------
       #   visit(cmd)->$ReturnType            ->  on(cmd:CmdType)->$ReturnType
-      #     visit_content(cmd)               ->    on_visit(cmd:CmdType)
+      #     visit_node(cmd)               ->    on_visit_node(cmd:CmdType)
       #     visit_children(cmd)->$ReturnType ->    on_visit_children(cmd:CmdType)
-      visit_content( cmd )
+      visit_node( cmd )
       return visit_children( cmd )
 
-    method on_visit( cmd:Cmd )
+    method on_visit_node( cmd:Cmd )
       # This method is called from the default on(CmdType) before
       # children are visited.
 

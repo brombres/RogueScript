@@ -1,6 +1,6 @@
 module Boss
 
-class Organizer : Visitor
+class Organizer : RebuildVisitor
   PROPERTIES
     this_module    : Module
     this_procedure : Procedure
