@@ -102,7 +102,14 @@ class Type : Cmd
       endIf
       methods_by_name[m.name].add( m )
 
+    method collect_global_methods( method_name:String )
+      local methods = global_methods_by_name[ method_name ]
+      if (methods) CallCandidates.add( forEach in methods )
+
     method description->String
+      return name
+
+    method to->String
       return name
 
 endClass

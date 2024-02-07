@@ -3,7 +3,7 @@ module Boss
 $localMacro GENERAL_OP_RESOLVE<<$Cmd,$op>>
 augment Resolver
   METHODS
-    method on( cmd:$Cmd )->Cmd
+    method on_visit( cmd:$Cmd )->Cmd
       local left  = visit( cmd.left )
       local right = visit( cmd.right )
       local common_type = find_compatible_type( left, right )
@@ -198,7 +198,7 @@ class Resolver : RebuildVisitor
       endForEach
       return null
 
-    method on( cmd:Access )->Cmd
+    method on_visit( cmd:Access )->Cmd
       which (cmd.name)
         case "print":   return Print( cmd.t, visit(cmd.args)->(as Args) )
         case "println": return Println( cmd.t, visit(cmd.args)->(as Args) )
@@ -210,7 +210,7 @@ class Resolver : RebuildVisitor
 
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
 
-    method on( cmd:Assign )->Cmd
+    method on_visit( cmd:Assign )->Cmd
       return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
 
     method on_validate( cmd:Binary )->Cmd
@@ -218,29 +218,29 @@ class Resolver : RebuildVisitor
       cmd.right.require_type
       return cmd
 
-    method on( cmd:ControlStructure )->Cmd
+    method on_visit( cmd:ControlStructure )->Cmd
       scope_stack.add( cmd )
       visit( cmd.statements )
       scope_stack.remove_last
       return cmd
 
-    method on( cmd:ContextAccess )->Cmd
+    method on_visit( cmd:ContextAccess )->Cmd
       return cmd.context.resolve_context_access( cmd, this )
 
-    method on( cmd:ForEachIn )->Cmd
+    method on_visit( cmd:ForEachIn )->Cmd
       cmd.collection = visit( cmd.collection )
       return cmd.collection.resolve_foreach_in( cmd, this )
 
-    method on( cmd:ForEachElementInRangeUpToInt )->Cmd
+    method on_visit( cmd:ForEachElementInRangeUpToInt )->Cmd
       scope_stack.add( cmd )
       visit( cmd.statements )
       scope_stack.remove_last
       return cmd
 
-    method on( cmd:If )->Cmd
+    method on_visit( cmd:If )->Cmd
       if (cmd.condition)
         cmd.condition = visit( cmd.condition ).require_value
-        on( cmd->(as ControlStructure) )
+        on_visit( cmd->(as ControlStructure) )
         cmd.cmd_else = visit( cmd.cmd_else )
         return cmd
       else
@@ -254,7 +254,7 @@ class Resolver : RebuildVisitor
         return cmd
       endIf
 
-    method on( cmd:LocalDeclarations )->Cmd
+    method on_visit( cmd:LocalDeclarations )->Cmd
       local initialization = Statements( cmd.t )
 
       forEach (v in cmd.list)
@@ -290,21 +290,21 @@ class Resolver : RebuildVisitor
       endIf
       return cmd
 
-    method on( cmd:ReadLocal )->Cmd
+    method on_visit( cmd:ReadLocal )->Cmd
       which (cmd.info.type)
         case Program.type_Int: return visit( ReadLocalInt(cmd.t,cmd.info) )
         others
           throw cmd.t.error( "[INTERNAL] Unhandled type $ in ReadLocal."(cmd.info.type) )
       endWhich
 
-    method on( cmd:ReadLocalInt )->Cmd
+    method on_visit( cmd:ReadLocalInt )->Cmd
       return cmd
 
     method on_validate( cmd:Unary )->Cmd
       cmd.operand.require_type
       return cmd
 
-    method on( cmd:While )->Cmd
+    method on_visit( cmd:While )->Cmd
       scope_stack.add( cmd )
 
       visit_children( cmd )
@@ -313,7 +313,7 @@ class Resolver : RebuildVisitor
       scope_stack.remove_last
       return cmd
 
-    method on( cmd:WriteLocal )->Cmd
+    method on_visit( cmd:WriteLocal )->Cmd
       local new_value = convert_to( visit(cmd.new_value), cmd.info.type )
 
       which (cmd.info.type)
@@ -325,7 +325,28 @@ class Resolver : RebuildVisitor
       endWhich
 
     method resolve_access( t:Token, context_type:Type, context:Cmd, name:String, args:Args )->Cmd
-      throw t.error("TODO")
+      use CallCandidates
+        context_type.collect_global_methods( name )
+        local m = select_call_candidate
+        if (m)
+          return visit( CallGlobalMethod(t, m, visit(args)->(as Args)) )
+        else
+          return null
+        endIf
+      endUse
+
+    method select_call_candidate->Procedure
+      return filter_call_candidates
+
+    method filter_call_candidates->Procedure
+      forEach (m in CallCandidates)
+        CallCandidates.keep( m )
+      endForEach
+      if (CallCandidates.found_match) return CallCandidates.match
+      CallCandidates.refine
+
+      return null
+
 endClass
 
 augment

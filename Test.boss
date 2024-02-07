@@ -13,7 +13,7 @@
 class Test
   GLOBAL METHODS
     method marco
-      println "polo"
+      println "Polo"
 
   #METHODS
   #  method marco
@@ -24,4 +24,5 @@ class Test
 
 endClass
 
+println "Marco"
 Test.marco

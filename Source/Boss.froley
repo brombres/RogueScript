@@ -3414,15 +3414,15 @@ parser
   create WriteLocal(info:Local,new_value)
   create WriteLocalInt(info:Local,new_value):WriteLocal
 
-  create CallDynamicMethod(context,args:Args):CallProcedure
-  create CallGlobalMethod(args:Args):CallProcedure
+  create CallDynamicMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
   create CallMethodPointer(pointer,param_types:TypeList,args:Args,return_type:Type)
-  create CallProcedure(args:Args)
-  create CallStaticMethod(context,args:Args):CallProcedure
-  create CallThisDynamicMethod(args:Args):CallProcedure
-  create CallThisStaticMethod(args:Args):CallProcedure
-  create CallVirtualMethod(context,args:Args):CallProcedure
-  create CallThisVirtualMethod(args:Args):CallProcedure
+  create CallProcedure(info:Procedure,args:Args)
+  create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallThisDynamicMethod(info:Procedure,args:Args):CallProcedure
+  create CallThisStaticMethod(info:Procedure,args:Args):CallProcedure
+  create CallVirtualMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallThisVirtualMethod(info:Procedure,args:Args):CallProcedure
   create CleanupBlock(statements:Statements,cleanup):ControlStructure
   create Compare(left,right):Binary
   create Conditional(condition,statements:Statements):ControlStructure

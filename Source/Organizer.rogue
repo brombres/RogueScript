@@ -15,6 +15,6 @@ class Organizer : RebuildVisitor
       scope.remove_last
       return this_procedure
 
-      #method on( cmd:LocalDeclarations )->Cmd
+      #method on_visit( cmd:LocalDeclarations )->Cmd
 
 endClass

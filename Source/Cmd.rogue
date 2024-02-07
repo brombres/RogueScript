@@ -1533,6 +1533,9 @@ class GlobalMethod : Procedure
     method description->String
       return "GlobalMethod($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
 
+    method to->String
+      return signature
+
 endClass
 
 class GlobalPropertyDeclarations : Cmd
@@ -4136,7 +4139,7 @@ class CallDynamicMethod : CallProcedure
     context : Cmd
 
   METHODS
-    method init( t, context, args )
+    method init( t, context, info, args )
 
     method init( existing:CallDynamicMethod )
       prior.init( existing )
@@ -4196,10 +4199,11 @@ endClass
 
 class CallProcedure : Cmd
   PROPERTIES
+    info : Procedure
     args : Args
 
   METHODS
-    method init( t, args )
+    method init( t, info, args )
 
     method init( existing:CallProcedure )
       prior.init( existing )
@@ -4215,7 +4219,7 @@ class CallStaticMethod : CallProcedure
     context : Cmd
 
   METHODS
-    method init( t, context, args )
+    method init( t, context, info, args )
 
     method init( existing:CallStaticMethod )
       prior.init( existing )
@@ -4252,7 +4256,7 @@ class CallVirtualMethod : CallProcedure
     context : Cmd
 
   METHODS
-    method init( t, context, args )
+    method init( t, context, info, args )
 
     method init( existing:CallVirtualMethod )
       prior.init( existing )

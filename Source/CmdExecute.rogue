@@ -6,6 +6,17 @@ augment
       println this
       throw t.error( "[TODO] $.execute"(type_name) )
 
+    method CallGlobalMethod.execute->Variant
+      if (args and args.count)
+        local old_stack_count = Program.stack.count
+        Program.stack.add( (forEach in args).execute )
+        local result = info.execute
+        Program.stack.discard_from( old_stack_count )
+        return result
+      else
+        return info.execute
+      endIf
+
     method Else.execute->Variant
       return statements.execute
 

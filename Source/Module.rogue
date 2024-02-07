@@ -45,8 +45,13 @@ class Module
         m_on_launch = GlobalMethod( t, "on_launch", &statements=launch_statements )
         type( t, "Routine" ).add( m_on_launch )
         launch_statements = null
-        Resolver( this ).visit( m_on_launch )
       endIf
+
+      block resolver = Resolver( this )
+        forEach (type in types)
+          resolver.visit( forEach in type.global_methods )
+        endForEach
+      endBlock
 
       resolved = true
 
