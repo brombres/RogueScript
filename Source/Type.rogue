@@ -75,6 +75,14 @@ class Type : Cmd
         endIf
       endBlock
 
+      if (m.name == "create")
+        if (not m.return_type or m.return_type is not this)
+          throw m.t.error( "A $ create() constructor must have return-type $."(this,this) )
+        endIf
+      elseIf (m.name == "init")
+        throw m.t.error( "A $ init() constructor cannot be a global method."(this) )
+      endIf
+
       global_methods[m.signature] = m
       if (not global_methods_by_name.contains(m.name))
         global_methods_by_name[m.name] = GlobalMethod[]
@@ -96,6 +104,14 @@ class Type : Cmd
         endIf
       endBlock
 
+      if (m.name == "init")
+        if (m.return_type)
+          throw m.t.error( "A $ init() constructor cannot have a return-type."(this) )
+        endIf
+      elseIf (m.name == "create")
+        throw m.t.error( "A $ create() constructor must be a global method."(this) )
+      endIf
+
       methods[m.signature] = m
       if (not methods_by_name.contains(m.name))
         methods_by_name[m.name] = Method[]
@@ -104,6 +120,10 @@ class Type : Cmd
 
     method collect_global_methods( method_name:String )
       local methods = global_methods_by_name[ method_name ]
+      if (methods) CallCandidates.add( forEach in methods )
+
+    method collect_methods( method_name:String )
+      local methods = methods_by_name[ method_name ]
       if (methods) CallCandidates.add( forEach in methods )
 
     method description->String

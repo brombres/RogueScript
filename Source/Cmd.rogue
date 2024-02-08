@@ -457,12 +457,6 @@ class AttributeSingleton : Cmd
       return "AttributeSingleton"
 endClass
 
-class Attributes : CmdList
-  METHODS
-    method description->String
-      return "Attributes" + list_description
-endClass
-
 class BitShiftLeft : Binary
   METHODS
     method description->String
@@ -877,7 +871,7 @@ class Conditional : ControlStructure
 
 endClass
 
-class ContextBlock : Cmd
+class ContextCommandBlock : Cmd
   PROPERTIES
     context  : Cmd
     commands : Cmd
@@ -885,13 +879,13 @@ class ContextBlock : Cmd
   METHODS
     method init( t, context, commands )
 
-    method init( existing:ContextBlock )
+    method init( existing:ContextCommandBlock )
       prior.init( existing )
       if (existing.context) context = existing.context.cloned
       if (existing.commands) commands = existing.commands.cloned
 
     method description->String
-      return "ContextBlock($,$)" (%context,%commands)
+      return "ContextCommandBlock($,$)" (%context,%commands)
 
 endClass
 
@@ -1525,16 +1519,6 @@ class GetTypeInfo : Cmd
 
     method description->String
       return "GetTypeInfo($)" (%of_type)
-
-endClass
-
-class GlobalMethod : Procedure
-  METHODS
-    method description->String
-      return "GlobalMethod($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
-
-    method to->String
-      return signature
 
 endClass
 
@@ -2176,13 +2160,6 @@ class Loop : Cmd
 
 endClass
 
-class Method : Procedure
-  METHODS
-    method description->String
-      return "Method($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
-
-endClass
-
 class Methods : CmdList
   METHODS
     method description->String
@@ -2526,53 +2503,6 @@ class PreDecrementLocal : Cmd
 
     method description->String
       return "PreDecrementLocal($)" (%info)
-
-endClass
-
-class Procedure : ControlStructure
-  PROPERTIES
-    type_context   : Type
-    name           : String
-    parameters     : Parameters
-    return_type    : Type
-    attributes     : Attributes
-    doc            : String
-    _signature     : String
-    param_count    : Int  # Includes 'this' context.
-    local_count    : Int  # Count of all non-parameter locals in this scope and all nested scopes.
-
-  METHODS
-    method init( t, name, parameters, return_type, attributes, doc, statements )
-
-    method init( t, name, parameters=null, return_type=null, statements=null )
-      if (not statements) statements = Statements( t )
-
-    method init( existing:Procedure )
-      prior.init( existing )
-      name = existing.name
-      if (existing.parameters) parameters = existing.parameters.cloned
-      if (existing.return_type) return_type = existing.return_type.cloned
-      if (existing.attributes) attributes = existing.attributes.cloned
-      doc = existing.doc
-
-    method description->String
-      return "$($,$,$,$,$,$)" (type_name,%name,%parameters,%return_type,%attributes,%doc,%statements)
-
-    method signature->String
-      if (_signature) return _signature
-
-      _signature = String()
-      _signature.print( name )
-      _signature.print( '(' )
-      if (parameters)
-        forEach (param at i in parameters)
-          assert param.type
-          if (i) _signature.print ','
-          _signature.print param.type
-        endForEach
-      endIf
-      _signature.print( ')' )
-      return _signature
 
 endClass
 
@@ -4347,28 +4277,6 @@ class CreateCompound : Cmd
 
 endClass
 
-class CreateObject : Cmd
-  PROPERTIES
-    of_type : Type
-    args    : Args
-    info    : Local
-
-  METHODS
-    method init( t, of_type, args )
-
-    method init( t, of_type, info )
-
-    method init( existing:CreateObject )
-      prior.init( existing )
-      if (existing.of_type) of_type = existing.of_type.cloned
-      if (existing.args) args = existing.args.cloned
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "CreateObject($,$,$)" (%of_type,%args,%info)
-
-endClass
-
 class Ensure : Cmd
   PROPERTIES
     expression : Cmd
@@ -4540,5 +4448,108 @@ class Println : Cmd
 
     method description->String
       return "Println($)" (%args)
+
+endClass
+
+class CallMethod : CallProcedure
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, args )
+
+    method init( existing:CallMethod )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "CallMethod($,$,$)" (%context,%info,%args)
+
+endClass
+
+
+class GlobalMethod : Procedure
+  METHODS
+    method init( t:Token, name:String, parameters:Parameters, return_type:Type, attributes:Attributes, doc:String, statements:Statements )
+      prior.init( t, name, parameters, return_type, attributes, doc, statements )
+      attributes.is_global = true
+
+    method init( t:Token, name:String, parameters=null:Parameters, return_type=null:Type, statements=null:Statements )
+      prior.init( t, name, parameters, return_type, statements )
+      attributes.is_global = true
+
+    method description->String
+      return "GlobalMethod($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
+
+    method to->String
+      return signature
+
+endClass
+
+class Method : Procedure
+  METHODS
+    method init( t:Token, name:String, parameters:Parameters, return_type:Type, attributes:Attributes, doc:String, statements:Statements )
+      prior.init( t, name, parameters, return_type, attributes, doc, statements )
+
+    method init( t:Token, name:String, parameters=null:Parameters, return_type=null:Type, statements=null:Statements )
+      prior.init( t, name, parameters, return_type, statements )
+
+    method description->String
+      return "Method($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
+
+endClass
+
+
+class Construct : Cmd
+  PROPERTIES
+    type : Type
+    args : Args
+
+  METHODS
+    method init( t, type, args )
+
+    method init( existing:Construct )
+      prior.init( existing )
+      if (existing.type) type = existing.type.cloned
+      if (existing.args) args = existing.args.cloned
+
+    method description->String
+      return "Construct($,$)" (%type,%args)
+
+endClass
+
+class CreateObject : Cmd
+  PROPERTIES
+    of_type : Type
+    m_init  : Procedure
+    args    : Args
+
+  METHODS
+    method init( t, of_type, m_init, args )
+
+    method init( existing:CreateObject )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+      if (existing.m_init) m_init = existing.m_init.cloned
+      if (existing.args) args = existing.args.cloned
+
+    method description->String
+      return "CreateObject($,$,$)" (%of_type,%m_init,%args)
+
+endClass
+
+class CreateDefaultObject : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:CreateDefaultObject )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "CreateDefaultObject($)" (%of_type)
 
 endClass

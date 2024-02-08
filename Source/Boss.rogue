@@ -1,11 +1,14 @@
 module Boss
 
+$include Attributes
+$include BossObject
 $include CallCandidates
 $include CmdExecute
 $include CmdStore
 $include CmdType
 $include Module
 $include Parser       [optional]
+$include Procedure
 $include Program
 $include Resolver
 $include Scanner

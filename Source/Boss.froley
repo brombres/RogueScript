@@ -2553,7 +2553,7 @@ parser
       endWhile
       mustConsume ']'
     createList
-    create ContextBlock(context,commands)
+    create ContextCommandBlock(context,commands)
     access_inner
 
 - member_access
@@ -3381,6 +3381,7 @@ parser
   create DivideInt(left,right):Divide
   create DivideReal(left,right):Divide
   create ControlStructure(statements:Statements)
+  create Construct(type:Type,args:Args)
   create CompareEQInt(left,right):CompareEQ
   create CompareNEInt(left,right):CompareNE
   create CompareLTInt(left,right):CompareLT
@@ -3416,6 +3417,7 @@ parser
 
   create CallDynamicMethod(context,info:Procedure,args:Args):CallProcedure
   create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
+  create CallMethod(context,info:Procedure,args:Args):CallProcedure
   create CallMethodPointer(pointer,param_types:TypeList,args:Args,return_type:Type)
   create CallProcedure(info:Procedure,args:Args)
   create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure
@@ -3436,8 +3438,8 @@ parser
   create ConvertToReal32(operand):Convert
   create ConvertToReal(operand):Convert
   create ConvertToReal64(operand):Convert
-  create CreateObject(of_type:Type,args:Args)
-  create CreateObject(of_type:Type,info:Local)
+  create CreateDefaultObject(of_type:Type)
+  create CreateObject(of_type:Type,m_init:Procedure,args:Args)
   create CreateCompound(of_type:Type,args:Args)
   create DefaultArg(operand):Unary
   create DummyInitialValue

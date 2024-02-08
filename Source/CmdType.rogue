@@ -17,6 +17,15 @@ augment
     method Cmd.type->Type
       return null
 
+    method Construct.type->Type
+      return @type
+
+    method CreateDefaultObject.type->Type
+      return of_type
+
+    method CreateObject.type->Type
+      return of_type
+
     method GetSingleton.type->Type
       return @type
 

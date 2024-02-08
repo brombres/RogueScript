@@ -17,6 +17,23 @@ augment
         return info.execute
       endIf
 
+    method CallMethod.execute->Variant
+      local context = context.execute
+      which (context.type)
+        case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
+          throw t.error( "Runtime call context is null or undefined." )
+      endWhich
+
+      local old_stack_count = Program.stack.count
+      Program.stack.add( context )
+      if (args and args.count) Program.stack.add( (forEach in args).execute )
+      local result = info.execute
+      Program.stack.discard_from( old_stack_count )
+      return result
+
+    method CreateDefaultObject.execute->Variant
+      return Object()
+
     method Else.execute->Variant
       return statements.execute
 
@@ -61,7 +78,7 @@ augment
         println arg.execute
       endForEach
 
-    method GlobalMethod.execute->Variant
+    method Procedure.execute->Variant
       local old_stack_count = Program.stack.count
       temporarily Program.sp = old_stack_count - this.param_count
         Program.stack.expand( this.local_count )

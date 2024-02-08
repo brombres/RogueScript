@@ -12,12 +12,12 @@
 
 class Test
   GLOBAL METHODS
-    method marco
+    method gmarco
       println "Polo"
 
-  #METHODS
-  #  method marco
-  #    println "polo"
+  METHODS
+    method marco
+      println "Polo!"
 
   #  method to->String
   #    println "hey"
@@ -25,4 +25,4 @@ class Test
 endClass
 
 println "Marco"
-Test.marco
+Test().marco

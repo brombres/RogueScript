@@ -116,7 +116,7 @@ class RebuildVisitor
     method on_visit_children( cmd:CommandExists )
       cmd.command = visit(cmd.command)
 
-    method on_visit_children( cmd:ContextBlock )
+    method on_visit_children( cmd:ContextCommandBlock )
       cmd.context = visit(cmd.context)
       cmd.commands = visit(cmd.commands)
 
@@ -662,11 +662,6 @@ class RebuildVisitor
       cmd.of_type = visit(cmd.of_type)->(as Type)
       cmd.args = visit(cmd.args)->(as Args)
 
-    method on_visit_children( cmd:CreateObject )
-      cmd.of_type = visit(cmd.of_type)->(as Type)
-      cmd.args = visit(cmd.args)->(as Args)
-      cmd.info = visit(cmd.info)->(as Local)
-
     method on_visit_children( cmd:Ensure )
       cmd.expression = visit(cmd.expression)
       cmd.args = visit(cmd.args)->(as Args)
@@ -702,5 +697,22 @@ class RebuildVisitor
 
     method on_visit_children( cmd:Println )
       cmd.args = visit(cmd.args)->(as Args)
+
+    method on_visit_children( cmd:CallMethod )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Procedure)
+      cmd.args = visit(cmd.args)->(as Args)
+
+    method on_visit_children( cmd:Construct )
+      cmd.type = visit(cmd.type)->(as Type)
+      cmd.args = visit(cmd.args)->(as Args)
+
+    method on_visit_children( cmd:CreateObject )
+      cmd.of_type = visit(cmd.of_type)->(as Type)
+      cmd.m_init = visit(cmd.m_init)->(as Procedure)
+      cmd.args = visit(cmd.args)->(as Args)
+
+    method on_visit_children( cmd:CreateDefaultObject )
+      cmd.of_type = visit(cmd.of_type)->(as Type)
 
 endClass

@@ -218,6 +218,9 @@ class Resolver : RebuildVisitor
       cmd.right.require_type
       return cmd
 
+    method on_visit( cmd:Construct )->Cmd
+      return resolve_access( cmd.t, cmd.@type, cmd, "init", cmd.args, &is_constructor )
+
     method on_visit( cmd:ControlStructure )->Cmd
       scope_stack.add( cmd )
       visit( cmd.statements )
@@ -324,19 +327,87 @@ class Resolver : RebuildVisitor
           throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
       endWhich
 
-    method resolve_access( t:Token, context_type:Type, context:Cmd, name:String, args:Args )->Cmd
+    method resolve_access( t:Token, type_context:Type, context:Cmd, name:String, args:Args, &is_constructor )->Cmd
+      if (args)
+        visit( args )
+        (forEach in args).require_value
+      endIf
+
       use CallCandidates
-        context_type.collect_global_methods( name )
-        local m = select_call_candidate
-        if (m)
-          return visit( CallGlobalMethod(t, m, visit(args)->(as Args)) )
+        if (is_constructor)
+          type_context.collect_global_methods( "create" )
+          type_context.collect_methods( "init" )
+          if (CallCandidates.count == 0) return visit( CreateDefaultObject(t,type_context) )
+        elseIf (context and context instanceOf TypeContext)
+          type_context.collect_global_methods( name )
         else
-          return null
+          type_context.collect_methods( name )
+          type_context.collect_global_methods( name )
+        endIf
+
+        local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor )
+        if (is_constructor)
+          if (m.attributes.is_global)
+            return visit( CallGlobalMethod(t, m, args) )
+          else
+            return visit( CreateObject(t, type_context, m, args) )
+          endIf
+        elseIf (m.attributes.is_global)
+          return visit( CallGlobalMethod(t, m, args) )
+        else
+          return visit( CallMethod(t, context, m, args) )
         endIf
       endUse
 
-    method select_call_candidate->Procedure
-      return filter_call_candidates
+    method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args, &is_constructor )->Procedure
+      local m = filter_call_candidates
+      if (not m)
+        local call_sig = String()
+        if (args)
+          if (context)
+            call_sig.print type_context
+            call_sig.print '.'
+          endIf
+          call_sig.print name
+          call_sig.print '('
+          forEach (arg at i in args)
+            if (i) call_sig.print( ',' )
+            call_sig.print( arg.type )
+          endForEach
+          call_sig.print ')'
+        else
+          call_sig.print "'"
+          if (context)
+            call_sig.print type_context
+            call_sig.print '.'
+          endIf
+          call_sig.print name
+          call_sig.print "'"
+        endIf
+
+        if (CallCandidates.count)
+          local message = String()
+          message.println "No exact match for ambiguous call to $. Candidates:\n"(call_sig)
+          message.println( (forEach in CallCandidates) )
+          throw t.error( message )
+        else
+          local possibilities = String[]
+          if (not args)
+            if (context) possibilities.add( "property" )
+            else         possibilities.add( "variable" )
+          endIf
+          possibilities.add( "method" )
+          if (not context) possibilities.add( "routine" )
+          if (is_constructor)
+            throw t.error( "No such constructor $$ exists."(type_context,call_sig.from_first('(')) )
+          elseIf (context)
+            throw t.error( "No such $ $ exists."(possibilities.conjoin("or"),call_sig) )
+          else
+            throw t.error( "No such $ $ exists in the current scope."(possibilities.conjoin("or"),call_sig) )
+          endIf
+        endIf
+      endIf
+      return m
 
     method filter_call_candidates->Procedure
       forEach (m in CallCandidates)
@@ -360,15 +431,17 @@ augment
       throw t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
 
     method Cmd.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
-      throw t.error( "Invalid access - type or routine name expected." )
+      local resolved = resolver.visit( this )
+      local resolved_type = resolved.require_type
+      return resolver.resolve_access( access.t, resolved_type, resolved, access.name, access.args )
 
     method Access.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
       local type = Program.current_module.find_type( name )
-      if (type) return TypeContext( t, type ).resolve_context_access( access, resolver )
+      if (type)
+        if (args) return Construct(t,type,args).resolve_context_access( access, resolver )
+        else      return TypeContext( t, type ).resolve_context_access( access, resolver )
+      endIf
       throw t.error( "Invalid access - type or routine name expected." )
-
-    method TypeContext.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
-      return resolver.resolve_access( access.t, @type, null, access.name, access.args )
 
     method Cmd.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
       throw t.error( "TODO: resolve_foreach_in($)"(type_name) )
