@@ -4494,9 +4494,6 @@ class Method : Procedure
     method init( t:Token, name:String, parameters=null:Parameters, return_type=null:Type, statements=null:Statements )
       prior.init( t, name, parameters, return_type, statements )
 
-    method description->String
-      return "Method($,$,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%doc,%statements)
-
 endClass
 
 

@@ -26,13 +26,15 @@ augment
 
       local old_stack_count = Program.stack.count
       Program.stack.add( context )
+
       if (args and args.count) Program.stack.add( (forEach in args).execute )
+
       local result = info.execute
       Program.stack.discard_from( old_stack_count )
       return result
 
     method CreateDefaultObject.execute->Variant
-      return Object()
+      return Object( of_type )
 
     method Else.execute->Variant
       return statements.execute

@@ -11,20 +11,19 @@ class Module
     used_modules      = [String:Module]
     types             = [String:Type]
 
-    resolved          : Logical
-    locked            : Logical
+    visiting          : Logical
 
   METHODS
     method init( t, name )
       Program.modules[ name ] = this
 
     method find_type( name:String )->Type
-      if (locked) return null
+      if (visiting) return null
 
       local result = types[ name ]
       if (result) return result
 
-      temporarily locked = true
+      temporarily visiting = true
         forEach (mod in used_modules)
           result = mod.find_type( name )
           if (result) return result
@@ -33,27 +32,23 @@ class Module
       endTemporarily
 
     method launch
-      resolve
       if (m_on_launch)
         Program.execute( m_on_launch )
       endIf
 
-    method resolve
-      if (resolved) return
-
+    method organize
       if (launch_statements)
         m_on_launch = GlobalMethod( t, "on_launch", &statements=launch_statements )
         type( t, "Routine" ).add( m_on_launch )
         launch_statements = null
       endIf
 
-      block resolver = Resolver( this )
-        forEach (type in types)
-          resolver.visit( forEach in type.global_methods )
-        endForEach
-      endBlock
+      (forEach in types).organize
 
-      resolved = true
+    method resolve( resolver:Resolver )
+      temporarily resolver.this_module = this
+        (forEach in types).resolve( resolver )
+      endTemporarily
 
     method to->String
       return name

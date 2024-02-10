@@ -1,4 +1,9 @@
 module Boss
 
 class Object
+  PROPERTIES
+    type : Type
+
+  METHODS
+    method init( type )
 endClass

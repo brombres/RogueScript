@@ -13,16 +13,17 @@
 class Test
   GLOBAL METHODS
     method gmarco
-      println "Polo"
+      #println "Polo"
 
   METHODS
-    method marco
-      println "Polo!"
+    method add( a:Int, b:Int )
+      #println "Polo!"
+      println a + b
 
   #  method to->String
   #    println "hey"
 
 endClass
 
-println "Marco"
-Test().marco
+#println "Marco"
+Test().add(2,3)

@@ -43,7 +43,10 @@ class Type : Cmd
     methods                = [String:Method]
     methods_by_name        = [String:Method[]]
 
-    defined            : Logical
+    visiting  : Logical
+    defined   : Logical
+    organized : Logical
+    resolved  : Logical
 
   METHODS
     method init( t, module_context, name )
@@ -128,6 +131,23 @@ class Type : Cmd
 
     method description->String
       return name
+
+    method organize
+      if (organized) return
+      organized = true
+
+      (forEach in global_methods).organize
+      (forEach in methods).organize
+
+    method resolve( resolver=null:Resolver )
+      if (resolved) return
+      resolved = true
+
+      ensure<<resolver>>
+      temporarily resolver.this_type = this
+        (forEach in global_methods).resolve( resolver )
+        (forEach in methods).resolve( resolver )
+      endTemporarily
 
     method to->String
       return name

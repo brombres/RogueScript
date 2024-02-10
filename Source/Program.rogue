@@ -109,7 +109,10 @@ class Program [singleton]
           endForEach
         endWhile
 
-        (forEach in modules).resolve
+        (forEach in modules).organize
+
+        local resolver = Resolver()
+        (forEach in modules).resolve( resolver )
 
       catch (err:CompileError)
         return err

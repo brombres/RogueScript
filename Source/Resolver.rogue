@@ -134,18 +134,11 @@ endAugment
 class Resolver : RebuildVisitor
   PROPERTIES
     this_module    : Module
+    this_type      : Type
     this_procedure : Procedure
-    scope_stack  = ControlStructure[]
+    scope_stack    = ControlStructure[]
 
   METHODS
-    method init( this_module )
-
-    method visit( this_procedure )->Cmd
-      scope_stack.add( this_procedure )
-      prior.visit( this_procedure )
-      scope_stack.remove_last
-      return this_procedure
-
     method add_local( t:Token, name:String, type:Type )->Local
       local v = Local( t, name, type )
       add_local( v )
@@ -157,8 +150,13 @@ class Resolver : RebuildVisitor
       return v
 
     method add_local( v:Local )
-      if (find_local(v.name))
-        throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
+      local existing_v = find_local( v.name )
+      if (existing_v)
+        if (v.index < this_procedure.param_count)
+          throw v.t.error( ''A parameter named "$" already exists in the current scope.''(v.name) )
+        else
+          throw v.t.error( ''A local variable named "$" already exists in the current scope.''(v.name) )
+        endIf
       endIf
       v.index = this_procedure.local_count
       ++this_procedure.local_count
@@ -293,6 +291,31 @@ class Resolver : RebuildVisitor
       endIf
       return cmd
 
+    method on_visit( proc:Procedure )->Cmd
+      temporarily this_procedure = proc
+        scope_stack.add( proc )
+
+        proc.param_count = which{ proc.parameters:proc.parameters.count || 0 }
+        if (proc instanceOf Method)
+          ++proc.param_count
+          add_local( this_type.t, "this", this_type )
+        endIf
+
+        if (proc.parameters)
+          forEach (param in proc.parameters)
+            if (not param.type) throw param.t.error( "TODO: auto-store parameter" )
+            if (param.initial_value) throw param.t.error( "TODO: initial parameter value" )
+            param.type.resolve( this )
+            add_local( param.t, param.name, param.type )
+          endForEach
+        endIf
+
+        proc.local_count = 0
+        visit_children( proc )
+        scope_stack.remove_last
+      endTemporarily
+      return proc
+
     method on_visit( cmd:ReadLocal )->Cmd
       which (cmd.info.type)
         case Program.type_Int: return visit( ReadLocalInt(cmd.t,cmd.info) )
@@ -360,7 +383,7 @@ class Resolver : RebuildVisitor
       endUse
 
     method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args, &is_constructor )->Procedure
-      local m = filter_call_candidates
+      local m = select_call_candidate( name, args )
       if (not m)
         local call_sig = String()
         if (args)
@@ -388,7 +411,12 @@ class Resolver : RebuildVisitor
         if (CallCandidates.count)
           local message = String()
           message.println "No exact match for ambiguous call to $. Candidates:\n"(call_sig)
-          message.println( (forEach in CallCandidates) )
+          forEach (m in CallCandidates)
+            message.print "  "
+            message.print m.type_context
+            message.print '.'
+            message.print m.signature
+          endForEach
           throw t.error( message )
         else
           local possibilities = String[]
@@ -409,10 +437,13 @@ class Resolver : RebuildVisitor
       endIf
       return m
 
-    method filter_call_candidates->Procedure
+    method select_call_candidate( name:String, args:Args )->Procedure
+      local arg_count = which{ args:args.count || 0 }
+
       forEach (m in CallCandidates)
-        CallCandidates.keep( m )
+        if (arg_count >= m.min_params and arg_count <= m.max_params) CallCandidates.keep( m )
       endForEach
+
       if (CallCandidates.found_match) return CallCandidates.match
       CallCandidates.refine
 
