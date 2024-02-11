@@ -16,9 +16,8 @@ class Test
       #println "Polo"
 
   METHODS
-    method add( a:Int, b:Int )
-      #println "Polo!"
-      println a + b
+    method add( a:Int, b:Int )->Int
+      return a + b
 
   #  method to->String
   #    println "hey"
@@ -26,4 +25,5 @@ class Test
 endClass
 
 #println "Marco"
-Test().add(2,3)
+println Test().add(3,4)
+println Test().add(6,5)

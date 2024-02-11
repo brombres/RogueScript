@@ -50,13 +50,13 @@ class Program [singleton]
           mod.launch
         endForEach
 
-        return null
-
       catch (err:CompileError)
         return err
       catch (err:Error)
         return CompileError( "[INTERNAL ERROR] " + err )
       endTry
+
+      return null
 
     method parse( file:File )->CompileError
       temporarily Program = this

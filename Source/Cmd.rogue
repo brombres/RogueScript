@@ -4550,3 +4550,19 @@ class CreateDefaultObject : Cmd
       return "CreateDefaultObject($)" (%of_type)
 
 endClass
+
+class ReturnResult : Cmd
+  PROPERTIES
+    result : Cmd
+
+  METHODS
+    method init( t, result )
+
+    method init( existing:ReturnResult )
+      prior.init( existing )
+      if (existing.result) result = existing.result.cloned
+
+    method description->String
+      return "ReturnResult($)" (%result)
+
+endClass

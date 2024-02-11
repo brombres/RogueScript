@@ -1,5 +1,17 @@
 module Boss
 
+class BossException : Exception
+  METHODS
+    method save_stack_trace
+      noAction
+endClass
+
+class ReturnResultException( result:Variant ) : BossException [singleton]
+  METHODS
+    method to->String
+      return result->String
+endClass
+
 augment
   METHODS
     method Cmd.execute->Variant
@@ -83,11 +95,20 @@ augment
     method Procedure.execute->Variant
       local old_stack_count = Program.stack.count
       temporarily Program.sp = old_stack_count - this.param_count
-        Program.stack.expand( this.local_count )
-        local result = statements.execute
-        Program.stack.discard_from( old_stack_count )
-        return result
+        try
+          Program.stack.expand( this.local_count )
+          local result = statements.execute
+          Program.stack.discard_from( old_stack_count )
+          return result
+        catch (on_return_result:ReturnResultException)
+          return on_return_result.result
+        endTry
       endTemporarily
+
+    method ReturnResult.execute->Variant
+      local exception = ReturnResultException
+      exception.result = result.execute
+      throw exception
 
     method ReadLocal.execute->Variant
       return Program.stack[ Program.sp+info.index ]

@@ -310,6 +310,8 @@ class Resolver : RebuildVisitor
           endForEach
         endIf
 
+        if (proc.return_type) proc.return_type.resolve( this )
+
         proc.local_count = 0
         visit_children( proc )
         scope_stack.remove_last
@@ -325,6 +327,10 @@ class Resolver : RebuildVisitor
 
     method on_visit( cmd:ReadLocalInt )->Cmd
       return cmd
+
+    method on_visit( cmd:Return )->Cmd
+      if (cmd.result) return visit( ReturnResult(cmd.t,cmd.result) )
+      else            return cmd
 
     method on_validate( cmd:Unary )->Cmd
       cmd.operand.require_type
