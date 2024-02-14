@@ -2,7 +2,7 @@ module Boss
 
 class Type : Cmd
   GLOBAL METHODS
-    method init( t:Token, name:String )->Type
+    method create( t:Token, name:String )->Type
       return Program.current_module.type( t, name )
 
     method create( t:Token, named_elements:NamedTupleTypeElements )->Type

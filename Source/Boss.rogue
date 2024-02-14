@@ -17,42 +17,38 @@ $include Type
 uses Boss
 uses Console/CommandLineParser
 
-try
-  Boss( System.command_line_arguments )
-catch (error:CompileError)
-  Console.error.println error
-  System.exit 1
-catch (error:Exception)
-  Console.error.println error
-  Console.error.println error.stack_trace
-  System.exit 1
-endTry
+Boss( System.command_line_arguments )
 
 class Boss
   PROPERTIES
-    command : Rogue::Variant
+    command  : Variant
+
+    program_staging   : Program
+    program_organized : Program
 
   METHODS
+    method init
+      noAction
+
     method init( args:String[] )
-      command = parse_args( args )
+      command = _parse_args( args )
 
       # trace command
       # has //options and possibly //args
 
       if (command//options//help or command//args.count == 0)
-        print_usage
+        _print_usage
         System.exit 0
       endIf
 
-      local program = Program()
-
       local err : Exception
       forEach (arg in command//args)
-        err = program.parse( File(arg->String) )
+        err = load( File(arg->String) )
         if (err) escapeForEach
       endForEach
 
-      if (not err) err = program.launch
+
+      if (not err) err = update
 
       if (err)
         #err.display
@@ -60,7 +56,31 @@ class Boss
         System.exit 1
       endIf
 
-    method parse_args( args:String[] )->Rogue::Variant
+    method load( file:File )->BossError
+      _prepare_staging
+
+      try
+        program_staging.parse( file )
+      catch (err:BossError)
+        program_staging = null
+        return err
+      catch (err:Exception)
+        program_staging = null
+        return CompileError( "[INTERNAL ERROR] " + err, file.filepath )
+      endTry
+
+      return null
+
+    method update->BossError
+      return null
+
+    method _prepare_staging
+      if (not program_staging)
+        if (program_organized) program_staging = program_organized.cloned
+        else                   program_staging = Program()
+      endIf
+
+    method _parse_args( args:String[] )->Variant
       # This method is unrelated to the Froley Parser
       local command = CommandLineParser().
       [
@@ -70,7 +90,7 @@ class Boss
       ].parse( args )
       return command
 
-    method print_usage
+    method _print_usage
       println @|USAGE
                |  boss [OPTIONS] <filepath>
                |

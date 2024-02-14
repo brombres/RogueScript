@@ -1,11 +1,11 @@
 module Boss
 
-class TokenizedFile( filepath:String, tokens:Token[], is_api:Logical ) [compound];
-
 class Program [singleton]
   PROPERTIES
+    primary_program   : Program
+
     parsed_file_timestamps = [String:Timestamp]
-    tokenized_files        = TokenizedFile[]
+    #unresolved_elements    = Cmd[]
 
     t              : Token
     current_module : Module
@@ -24,17 +24,22 @@ class Program [singleton]
 
   METHODS
     method init
-      Program = this
+      temporarily Program = this
+        t = Token( TokenType.IDENTIFIER, "[INTERNAL]", &content="Boss" )
+        default_module = Module( t, "Boss" )
+        current_module = default_module
 
-    method configure
-      t = Token( TokenType.IDENTIFIER, "[INTERNAL]", &content="Boss" )
-      default_module = Module( t, "Boss" )
-      current_module = default_module
+        type_Int     = Type( t, "Int" )
+        type_Logical = Type( t, "Logical" )
+        type_Real    = Type( t, "Real" )
+        type_String  = Type( t, "String" )
+      endTemporarily
 
-      type_Int     = Type( t, "Int" )
-      type_Logical = Type( t, "Logical" )
-      type_Real    = Type( t, "Real" )
-      type_String  = Type( t, "String" )
+    method init( primary_program )
+      init
+
+    method cloned->Program
+      throw t.error( "TODO" )
 
     method execute( cmd:Cmd )
       temporarily Program = this
@@ -42,83 +47,49 @@ class Program [singleton]
       endTemporarily
 
     method launch->CompileError
-      try
-        local err = resolve
-        if (err) return err
+      temporarily Program = this
+        try
+          local err = resolve
+          if (err) return err
 
-        forEach (mod in modules)
-          mod.launch
-        endForEach
+          forEach (mod in modules)
+            mod.launch
+          endForEach
 
-      catch (err:CompileError)
-        return err
-      catch (err:Error)
-        return CompileError( "[INTERNAL ERROR] " + err )
-      endTry
+        catch (err:CompileError)
+          return err
+        catch (err:Error)
+          return CompileError( "[INTERNAL ERROR] " + err )
+        endTry
+      endTemporarily
 
       return null
 
-    method parse( file:File )->CompileError
+    method parse( file:File )
       temporarily Program = this
         file .= abs
 
         local timestamp = file.timestamp
         local entry = parsed_file_timestamps.find( file.filepath )
-        if (entry and entry.value >= timestamp) return null
+        if (entry and entry.value >= timestamp) return
 
-        local err = parse( file.filepath, String(file) )
-        if (err) return err
+        parse( file.filepath, String(file) )
 
         parsed_file_timestamps[ file.filepath ] = timestamp
-        return null
       endTemporarily
 
-    method parse( filepath:String, source:String, timestamp=Timestamp():Timestamp )->CompileError
-      if (not configured) configure
+    method parse( filepath:String, source:String, timestamp=Timestamp():Timestamp )
+      temporarily Program=this, current_module=default_module
+        local elements = Parser( File(filepath) ).parse
+        #TypeCollector.visit( elements )
+        (forEach in elements).store
+      endTemporarily
 
-      try
-        local is_api = false
-
-        local tokens = Scanner( File(filepath) ).tokenize
-        tokenized_files.add( TokenizedFile(filepath,tokens,is_api) )
-
-        Parser(tokens).[collecting_types=true,disable_output=1].parse
-
-      catch (err:CompileError)
-        return err
-      catch (err:Exception)
-        return CompileError( "[INTERNAL ERROR] " + err, filepath )
-      endTry
-
-      return null
-
-    method resolve->CompileError
-      try
-        while (tokenized_files.count)
-          local files = tokenized_files.cloned
-          tokenized_files.clear
-          forEach (file in files)
-            local is_api = false
-
-            local parser = Parser( File(file.filepath) )
-
-            temporarily Program=this, current_module=default_module
-              local elements = parser.parse
-              (forEach in elements).store
-            endTemporarily
-          endForEach
-        endWhile
-
+    method resolve
+      temporarily Program = this
         (forEach in modules).organize
 
         local resolver = Resolver()
         (forEach in modules).resolve( resolver )
-
-      catch (err:CompileError)
-        return err
-      catch (err:Exception)
-        return CompileError( "[INTERNAL ERROR] " + err )
-      endTry
-
-      return null
+      endTemporarily
 endClass

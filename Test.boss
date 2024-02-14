@@ -1,4 +1,16 @@
-#println "Hello World!"
+println "Hello World!"
+
+class Test
+  METHODS
+    method display
+      println "Alpha"
+endClass
+
+Test().display
+#Test()
+#RogueScript
+
+
 #forEach (i in 1..15)
 #  if (i % 3 == 0)
 #    if (i % 5 == 0) println "FizzBuzz"
@@ -10,20 +22,20 @@
 #  endIf
 #endForEach
 
-class Test
-  GLOBAL METHODS
-    method gmarco
-      #println "Polo"
-
-  METHODS
-    method add( a:Int, b:Int )->Int
-      return a + b
-
-  #  method to->String
-  #    println "hey"
-
-endClass
-
-#println "Marco"
-println Test().add(3,4)
-println Test().add(6,5)
+#class Test
+#  GLOBAL METHODS
+#    method gmarco
+#      #println "Polo"
+#
+#  METHODS
+#    method add( a:Int, b:Int )->Int
+#      return a + b
+#
+#  #  method to->String
+#  #    println "hey"
+#
+#endClass
+#
+##println "Marco"
+#println Test().add(3,4)
+#println Test().add(6,5)
