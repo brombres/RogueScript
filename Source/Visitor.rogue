@@ -32,7 +32,7 @@ class Visitor
       #   CALL                       OVERLOADABLE METHOD
       #   --------------------       -----------------------------------------
       #   visit(cmd)->Cmd         -> on_visit(cmd:CmdType)->Cmd
-      #     visit_node(cmd)    ->   on_visit_node(cmd:CmdType)
+      #     visit_node(cmd)       ->   on_visit_node(cmd:CmdType)
       #       visit_children(cmd) ->     on_visit_children(cmd:CmdType)
       #     validate(cmd)->Cmd    ->   on_validate(cmd:CmdType)->Cmd
       #

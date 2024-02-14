@@ -81,7 +81,7 @@ class Program [singleton]
     method parse( filepath:String, source:String, timestamp=Timestamp():Timestamp )
       temporarily Program=this, current_module=default_module
         local elements = Parser( File(filepath) ).parse
-        #TypeCollector.visit( elements )
+        TypeCollector.visit( elements )
         (forEach in elements).store
       endTemporarily
 

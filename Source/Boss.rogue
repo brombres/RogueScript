@@ -13,6 +13,7 @@ $include Program
 $include Resolver
 $include Scanner
 $include Type
+$include TypeCollector
 
 uses Boss
 uses Console/CommandLineParser
