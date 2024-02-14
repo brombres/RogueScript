@@ -131,7 +131,7 @@ augment
 
 endAugment
 
-class Resolver : RebuildVisitor
+class Resolver : Visitor
   PROPERTIES
     this_module    : Module
     this_type      : Type
