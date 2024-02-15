@@ -1,13 +1,23 @@
-println "Hello World!"
+module Alpha
 
 class Test
   METHODS
-    method add( a:Int, b:Int )->Real
-      return a + b
-
     method display
-      println "Alpha"
+      println "Alpha Test"
 endClass
+
+module Beta
+
+class Test : T2
+  METHODS
+    method display
+      println "Beta Test"
+endClass
+
+class T2 : Alpha::Test
+endClass
+
+module
 
 Test().display
 #Test()

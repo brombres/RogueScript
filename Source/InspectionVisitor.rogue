@@ -733,7 +733,7 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.context)
       return result
 
-    method on_visit_children( cmd:DefineModule )->$ReturnType
+    method on_visit_children( cmd:SetModuleContext )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.attributes)
       return result

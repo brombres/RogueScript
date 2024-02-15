@@ -1,33 +1,13 @@
 module Boss
 
 class Type : Cmd
-  GLOBAL METHODS
-    method create( t:Token, name:String )->Type
-      return Program.current_module.type( t, name )
-
-    method create( t:Token, named_elements:NamedTupleTypeElements )->Type
-      trace "TODO"
-      return null
-
-    method create( t:Token, anonymous_elements:AnonymousTupleTypeElements )->Type
-      trace "TODO"
-      return null
-
-    method create( t:Token, key_type:Type, value_type:Type )->Type
-      trace "TODO"
-      return null
-
-    method create( t:Token, element_type:Type )->Type
-      trace "TODO"
-      return null
-
-    method create( t:Token, core_type:Type, optional:Logical )->Type
-      trace "TODO"
-      return null
-
-
   PROPERTIES
     module_context     : Module
+    definition         : Class
+
+    attributes         : Attributes
+    base_class         : Type
+    aspects            : Type[]
 
     named_elements     : NamedTupleTypeElements
     anonymous_elements : AnonymousTupleTypeElements
@@ -49,7 +29,26 @@ class Type : Cmd
     resolved  : Logical
 
   METHODS
-    method init( t, module_context, name )
+    method init( t, name )
+
+    method init( t, named_elements )
+
+    method init( t, anonymous_elements )
+
+    method init( t, key_type, value_type )
+
+    method init( t, element_type )
+
+    method init( t, core_type, optional )
+
+    method init( module_context, definition )
+      t = definition.t
+      name = definition.name->String
+      attributes = definition.attributes.cloned
+
+      if (not (attributes.is_primitive or attributes.is_compound or attributes.is_enum or attributes.is_aspect))
+        attributes.is_object = true
+      endIf
 
     method init( existing:Type )
       prior.init( existing )
@@ -121,6 +120,19 @@ class Type : Cmd
       endIf
       methods_by_name[m.name].add( m )
 
+    method collect_base_types
+      forEach (base_type in definition.base_types)
+        base_type = module_context.must_find_type( base_type.t, base_type.name )
+        if (base_type.attributes.is_aspect)
+          ensure<<aspects>>
+          aspects.add( base_type )
+        elseIf (base_type.attributes.is_object == this.attributes.is_object)
+          base_class = base_type
+        else
+          throw t.error( "[INTERNAL] Unhandled type attributes for base type " + base_type )
+        endIf
+      endForEach
+
     method collect_global_methods( method_name:String )
       local methods = global_methods_by_name[ method_name ]
       if (methods) CallCandidates.add( forEach in methods )
@@ -149,8 +161,46 @@ class Type : Cmd
         (forEach in methods).resolve( resolver )
       endTemporarily
 
+    method scoped_name->String
+      return "$::$"(module_context,name)
+
     method to->String
       return name
+
+    method validate_type_hierarchy
+      validate_type_hierarchy( this )
+
+    method validate_type_hierarchy( extended_type:Type )
+      contingent
+        visiting = true
+        if (base_class)
+          sufficient (base_class is this)
+          necessary (not base_class.visiting)
+          base_class.validate_type_hierarchy( extended_type )
+        endIf
+        if (aspects)
+          forEach (a in aspects)
+            sufficient (a is this)
+            necessary (not a.visiting)
+            a.validate_type_hierarchy( extended_type )
+          endForEach
+        endIf
+        visiting = false
+        return
+
+      satisfied
+        throw t.error( "Circular class extension - class $ cannot extend itself."(name) )
+
+      unsatisfied
+        local a_name = extended_type.name
+        local b_name = name
+        if (module_context is not extended_type.module_context)
+          a_name = extended_type.scoped_name
+          b_name = scoped_name
+        endIf
+        throw t.error( "Circular class extension - class $ already extends $."(a_name,b_name) )
+
+      endContingent
 
 endClass
 

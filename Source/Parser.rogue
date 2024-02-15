@@ -8,6 +8,13 @@ class Parser : ParserCore
     collecting_types : Logical
 
   METHODS
+    method join_identifiers
+      if (not disable_output and _cmd_stack.count >= 2)
+        local b = _cmd_stack.remove_last
+        local a = _cmd_stack.remove_last
+        _cmd_stack.add( Identifier(b.t, a->String + b->String) )
+      endIf
+
     method parse_doc_comment
       _push( null )
 endClass

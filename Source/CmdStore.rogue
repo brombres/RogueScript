@@ -8,29 +8,16 @@ augment
     method Cmd.store( type_context:Type )
       throw t.error( "[INTERNAL] $.store(Type) is undefined."(type_name) )
 
-    method Class.store
-      local existing = module_context.find_type( name )
-      if (existing and existing.defined)
-        throw t.error( "Type $::$ is already defined."(module_context,name) )
-      endIf
-
-      local type = module_context.type( t, name )
-      type.defined = true
-
-      # constructor_properties
-      # base_types
-      # attributes
-      # doc
-
-      forEach (m in members)
-        m.store( type )
-      endForEach
-
+      #{
     method GlobalMethod.store( type_context:Type )
       type_context.add( this )
 
     method Method.store( type_context:Type )
       type_context.add( this )
+      }#
+
+    method SetModuleContext.store
+      noAction
 
     method Statements.store
       if (Program.current_module.launch_statements)

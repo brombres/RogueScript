@@ -65,6 +65,11 @@ class Program [singleton]
 
       return null
 
+    method organize
+      temporarily Program = this
+        Organizer.organize_program
+      endTemporarily
+
     method parse( file:File )
       temporarily Program = this
         file .= abs

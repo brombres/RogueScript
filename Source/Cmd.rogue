@@ -2189,6 +2189,9 @@ class ModuleQualifiedID : Cmd
     method description->String
       return "ModuleQualifiedID($,$)" (%context,%name)
 
+    method to->String
+      return "$::$"(context,name)
+
 endClass
 
 class MultiplyAndAssignGlobalProperty : ResolvedOpAndAssignProperty
@@ -2897,6 +2900,9 @@ class TypeList : CmdList
   METHODS
     method description->String
       return "TypeList" + list_description
+
+    method get( index:Int )->Type
+      return @list[index]->(as Type)
 endClass
 
 class TypedDestructuringLocal : Cmd
@@ -3253,7 +3259,7 @@ class Decrement : Stepper
 
 endClass
 
-class DefineModule : Cmd
+class SetModuleContext : Cmd
   PROPERTIES
     name       : String
     attributes : Attributes
@@ -3261,13 +3267,13 @@ class DefineModule : Cmd
   METHODS
     method init( t, name, attributes )
 
-    method init( existing:DefineModule )
+    method init( existing:SetModuleContext )
       prior.init( existing )
       name = existing.name
       if (existing.attributes) attributes = existing.attributes.cloned
 
     method description->String
-      return "DefineModule($,$)" (%name,%attributes)
+      return "SetModuleContext($,$)" (%name,%attributes)
 
 endClass
 

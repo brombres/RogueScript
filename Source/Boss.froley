@@ -679,9 +679,9 @@ parser
 
 
   on "module"
-    #FIXME call parse_module_id
+    parse_module_id
     module_attributes
-    produce DefineModule(name:String,attributes:Attributes)
+    produce SetModuleContext(name:String,attributes:Attributes)
   endOn
 
   on "nativeType"
@@ -745,6 +745,30 @@ parser
   endIf
 
   multi_line_statements
+
+- parse_module_id
+  if (nextIs("::"))
+    on "::"
+      if (nextIs(IDENTIFIER))
+        create Identifier(name="Boss::")
+        identifier
+        call join_identifiers
+      else
+        produce Identifier(name="Boss")
+      endIf
+    endOn
+  elseIf (nextIs(IDENTIFIER))
+    identifier
+  else
+    produce Identifier(name="Boss")
+  endIf
+
+  while (consume("::"))
+    create Identifier(name="::")
+    call join_identifiers
+    identifier
+    call join_identifiers
+  endWhile
 
 - subclass
   if (nextIs("subclass"))
@@ -1067,7 +1091,7 @@ parser
 - pathed_name
   savePosition
   on "::"
-    create Identifier(name="Rogue":String)
+    create Identifier(name="Boss":String)
     identifier
     create ModuleQualifiedID(context,name:String)
     discardPosition

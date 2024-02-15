@@ -2,6 +2,10 @@
 module Boss
 
 class Visitor
+  PROPERTIES
+    this_type      : Type
+    this_procedure : Procedure
+
   METHODS
     method visit( cmd:Cmd )->Cmd [propagated]
       # Call to invoke the appropriate on_visit/on_visit_node() for the given Cmd type.
@@ -468,7 +472,7 @@ class Visitor
     method on_visit_children( cmd:ConditionalContext )
       cmd.context = visit(cmd.context)
 
-    method on_visit_children( cmd:DefineModule )
+    method on_visit_children( cmd:SetModuleContext )
       cmd.attributes = visit(cmd.attributes)->(as Attributes)
 
     method on_visit_children( cmd:Necessary )

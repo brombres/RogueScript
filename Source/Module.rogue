@@ -1,6 +1,15 @@
 module Boss
 
 class Module
+  GLOBAL METHODS
+    method create( t:Token, name:String )->Module
+      local mod = Program.modules[ name ]
+      if (mod) return mod
+
+      mod = Module( t, name, &initializer )
+      Program.modules[ name ] = mod
+      return mod
+
   PROPERTIES
     t                 : Token
     name              : String
@@ -14,18 +23,36 @@ class Module
     visiting          : Logical
 
   METHODS
-    method init( t, name )
-      Program.modules[ name ] = this
+    method init( t, name, initializer:Logical )
 
-    method find_type( name:String )->Type
+    method define_type( def:Class )
+      local type_name = def.name->String
+      if (types.contains(type_name))
+        throw def.t.error( "Type $::$ is already defined."(name,type_name) )
+      endIf
+
+      local type = Type( this, def )
+      types[type_name] = type
+
+    method find_type( type_name:String )->Type
       if (visiting) return null
 
-      local result = types[ name ]
+      if local i = type_name.locate( "::" )
+        # Name is qualified with module name
+        local mod_name = type_name.leftmost( i )
+        type_name = type_name.unleft( i+2 )
+        if (mod_name == this.name) return types[type_name]
+        local mod = Program.modules[mod_name]
+        if (not mod) return null
+        return mod.types[type_name]
+      endIf
+
+      local result = types[type_name]
       if (result) return result
 
       temporarily visiting = true
         forEach (mod in used_modules)
-          result = mod.find_type( name )
+          result = mod.find_type( type_name )
           if (result) return result
         endForEach
         return null
@@ -35,6 +62,11 @@ class Module
       if (m_on_launch)
         Program.execute( m_on_launch )
       endIf
+
+    method must_find_type( t:Token, type_name:String )->Type
+      local result = find_type( type_name )
+      if (result) return result
+      throw t.error( "Reference to undefined type $."(type_name) )
 
     method organize
       if (launch_statements)
@@ -54,12 +86,14 @@ class Module
       return name
 
     method type( t:Token, name:String )->Type
-      local result = find_type( name )
-      if (result) return result
+      trace
+      throw t.error( "TODO" )
+      #local result = find_type( name )
+      #if (result) return result
 
-      result = Type( t, this, name )
-      types[ name ] = result
-      return result
+      #result = Type( t, this, name )
+      #types[ name ] = result
+      #return result
 
     method type_Routine->Type
       return type( t, "Routine" )

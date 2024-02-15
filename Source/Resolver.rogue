@@ -133,9 +133,6 @@ endAugment
 
 class Resolver : Visitor
   PROPERTIES
-    this_module    : Module
-    this_type      : Type
-    this_procedure : Procedure
     scope_stack    = ControlStructure[]
 
   METHODS

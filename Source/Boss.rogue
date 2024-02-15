@@ -7,6 +7,7 @@ $include CmdExecute
 $include CmdStore
 $include CmdType
 $include Module
+$include Organizer
 $include Parser       [optional]
 $include Procedure
 $include Program
@@ -24,8 +25,9 @@ class Boss
   PROPERTIES
     command  : Variant
 
-    program_staging   : Program
-    program_organized : Program
+    staging_program   : Program
+    organized_program : Program
+    program           : Program
 
   METHODS
     method init
@@ -61,24 +63,37 @@ class Boss
       _prepare_staging
 
       try
-        program_staging.parse( file )
+        staging_program.parse( file )
       catch (err:BossError)
-        program_staging = null
+        staging_program = null
         return err
       catch (err:Exception)
-        program_staging = null
+        staging_program = null
         return CompileError( "[INTERNAL ERROR] " + err, file.filepath )
       endTry
 
       return null
 
     method update->BossError
+      if (staging_program)
+        try
+trace
+          staging_program.organize
+trace
+        catch (err:BossError)
+          staging_program = null
+          return err
+        catch (err:Exception)
+          staging_program = null
+          return CompileError( "[INTERNAL ERROR] " + err )
+        endTry
+      endIf
       return null
 
     method _prepare_staging
-      if (not program_staging)
-        if (program_organized) program_staging = program_organized.cloned
-        else                   program_staging = Program()
+      if (not staging_program)
+        if (organized_program) staging_program = organized_program.cloned
+        else                   staging_program = Program()
       endIf
 
     method _parse_args( args:String[] )->Variant
