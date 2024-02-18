@@ -81,11 +81,6 @@ class Module
         global_statements = null
       endIf
 
-    method resolve( resolver:Resolver )
-      temporarily Program.current_module = this
-        (forEach in types).resolve( resolver )
-      endTemporarily
-
     method to->String
       return name
 

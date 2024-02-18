@@ -133,19 +133,39 @@ endAugment
 
 class Resolver : Visitor [singleton]
   PROPERTIES
-    scope_stack = ControlStructure[]
+    scope_stack : ControlStructure[]
 
   METHODS
     method resolve_program
-      scope_stack.clear
-      (forEach in Program.modules).resolve( this )
+      use new_scope_stack_frame = WorkList<<ControlStructure>>
+        temporarily scope_stack = new_scope_stack_frame
+          visit_program( Program )
+        endTemporarily
+      endUse
+
+    method visit_module( mod:Module ) [override]
+      temporarily Program.current_module = mod
+        (forEach in mod.types).resolve
+      endTemporarily
+
+    method resolve_type( type:Type )
+      use new_scope_stack_frame = WorkList<<ControlStructure>>
+        temporarily scope_stack = new_scope_stack_frame
+          temporarily Program.current_module = type.module_context
+            visit_type( type )
+          endTemporarily
+        endTemporarily
+      endUse
 
     method resolve( procedure:Procedure )
-      scope_stack.clear
-      local type_context = procedure.type_context
-      temporarily Program.current_module=type_context.module_context, this_type=type_context
-        visit( procedure )
-      endTemporarily
+      use new_scope_stack_frame = WorkList<<ControlStructure>>
+        temporarily scope_stack = new_scope_stack_frame
+          local type_context = procedure.type_context
+          temporarily Program.current_module=type_context.module_context, this_type=type_context
+            visit( procedure )
+          endTemporarily
+        endTemporarily
+      endUse
 
     method add_local( t:Token, name:String, type:Type )->Local
       local v = Local( t, name, type )
@@ -313,12 +333,12 @@ class Resolver : Visitor [singleton]
           forEach (param in proc.parameters)
             if (not param.type) throw param.t.error( "TODO: auto-store parameter" )
             if (param.initial_value) throw param.t.error( "TODO: initial parameter value" )
-            param.type.resolve( this )
+            param.type.resolve
             add_local( param.t, param.name, param.type )
           endForEach
         endIf
 
-        if (proc.return_type) proc.return_type.resolve( this )
+        if (proc.return_type) proc.return_type.resolve
 
         proc.local_count = 0
         visit_children( proc )

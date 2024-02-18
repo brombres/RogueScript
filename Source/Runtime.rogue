@@ -5,11 +5,16 @@ class Runtime [singleton]
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
 
+    native_procedures = [String:Function()->Variant]
+
     program : Program
     stack   = Variant[]
     fp      : Int
 
   METHODS
+    method deregister_native( full_signature:String )
+      native_procedures.remove( full_signature )
+
     method execute( script:String )->Variant
       local error = launch
       if (error) throw error
@@ -75,6 +80,9 @@ class Runtime [singleton]
       endTry
 
       return null
+
+    method register_native( full_signature:String, callback:Function()->Variant )
+      native_procedures[full_signature] = callback
 
     method unload( file:File )
       _prepare_staging
