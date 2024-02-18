@@ -131,11 +131,15 @@ augment
 
 endAugment
 
-class Resolver : Visitor
+class Resolver : Visitor [singleton]
   PROPERTIES
-    scope_stack    = ControlStructure[]
+    scope_stack = ControlStructure[]
 
   METHODS
+    method resolve_program
+      scope_stack.clear
+      (forEach in Program.modules).resolve( this )
+
     method add_local( t:Token, name:String, type:Type )->Local
       local v = Local( t, name, type )
       add_local( v )

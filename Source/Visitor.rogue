@@ -309,12 +309,6 @@ class Visitor
     method on_visit_children( cmd:NamedArg )
       cmd.value = visit(cmd.value)
 
-    method on_visit_children( cmd:NamedTupleElement )
-      cmd.value = visit(cmd.value)
-
-    method on_visit_children( cmd:NamedTupleTypeElement )
-      cmd.of_type = visit(cmd.of_type)->(as Type)
-
     method on_visit_children( cmd:NativeExpression )
       cmd.result_type = visit(cmd.result_type)->(as Type)
 
@@ -411,12 +405,8 @@ class Visitor
 
     method on_visit_children( cmd:Type )
       noAction
-      #cmd.named_elements = visit(cmd.named_elements)->(as NamedTupleTypeElements)
-      #cmd.anonymous_elements = visit(cmd.anonymous_elements)->(as AnonymousTupleTypeElements)
-      #cmd.key_type = visit(cmd.key_type)->(as Type)
       #cmd.value_type = visit(cmd.value_type)->(as Type)
       #cmd.element_type = visit(cmd.element_type)->(as Type)
-      #cmd.core_type = visit(cmd.core_type)->(as Type)
 
     method on_visit_children( cmd:TypeContext )
       cmd.type = visit(cmd.type)->(as Type)
@@ -427,10 +417,6 @@ class Visitor
     method on_visit_children( cmd:TypedDestructuringLocal )
       cmd.type = visit(cmd.type)->(as Type)
 
-    method on_visit_children( cmd:TypedDestructuringLocalDeclarations )
-      cmd.locals = visit(cmd.locals)->(as TypedDestructuringLocals)
-      cmd.tuple = visit(cmd.tuple)
-
     method on_visit_children( cmd:TypedLiteralList )
       cmd.of_type = visit(cmd.of_type)->(as Type)
       cmd.list = visit(cmd.list)
@@ -438,10 +424,6 @@ class Visitor
     method on_visit_children( cmd:TypedLiteralTable )
       cmd.of_type = visit(cmd.of_type)->(as Type)
       cmd.table = visit(cmd.table)->(as KeyValuePairList)
-
-    method on_visit_children( cmd:UntypedDestructuringLocalDeclarations )
-      cmd.locals = visit(cmd.locals)->(as Identifiers)
-      cmd.tuple = visit(cmd.tuple)
 
     method on_visit_children( cmd:UsedResource )
       cmd.resource = visit(cmd.resource)

@@ -4,8 +4,8 @@ module Boss
 $include "ParserCore.rogue"
 
 class Parser : ParserCore
-  PROPERTIES
-    collecting_types : Logical
+  GLOBAL PROPERTIES
+    current_batch_id = 1
 
   METHODS
     method join_identifiers

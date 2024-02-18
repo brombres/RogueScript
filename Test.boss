@@ -1,28 +1,4 @@
-module Alpha
-
-class Test
-  METHODS
-    method display
-      println "Alpha Test"
-endClass
-
-module Beta
-
-class Test : T2
-  METHODS
-    method display
-      println "Beta Test"
-endClass
-
-class T2 : Alpha::Test
-endClass
-
-module
-
-Test().display
-#Test()
-#RogueScript
-
+println "Hello World"
 
 #forEach (i in 1..15)
 #  if (i % 3 == 0)

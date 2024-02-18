@@ -49,6 +49,8 @@ class Attribute
     OMIT_DOC           = (Int64(1):<<:44)
     AUGMENTED          = (Int64(1):<<:45)
     REPLACE            = (Int64(1):<<:46)
+
+    CLASSIFICATION     = (Attribute.PRIMITIVE|Attribute.COMPOUND|Attribute.ENUM|Attribute.OBJECT|Attribute.ASPECT)
 endClass
 
 $localMacro BOSS_ATTRIBUTE<<$name, $value>>
@@ -67,6 +69,7 @@ class Attributes : CmdList
   BOSS_ATTRIBUTE<< is_enum,              Attribute.ENUM >>
   BOSS_ATTRIBUTE<< is_object,            Attribute.OBJECT >>
   BOSS_ATTRIBUTE<< is_aspect,            Attribute.ASPECT >>
+  BOSS_ATTRIBUTE<< classification,       Attribute.CLASSIFICATION >>
   BOSS_ATTRIBUTE<< is_exported,          Attribute.EXPORT >>
   BOSS_ATTRIBUTE<< is_essential,         Attribute.ESSENTIAL >>
   BOSS_ATTRIBUTE<< is_singleton,         Attribute.SINGLETON >>

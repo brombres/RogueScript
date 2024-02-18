@@ -5,15 +5,7 @@ class Organizer : Visitor [singleton]
 
   METHODS
     method organize_program
-      (forEach in (forEach in Program.modules).types).collect_base_types
-      (forEach in (forEach in Program.modules).types).validate_type_hierarchy
-
-    method visit( this_procedure )->Cmd
-      scope.add( this_procedure )
-      prior.visit( this_procedure )
-      scope.remove_last
-      return this_procedure
-
-      #method on_visit( cmd:LocalDeclarations )->Cmd
+      (forEach in Program.types).collect_base_types
+      (forEach in Program.types).validate_type_hierarchy
 
 endClass

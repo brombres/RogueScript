@@ -14,7 +14,7 @@ class Module
     t                 : Token
     name              : String
 
-    launch_statements : Statements
+    global_statements : Statements
     m_on_launch       : GlobalMethod
 
     used_modules      = [String:Module]
@@ -25,26 +25,28 @@ class Module
   METHODS
     method init( t, name, initializer:Logical )
 
-    method define_type( def:Class )
-      local type_name = def.name->String
+    method define_type( def:Class )->Type
+      return define_type( def.t, def.name->String, def.attributes.cloned ).[ definition=def ]
+
+    method define_type( t:Token, type_name:String, attributes:Attributes )->Type
       if (types.contains(type_name))
-        throw def.t.error( "Type $::$ is already defined."(name,type_name) )
+        throw t.error( "Type $::$ is already defined."(name,type_name) )
       endIf
 
-      local type = Type( this, def )
+      local type = Type( t, this, type_name, attributes )
       types[type_name] = type
+      Program.types[type.scoped_name] = type
+      return type
+
+    method define_type( t:Token, type_name:String, attribute_flags:Int )->Type
+      return define_type( t, type_name, Attributes(t,attribute_flags) )
 
     method find_type( type_name:String )->Type
       if (visiting) return null
 
-      if local i = type_name.locate( "::" )
+      if (type_name.contains("::"))
         # Name is qualified with module name
-        local mod_name = type_name.leftmost( i )
-        type_name = type_name.unleft( i+2 )
-        if (mod_name == this.name) return types[type_name]
-        local mod = Program.modules[mod_name]
-        if (not mod) return null
-        return mod.types[type_name]
+        return Program.types[type_name]
       endIf
 
       local result = types[type_name]
@@ -69,31 +71,28 @@ class Module
       throw t.error( "Reference to undefined type $."(type_name) )
 
     method organize
-      if (launch_statements)
-        m_on_launch = GlobalMethod( t, "on_launch", &statements=launch_statements )
-        type( t, "Routine" ).add( m_on_launch )
-        launch_statements = null
+      if (global_statements)
+        if (m_on_launch)
+          m_on_launch.statements.add( forEach in global_statements )
+        else
+          m_on_launch = GlobalMethod( t, "on_launch", &statements=global_statements )
+          type( t, "Routine" ).add( m_on_launch )
+        endIf
+        global_statements = null
       endIf
 
-      (forEach in types).organize
-
     method resolve( resolver:Resolver )
-      temporarily resolver.this_module = this
+      temporarily Program.current_module = this
         (forEach in types).resolve( resolver )
       endTemporarily
 
     method to->String
       return name
 
-    method type( t:Token, name:String )->Type
-      trace
-      throw t.error( "TODO" )
-      #local result = find_type( name )
-      #if (result) return result
-
-      #result = Type( t, this, name )
-      #types[ name ] = result
-      #return result
+    method type( t:Token, name:String, attribute_flags=Attribute.OBJECT:Int )->Type
+      local result = types[name]
+      if (result) return result
+      return define_type( t, name, attribute_flags )
 
     method type_Routine->Type
       return type( t, "Routine" )
@@ -102,7 +101,10 @@ class Module
       if (name == this.name) return
       if (used_modules.contains(name)) return
 
-      local mod = Program.modules[ name ]
-      if (not mod) mod = Module( t, name )
+      local mod = Program.modules[name]
+      if (not mod)
+        mod = Module( t, name )
+        Program.modules[name] = mod
+      endIf
       used_modules[ name ] = mod
 endClass

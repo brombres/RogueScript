@@ -610,7 +610,7 @@ parser
 - program_elements
   beginList
     while (hasAnother) program_element
-  produceList
+  produceList ProgramElements
 
 - consume_eols
   while (consume(EOL)) noAction
@@ -972,53 +972,8 @@ parser
       create FunctionType(param_types:TypeList,return_type:Type):Type
       list_or_optional_type
       return
-    elseOnOthers
-      # Must be a tuple.
-      savePosition
-      ++disable_output
-      type  # just want to parse through this
-      --disable_output
-      if (nextIs(':'))
-        restorePosition
-        beginList
-          named_tuple_type_element
-          while (consume(','))
-            named_tuple_type_element
-          endWhile
-          mustConsume ')'
-        createList NamedTupleTypeElements
-        create Type(named_elements:NamedTupleTypeElements)
-        list_or_optional_type
-        return
-      else
-        restorePosition
-        beginList
-          consume_eols
-          type
-          consume_eols
-          while (consume(','))
-            consume_eols
-            type
-            consume_eols
-          endWhile
-          mustConsume ')'
-        createList AnonymousTupleTypeElements
-        create Type(anonymous_elements:AnonymousTupleTypeElements)
-        list_or_optional_type
-        return
-      endIf
     endOn
-
-  elseOn '['
-    # [Key:Variant] -> Table<<Key,Variant>>
-    type
-    mustConsume ':'
-    type
-    mustConsume ']'
-    create Type(key_type:Type,value_type:Type)
-    #FIXME call use_Table
-    list_or_optional_type
-    return
+    mustConsume "Function" # generate error
 
   elseOn "Function"
     function_param_types
@@ -1034,15 +989,6 @@ parser
 
   endOn
 
-- named_tuple_type_element
-  consume_eols
-  identifier
-  consume_eols
-  mustConsume ':'
-  type
-  consume_eols
-  produce NamedTupleTypeElement(name:String,of_type:Type)
-
 - remaining_type
   create Type(name:String)
   list_or_optional_type
@@ -1052,7 +998,7 @@ parser
     on "[]"
       create Type(element_type:Type)
     elseOn '?'
-      create Type(core_type:Type,optional="true":Logical)
+      create Type(element_type:Type,is_optional_type="true":Logical)
     endOn
   endWhile
 
@@ -2030,7 +1976,7 @@ parser
   endOn
 
 - local_declarations
-  onPeek '(' destructuring_local_declarations: return
+  #onPeek '(' destructuring_local_declarations: return
   beginList
     consume_eols
     local_declaration
@@ -2080,6 +2026,7 @@ parser
   createNull
   create Local(name:String,initial_value,initial_value_tokens:TokenList,type:Type)
 
+#{
 - destructuring_local_declarations
   on '('
     beginList
@@ -2119,6 +2066,7 @@ parser
       produce     UntypedDestructuringLocalDeclarations(locals:Identifiers,tuple)
     endOn
   endOn
+}#
 
 - block
   on "block"
@@ -2641,7 +2589,7 @@ parser
         if (nextIs('(') or nextIs('?') or nextIs("[]"))
           # Optional type constructor / optional type / optional list type
           create Type(name:String)
-          create Type(core_type:Type,optional="true":Logical)
+          create Type(element_type:Type,is_optional_type="true":Logical)
           list_or_optional_type
           type_access_or_typed_literal_list
           return
@@ -2707,7 +2655,7 @@ parser
     restorePosition
   endOn
 
-  # Parenthesized expression, tuple, or generic function definition
+  # Parenthesized expression or generic function definition
   onPeek '('
     savePosition
     on '('
@@ -2722,25 +2670,12 @@ parser
       elseOnOthers
         expression
         consume_eols
-        if (nextIs(':'))
-          restorePosition
-          named_tuple_or_tuple_type
-          return
-        endIf
         if (consume(')'))
-          if (not (nextIs("with") or nextIs("=>")))
+          if (not nextIs("=>"))
             # good to go as expression grouping
             discardPosition
             return
           endIf
-        endIf
-        restorePosition
-
-        savePosition
-        anonymous_tuple_or_tuple_type
-        if (not (nextIs("=>") or nextIs("with")))
-          discardPosition  # confirmed anonymous_tuple
-          return
         endIf
         restorePosition
 
@@ -2976,68 +2911,6 @@ parser
     subclass
   endIf
 
-- anonymous_tuple_or_tuple_type
-  savePosition
-  anonymous_tuple
-  if (nextIs("[]") or nextIs('?'))
-    # Tuple list type or optional tuple type
-    restorePosition
-    type
-    type_access_or_typed_literal_list
-  else
-    # Name tuple instance
-    discardPosition
-  endIf
-
-- anonymous_tuple
-  # (x,y,...)
-  consume '('
-  beginList
-    consume_eols
-    expression
-    consume_eols
-    while (consume(','))
-      consume_eols
-      expression
-      consume_eols
-    endWhile
-    mustConsume ')'
-  createList AnonymousTuple
-
-- named_tuple_or_tuple_type
-  savePosition
-  named_tuple
-  if (nextIs("[]") or nextIs('?'))
-    # Tuple list type or optional tuple type
-    restorePosition
-    type
-    type_access_or_typed_literal_list
-  else
-    # Name tuple instance
-    discardPosition
-  endIf
-
-- named_tuple
-  # (a:x,b:y,...)
-  consume '('
-  beginList
-    named_tuple_element
-    while (consume(','))
-      named_tuple_element
-    endWhile
-    mustConsume ')'
-  createList NamedTuple
-
-- named_tuple_element
-  consume_eols
-  identifier
-  consume_eols
-  mustConsume ':'
-  consume_eols
-  expression
-  consume_eols
-  produce NamedTupleElement(name:String,value)
-
 - remaining_generic_function_definition
   onPeek "with"
     with_values
@@ -3057,12 +2930,8 @@ parser
     string
   endIf
   if consume("->")
-    if consume @"LiteralInt"
-      produce NativeLiteralInt(content:String):NativeExpression
-    else
-      type
-      produce NativeExpression(content:String,result_type:Type)
-    endIf
+    type
+    produce NativeExpression(content:String,result_type:Type)
   else
     produce NativeStatement(content:String)
   endIf

@@ -20,10 +20,10 @@ augment
 
     method CallGlobalMethod.execute->Variant
       if (args and args.count)
-        local old_stack_count = Program.stack.count
-        Program.stack.add( (forEach in args).execute )
+        local old_stack_count = Runtime.stack.count
+        Runtime.stack.add( (forEach in args).execute )
         local result = info.execute
-        Program.stack.discard_from( old_stack_count )
+        Runtime.stack.discard_from( old_stack_count )
         return result
       else
         return info.execute
@@ -36,13 +36,13 @@ augment
           throw t.error( "Runtime call context is null or undefined." )
       endWhich
 
-      local old_stack_count = Program.stack.count
-      Program.stack.add( context )
+      local old_stack_count = Runtime.stack.count
+      Runtime.stack.add( context )
 
-      if (args and args.count) Program.stack.add( (forEach in args).execute )
+      if (args and args.count) Runtime.stack.add( (forEach in args).execute )
 
       local result = info.execute
-      Program.stack.discard_from( old_stack_count )
+      Runtime.stack.discard_from( old_stack_count )
       return result
 
     method CreateDefaultObject.execute->Variant
@@ -52,10 +52,10 @@ augment
       return statements.execute
 
     method ForEachElementInRangeUpToInt.execute->Variant
-      local v_index = Program.sp + element_info.index
+      local v_index = Runtime.fp + element_info.index
       localize statements
       forEach (i in start.execute->Int..limit.execute->Int)
-        Program.stack[ v_index ] = i
+        Runtime.stack[ v_index ] = i
         statements.execute
       endForEach
       return undefined
@@ -93,12 +93,12 @@ augment
       endForEach
 
     method Procedure.execute->Variant
-      local old_stack_count = Program.stack.count
-      temporarily Program.sp = old_stack_count - this.param_count
+      local old_stack_count = Runtime.stack.count
+      temporarily Runtime.fp = old_stack_count - this.param_count
         try
-          Program.stack.expand( this.local_count )
+          Runtime.stack.expand( this.local_count )
           local result = statements.execute
-          Program.stack.discard_from( old_stack_count )
+          Runtime.stack.discard_from( old_stack_count )
           return result
         catch (on_return_result:ReturnResultException)
           return on_return_result.result
@@ -111,10 +111,10 @@ augment
       throw exception
 
     method ReadLocal.execute->Variant
-      return Program.stack[ Program.sp+info.index ]
+      return Runtime.stack[ Runtime.fp+info.index ]
 
     method ReadLocalInt.execute->Variant
-      return Program.stack[ Program.sp+info.index ]
+      return Runtime.stack[ Runtime.fp+info.index ]
 
     method Statements.execute->Variant
       local result : Variant
@@ -134,7 +134,7 @@ augment
 
     method WriteLocal.execute->Variant
       local new_value = new_value.execute
-      Program.stack[ Program.sp+info.index ] = new_value
+      Runtime.stack[ Runtime.fp+info.index ] = new_value
       return new_value
 
 endAugment

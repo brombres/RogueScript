@@ -1,0 +1,8 @@
+module Boss
+
+augment
+  METHODS
+    method Cmd.preprocess
+      noAction
+
+endAugment

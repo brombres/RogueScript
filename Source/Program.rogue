@@ -2,99 +2,76 @@ module Boss
 
 class Program [singleton]
   PROPERTIES
-    primary_program   : Program
-
-    parsed_file_timestamps = [String:Timestamp]
-    #unresolved_elements    = Cmd[]
-
     t              : Token
-    current_module : Module
     default_module : Module
+    current_module : Module
     modules        = [String:Module]
+    types          = [String:Type]  # All types, fully qualified e.g. Boss::Int
 
     type_Int       : Type
     type_Logical   : Type
     type_Real      : Type
     type_String    : Type
 
-    configured     : Logical
-
-    stack   = Variant[]
-    sp      : Int
+    pending_elements = ProgramElements[]
 
   METHODS
-    method init
-      temporarily Program = this
-        t = Token( TokenType.IDENTIFIER, "[INTERNAL]", &content="Boss" )
-        default_module = Module( t, "Boss" )
-        current_module = default_module
+    method init( elements:ProgramElements[] )
+      _configure
+      add( elements )
 
-        type_Int     = Type( t, "Int" )
-        type_Logical = Type( t, "Logical" )
-        type_Real    = Type( t, "Real" )
-        type_String  = Type( t, "String" )
-      endTemporarily
-
-    method init( primary_program )
-      init
-
-    method cloned->Program
-      throw t.error( "TODO" )
+    method add( elements:ProgramElements[] )
+      pending_elements.add( elements )
 
     method execute( cmd:Cmd )
       temporarily Program = this
         cmd.execute
       endTemporarily
 
-    method launch->CompileError
+    method get_module( t:Token, module_name:String )->Module
+      local mod = modules[module_name]
+      if (not mod)
+        mod = Module( t, module_name )
+        modules[module_name] = mod
+      endIf
+      return mod
+
+    method launch
       temporarily Program = this
-        try
-          local err = resolve
-          if (err) return err
-
-          forEach (mod in modules)
-            mod.launch
-          endForEach
-
-        catch (err:CompileError)
-          return err
-        catch (err:Error)
-          return CompileError( "[INTERNAL ERROR] " + err )
-        endTry
+        forEach (mod in modules)
+          mod.launch
+        endForEach
       endTemporarily
-
-      return null
 
     method organize
-      temporarily Program = this
-        Organizer.organize_program
-      endTemporarily
-
-    method parse( file:File )
-      temporarily Program = this
-        file .= abs
-
-        local timestamp = file.timestamp
-        local entry = parsed_file_timestamps.find( file.filepath )
-        if (entry and entry.value >= timestamp) return
-
-        parse( file.filepath, String(file) )
-
-        parsed_file_timestamps[ file.filepath ] = timestamp
-      endTemporarily
-
-    method parse( filepath:String, source:String, timestamp=Timestamp():Timestamp )
       temporarily Program=this, current_module=default_module
-        local elements = Parser( File(filepath) ).parse
-        TypeCollector.visit( elements )
-        (forEach in elements).store
+        CollectTypes.visit( forEach in pending_elements )
+
+        forEach (elements in pending_elements)
+          (forEach in elements).store
+        endForEach
+
+        (forEach in modules).organize
+
+        Organizer.organize_program
+
+        pending_elements.clear
       endTemporarily
 
     method resolve
       temporarily Program = this
-        (forEach in modules).organize
-
-        local resolver = Resolver()
-        (forEach in modules).resolve( resolver )
+        Resolver.resolve_program
       endTemporarily
+
+    method _configure
+      temporarily Program = this
+        t = Token( TokenType.IDENTIFIER, "[INTERNAL]", &content="Boss" )
+        default_module = Module( t, "Boss" )
+
+        type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )
+        type_Logical = default_module.define_type( t, "Logical", Attribute.PRIMITIVE )
+        type_Real    = default_module.define_type( t, "Real",    Attribute.PRIMITIVE )
+        type_String  = default_module.define_type( t, "String",  Attribute.PRIMITIVE )
+      endTemporarily
+
 endClass

@@ -8,6 +8,9 @@ augment
     method Cmd.store( type_context:Type )
       throw t.error( "[INTERNAL] $.store(Type) is undefined."(type_name) )
 
+    method Class.store
+      noAction
+
       #{
     method GlobalMethod.store( type_context:Type )
       type_context.add( this )
@@ -17,13 +20,14 @@ augment
       }#
 
     method SetModuleContext.store
-      noAction
+      Program.current_module = Program.modules[name]
 
     method Statements.store
-      if (Program.current_module.launch_statements)
-        Program.current_module.launch_statements.add( forEach in this )
+      local mod = Program.current_module
+      if (mod.global_statements)
+        mod.global_statements.add( (forEach in this).cloned )
       else
-        Program.current_module.launch_statements = this
+        mod.global_statements = this.cloned
       endIf
 
     method ToTypeMethod.store( type_context:Type )

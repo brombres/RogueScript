@@ -4,6 +4,7 @@ $include Attributes
 $include BossObject
 $include CallCandidates
 $include CmdExecute
+$include CmdPreprocess
 $include CmdStore
 $include CmdType
 $include Module
@@ -12,9 +13,10 @@ $include Parser       [optional]
 $include Procedure
 $include Program
 $include Resolver
+$include Runtime
 $include Scanner
 $include Type
-$include TypeCollector
+$include CollectTypes
 
 uses Boss
 uses Console/CommandLineParser
@@ -25,9 +27,9 @@ class Boss
   PROPERTIES
     command  : Variant
 
-    staging_program   : Program
-    organized_program : Program
-    program           : Program
+    #staging_program   : Program
+    #organized_program : Program
+    #program           : Program
 
   METHODS
     method init
@@ -44,36 +46,32 @@ class Boss
         System.exit 0
       endIf
 
-      local err : Exception
-      forEach (arg in command//args)
-        err = load( File(arg->String) )
-        if (err) escapeForEach
-      endForEach
+      local error : Exception
+      contingent
+        forEach (arg in command//args)
+          error = include( File(arg->String) )
+          necessary (not error)
+        endForEach
 
+        error = update
+        necessary (not error)
 
-      if (not err) err = update
-
-      if (err)
-        #err.display
-        Global.error.println err
+      unsatisfied
+        #error.display
+        Global.error.println error
         System.exit 1
-      endIf
+      endContingent
+
+    method include( file:File )->BossError
+      return Runtime.include( file )
 
     method load( file:File )->BossError
-      _prepare_staging
+      return Runtime.load( file )
 
-      try
-        staging_program.parse( file )
-      catch (err:BossError)
-        staging_program = null
-        return err
-      catch (err:Exception)
-        staging_program = null
-        return CompileError( "[INTERNAL ERROR] " + err, file.filepath )
-      endTry
+    method update->BossError
+      return Runtime.update
 
-      return null
-
+#{
     method update->BossError
       if (staging_program)
         try
@@ -95,6 +93,7 @@ trace
         if (organized_program) staging_program = organized_program.cloned
         else                   staging_program = Program()
       endIf
+}#
 
     method _parse_args( args:String[] )->Variant
       # This method is unrelated to the Froley Parser

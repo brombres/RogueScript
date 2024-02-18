@@ -2,6 +2,8 @@ module Boss
 
 class Type : Cmd
   PROPERTIES
+    batch_id           : Int
+
     module_context     : Module
     definition         : Class
 
@@ -9,14 +11,10 @@ class Type : Cmd
     base_class         : Type
     aspects            : Type[]
 
-    named_elements     : NamedTupleTypeElements
-    anonymous_elements : AnonymousTupleTypeElements
-    key_type           : Type
-    value_type         : Type
     name               : String
+    scoped_name        : String
     element_type       : Type
-    core_type          : Type
-    optional           : Logical
+    is_optional_type   : Logical
 
     global_methods         = [String:GlobalMethod]
     global_methods_by_name = [String:GlobalMethod[]]
@@ -31,35 +29,21 @@ class Type : Cmd
   METHODS
     method init( t, name )
 
-    method init( t, named_elements )
-
-    method init( t, anonymous_elements )
-
-    method init( t, key_type, value_type )
-
     method init( t, element_type )
 
-    method init( t, core_type, optional )
+    method init( t, element_type, is_optional_type )
 
-    method init( module_context, definition )
-      t = definition.t
-      name = definition.name->String
-      attributes = definition.attributes.cloned
-
-      if (not (attributes.is_primitive or attributes.is_compound or attributes.is_enum or attributes.is_aspect))
-        attributes.is_object = true
-      endIf
+    method init( t, module_context, name, attributes )
+      if (not attributes.classification) attributes.is_object = true
 
     method init( existing:Type )
       prior.init( existing )
-      if (existing.named_elements) named_elements = existing.named_elements.cloned
-      if (existing.anonymous_elements) anonymous_elements = existing.anonymous_elements.cloned
-      if (existing.key_type) key_type = existing.key_type.cloned
-      if (existing.value_type) value_type = existing.value_type.cloned
       name = existing.name
       if (existing.element_type) element_type = existing.element_type.cloned
-      if (existing.core_type) core_type = existing.core_type.cloned
-      optional = existing.optional
+      is_optional_type = existing.is_optional_type
+
+    method init_object
+      batch_id = Parser.current_batch_id
 
     method add( m:GlobalMethod )
       if (not m.type_context) m.type_context = this
@@ -121,6 +105,8 @@ class Type : Cmd
       methods_by_name[m.name].add( m )
 
     method collect_base_types
+      if (not definition) return
+
       forEach (base_type in definition.base_types)
         base_type = module_context.must_find_type( base_type.t, base_type.name )
         if (base_type.attributes.is_aspect)
@@ -162,7 +148,9 @@ class Type : Cmd
       endTemporarily
 
     method scoped_name->String
-      return "$::$"(module_context,name)
+      if (@scoped_name) return @scoped_name
+      @scoped_name = "$::$"(module_context,name)
+      return @scoped_name
 
     method to->String
       return name

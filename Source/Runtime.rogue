@@ -1,0 +1,79 @@
+module Boss
+
+class Runtime [singleton]
+  PROPERTIES
+    new_elements      : [String:ProgramElements]
+    resolved_elements : [String:ProgramElements]
+
+    program : Program
+    stack   = Variant[]
+    fp      : Int
+
+  METHODS
+    method include( file:File )->BossError
+      # Loads file if not already loaded.
+      file .= abs
+      local filepath = file.filepath
+      if (new_elements and new_elements.contains(filepath)) return null
+      return load( file )
+
+    method load( file:File )->BossError
+      file .= abs
+      local filepath = file.filepath
+
+      _prepare_staging
+
+      try
+        local elements = Parser( File(filepath) ).parse->(as ProgramElements)
+        new_elements[filepath] = elements
+        (forEach in elements).preprocess
+
+      catch (error:BossError)
+        new_elements = null
+        return error
+      catch (error:Exception)
+        new_elements = null
+        return CompileError( "[INTERNAL ERROR] " + error, file.filepath )
+      endTry
+
+      return null
+
+    method unload( file:File )
+      _prepare_staging
+
+      local filepath = file.abs.filepath
+      new_elements.remove( filepath )
+      resolved_elements?.remove( filepath )
+
+    method update->BossError
+      try
+        if (new_elements.count)
+          local staged_program = Program( new_elements.values )
+          new_elements = null
+          staged_program.organize
+          staged_program.resolve
+          staged_program.launch
+          #program = staged_program
+        endIf
+
+        #if (program) program.update
+
+      catch (error:BossError)
+        new_elements = null
+        return error
+      catch (error:Exception)
+        new_elements = null
+        return CompileError( "[INTERNAL ERROR] " + error )
+      endTry
+
+      return null
+
+    method _prepare_staging
+      if (not new_elements)
+        if (resolved_elements)
+          new_elements = resolved_elements.cloned
+        else
+          new_elements = [String:ProgramElements]
+        endIf
+      endIf
+endClass
