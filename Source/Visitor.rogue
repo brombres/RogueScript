@@ -7,6 +7,22 @@ class Visitor
     this_procedure : Procedure
 
   METHODS
+    method visit_program( program:Program )
+      temporarily Program = program
+        visit_module( forEach in program.modules )
+      endTemporarily
+
+    method visit_module( mod:Module )
+      temporarily Program.current_module = mod
+        visit_type( forEach in mod.types )
+      endTemporarily
+
+    method visit_type( type:Type )
+      temporarily this_type = type
+        visit( forEach in type.global_methods )
+        visit( forEach in type.methods )
+      endTemporarily
+
     method visit( cmd:Cmd )->Cmd [propagated]
       # Call to invoke the appropriate on_visit/on_visit_node() for the given Cmd type.
       #

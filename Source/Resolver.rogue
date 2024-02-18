@@ -398,64 +398,66 @@ class Resolver : Visitor [singleton]
 
     method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args, &is_constructor )->Procedure
       local m = select_call_candidate( name, args )
-      if (not m)
-        local call_sig = String()
-        if (args)
-          if (context)
-            call_sig.print type_context
-            call_sig.print '.'
-          endIf
-          call_sig.print name
-          call_sig.print '('
-          forEach (arg at i in args)
-            if (i) call_sig.print( ',' )
-            call_sig.print( arg.type )
-          endForEach
-          call_sig.print ')'
-        else
-          call_sig.print "'"
-          if (context)
-            call_sig.print type_context
-            call_sig.print '.'
-          endIf
-          call_sig.print name
-          call_sig.print "'"
-        endIf
+      if (m) return m
 
-        if (CallCandidates.count)
-          local message = String()
-          message.println "No exact match for ambiguous call to $. Candidates:\n"(call_sig)
-          forEach (m in CallCandidates)
-            message.print "  "
-            message.print m.type_context
-            message.print '.'
-            message.print m.signature
-          endForEach
-          throw t.error( message )
+      local call_sig = String()
+      if (args)
+        if (context)
+          call_sig.print type_context
+          call_sig.print '.'
+        endIf
+        call_sig.print name
+        call_sig.print '('
+        forEach (arg at i in args)
+          if (i) call_sig.print( ',' )
+          call_sig.print( arg.type )
+        endForEach
+        call_sig.print ')'
+      else
+        call_sig.print "'"
+        if (context)
+          call_sig.print type_context
+          call_sig.print '.'
+        endIf
+        call_sig.print name
+        call_sig.print "'"
+      endIf
+
+      local is_global = (context and context instanceOf TypeContext)
+      if (CallCandidates.count)
+        local message = String()
+        message.println "No exact match for ambiguous call to $. Candidates:\n"(call_sig)
+        forEach (m in CallCandidates)
+          message.print "  "
+          message.print m.type_context
+          message.print '.'
+          message.print m.signature
+        endForEach
+        throw t.error( message )
+      else
+        local possibilities = String[]
+        if (args)
+          possibilities.add( which{is_global:"global method" || "method"} )
         else
-          local possibilities = String[]
-          if (not args)
-            if (context) possibilities.add( "property" )
-            else         possibilities.add( "variable" )
-          endIf
+          if (context) possibilities.add( which{is_global:"global property" || "property"} )
+          else         possibilities.add( "variable" )
           possibilities.add( "method" )
-          if (not context) possibilities.add( "routine" )
-          if (is_constructor)
-            throw t.error( "No such constructor $$ exists."(type_context,call_sig.from_first('(')) )
-          elseIf (context)
-            throw t.error( "No such $ $ exists."(possibilities.conjoin("or"),call_sig) )
-          else
-            throw t.error( "No such $ $ exists in the current scope."(possibilities.conjoin("or"),call_sig) )
-          endIf
+        endIf
+        if (not context) possibilities.add( "routine" )
+        if (is_constructor)
+          throw t.error( "No such constructor $$ exists."(type_context,call_sig.from_first('(')) )
+        elseIf (context)
+          throw t.error( "No such $ $ exists."(possibilities.conjoin("or"),call_sig) )
+        else
+          throw t.error( "No such $ $ exists in the current scope."(possibilities.conjoin("or"),call_sig) )
         endIf
       endIf
-      return m
 
     method select_call_candidate( name:String, args:Args )->Procedure
       local arg_count = which{ args:args.count || 0 }
 
       forEach (m in CallCandidates)
-        if (arg_count >= m.min_params and arg_count <= m.max_params) CallCandidates.keep( m )
+        if (arg_count >= m.min_args and arg_count <= m.max_args) CallCandidates.keep( m )
       endForEach
 
       if (CallCandidates.found_match) return CallCandidates.match
