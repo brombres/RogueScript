@@ -6,6 +6,6 @@ augment
       noAction
 
     method Include.preprocess
-      Runtime.include( File(filepath) )
+      BossVM.include( File(filepath) )
 
 endAugment

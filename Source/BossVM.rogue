@@ -1,6 +1,25 @@
 module Boss
 
-class Runtime [singleton]
+$include Attributes
+$include BossObject
+$include BossVM
+$include CallCandidates
+$include CmdExecute
+$include CmdPreprocess
+$include CmdStore
+$include CmdType
+$include CollectTypes
+$include Module
+$include Organizer
+$include Parser       [optional]
+$include Procedure
+$include Program
+$include Resolver
+$include Scanner
+$include Type
+
+
+class BossVM [singleton]
   PROPERTIES
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
@@ -19,7 +38,7 @@ class Runtime [singleton]
       local error = launch
       if (error) throw error
 
-      temporarily Program = program
+      temporarily BossVM=this, Program=program
         local statements = Parser( "[EXECUTE]", script ).parse( Parser.ip_multi_line_statements )->(as Statements)
         local m_execute = GlobalMethod( statements.t, "execute", &statements=statements )
         m_execute.type_context = Program.default_module.type( Program.default_module.t, "Routine" )
@@ -36,20 +55,22 @@ class Runtime [singleton]
 
     method launch->BossError
       try
-        if (new_elements and new_elements.count)
-          local staged_program = Program( new_elements.values )
-          resolved_elements = new_elements
-          new_elements = null
-          staged_program.organize
-          staged_program.resolve
-          staged_program.launch
-          program = staged_program
-        elseIf (not program)
-          program = Program()
-          program.organize
-          program.resolve
-          program.launch
-        endIf
+        temporarily BossVM = this
+          if (new_elements and new_elements.count)
+            local staged_program = Program( new_elements.values )
+            resolved_elements = new_elements
+            new_elements = null
+            staged_program.organize
+            staged_program.resolve
+            staged_program.launch
+            program = staged_program
+          elseIf (not program)
+            program = Program()
+            program.organize
+            program.resolve
+            program.launch
+          endIf
+        endTemporarily
       catch (error:BossError)
         new_elements = null
         return error
@@ -67,9 +88,11 @@ class Runtime [singleton]
       _prepare_staging
 
       try
-        local elements = Parser( File(filepath) ).parse->(as ProgramElements)
-        new_elements[filepath] = elements
-        (forEach in elements).preprocess
+        temporarily BossVM = this
+          local elements = Parser( File(filepath) ).parse->(as ProgramElements)
+          new_elements[filepath] = elements
+          (forEach in elements).preprocess
+        endTemporarily
 
       catch (error:BossError)
         new_elements = null
@@ -95,7 +118,6 @@ class Runtime [singleton]
       try
         local error = launch
         if (error) return error
-        #if (program) program.update
 
       catch (error:BossError)
         new_elements = null

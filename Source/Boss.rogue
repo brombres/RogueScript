@@ -1,25 +1,8 @@
 module Boss
 
-$include Attributes
-$include BossObject
-$include CallCandidates
-$include CmdExecute
-$include CmdPreprocess
-$include CmdStore
-$include CmdType
-$include Module
-$include Organizer
-$include Parser       [optional]
-$include Procedure
-$include Program
-$include Resolver
-$include Runtime
-$include Scanner
-$include Type
-$include CollectTypes
-
-uses Boss
 uses Console/CommandLineParser
+
+$include BossVM
 
 Boss( System.command_line_arguments )
 
@@ -27,14 +10,7 @@ class Boss
   PROPERTIES
     command  : Variant
 
-    #staging_program   : Program
-    #organized_program : Program
-    #program           : Program
-
   METHODS
-    method init
-      noAction
-
     method init( args:String[] )
       command = _parse_args( args )
 
@@ -46,14 +22,16 @@ class Boss
         System.exit 0
       endIf
 
+      local vm = BossVM()
+
       local error : Exception
       contingent
         forEach (arg in command//args)
-          error = include( File(arg->String) )
+          error = vm.include( File(arg->String) )
           necessary (not error)
         endForEach
 
-        error = update
+        error = vm.update
         necessary (not error)
 
       unsatisfied
@@ -61,21 +39,6 @@ class Boss
         Global.error.println error
         System.exit 1
       endContingent
-
-    method execute( script:String )->Variant
-      return Runtime.execute( script )
-
-    method include( file:File )->BossError
-      return Runtime.include( file )
-
-    method load( file:File )->BossError
-      return Runtime.load( file )
-
-    method unload( file:File )
-      Runtime.unload( file )
-
-    method update->BossError
-      return Runtime.update
 
     method _parse_args( args:String[] )->Variant
       # This method is unrelated to the Froley Parser
