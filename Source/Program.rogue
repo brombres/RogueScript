@@ -16,6 +16,9 @@ class Program [singleton]
     pending_elements = ProgramElements[]
 
   METHODS
+    method init
+      _configure
+
     method init( elements:ProgramElements[] )
       _configure
       add( elements )
@@ -23,9 +26,9 @@ class Program [singleton]
     method add( elements:ProgramElements[] )
       pending_elements.add( elements )
 
-    method execute( cmd:Cmd )
+    method execute( cmd:Cmd )->Variant
       temporarily Program = this
-        cmd.execute
+        return cmd.execute
       endTemporarily
 
     method get_module( t:Token, module_name:String )->Module

@@ -10,12 +10,50 @@ class Runtime [singleton]
     fp      : Int
 
   METHODS
+    method execute( script:String )->Variant
+      local error = launch
+      if (error) throw error
+
+      temporarily Program = program
+        local statements = Parser( "[EXECUTE]", script ).parse( Parser.ip_multi_line_statements )->(as Statements)
+        local m_execute = GlobalMethod( statements.t, "execute", &statements=statements )
+        m_execute.type_context = Program.default_module.type( Program.default_module.t, "Routine" )
+        Resolver.resolve( m_execute )
+        return Program.execute( m_execute )
+      endTemporarily
+
     method include( file:File )->BossError
       # Loads file if not already loaded.
       file = _find_file( file )
       local filepath = file.filepath
       if (new_elements and new_elements.contains(filepath)) return null
       return load( file )
+
+    method launch->BossError
+      try
+        if (new_elements and new_elements.count)
+          local staged_program = Program( new_elements.values )
+          resolved_elements = new_elements
+          new_elements = null
+          staged_program.organize
+          staged_program.resolve
+          staged_program.launch
+          program = staged_program
+        elseIf (not program)
+          program = Program()
+          program.organize
+          program.resolve
+          program.launch
+        endIf
+      catch (error:BossError)
+        new_elements = null
+        return error
+      catch (error:Exception)
+        new_elements = null
+        return CompileError( "[INTERNAL ERROR] " + error )
+      endTry
+
+      return null
 
     method load( file:File )->BossError
       file = _find_file( file )
@@ -47,16 +85,8 @@ class Runtime [singleton]
 
     method update->BossError
       try
-        if (new_elements.count)
-          local staged_program = Program( new_elements.values )
-          resolved_elements = new_elements
-          new_elements = null
-          staged_program.organize
-          staged_program.resolve
-          staged_program.launch
-          #program = staged_program
-        endIf
-
+        local error = launch
+        if (error) return error
         #if (program) program.update
 
       catch (error:BossError)

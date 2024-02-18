@@ -62,6 +62,9 @@ class Boss
         System.exit 1
       endContingent
 
+    method execute( script:String )->Variant
+      return Runtime.execute( script )
+
     method include( file:File )->BossError
       return Runtime.include( file )
 

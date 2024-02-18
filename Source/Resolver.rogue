@@ -140,6 +140,13 @@ class Resolver : Visitor [singleton]
       scope_stack.clear
       (forEach in Program.modules).resolve( this )
 
+    method resolve( procedure:Procedure )
+      scope_stack.clear
+      local type_context = procedure.type_context
+      temporarily Program.current_module=type_context.module_context, this_type=type_context
+        visit( procedure )
+      endTemporarily
+
     method add_local( t:Token, name:String, type:Type )->Local
       local v = Local( t, name, type )
       add_local( v )
