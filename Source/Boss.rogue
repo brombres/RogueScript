@@ -23,6 +23,7 @@ class Boss
       endIf
 
       local vm = BossVM()
+      vm.register( "Test:PI->Real", ()=>pi )
 
       local error : Exception
       contingent

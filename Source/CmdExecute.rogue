@@ -33,7 +33,7 @@ augment
       local context = context.execute
       which (context.type)
         case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
-          throw t.error( "BossVM call context is null or undefined." )
+          throw t.error( "Boss call context is null or undefined." )
       endWhich
 
       local old_stack_count = BossVM.stack.count
@@ -44,6 +44,9 @@ augment
       local result = info.execute
       BossVM.stack.discard_from( old_stack_count )
       return result
+
+    method CallNativeProcedure.execute->Variant
+      return callback()
 
     method CreateDefaultObject.execute->Variant
       return Object( of_type )
@@ -117,7 +120,7 @@ augment
       return BossVM.stack[ BossVM.fp+info.index ]
 
     method Statements.execute->Variant
-      local result : Variant
+      local result = undefined
       forEach (statement in this)
         result = statement.execute
       endForEach

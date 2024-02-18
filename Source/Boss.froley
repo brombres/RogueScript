@@ -887,9 +887,9 @@ parser
 
 - procedure_parameters
   beginList
-    if (not consume('(')) produceList
+    if (not consume('(')) produceList Parameters
     consume_eols
-    if (consume(')')) produceList
+    if (consume(')')) produceList Parameters
     consume_eols
     procedure_parameter
     consume_eols
@@ -986,7 +986,7 @@ parser
   produce WithValue(name:String,value)
 
 - id_or_type
-  pathed_name
+  scoped_name
   if (nextIs("<<") or nextIs("[]") or nextIs('?')) remaining_type
 
 - type
@@ -1010,7 +1010,7 @@ parser
 
   elseOnOthers
     #FIXME call set_cur_token
-    pathed_name
+    scoped_name
     remaining_type
 
   endOn
@@ -1060,7 +1060,7 @@ parser
   on "->" type: return
   produceNull
 
-- pathed_name
+- scoped_name
   savePosition
   on "::"
     create Identifier(name="Boss":String)
@@ -2595,7 +2595,7 @@ parser
   on REAL_NUMBER    -> LiteralReal(value=content:Real):LiteralPrimitive
   on CHARACTER      -> LiteralCharacter(value=content:Character):LiteralPrimitive
   on '@'
-    pathed_name
+    scoped_name
     produce DirectAccess( name:String )
   endOn
 
@@ -2605,7 +2605,7 @@ parser
     produce Access( name:String, args:Args )
 
   elseOnPeek IDENTIFIER
-    pathed_name
+    scoped_name
     if (nextIs("[]"))
       remaining_type
       type_access_or_typed_literal_list
@@ -3294,6 +3294,57 @@ parser
 }#
   endOn
 
+- native_procedure_signature
+  # Scoped::Type::Name.method_name(Native::Procedure::Parameter1,Parameter2=default_value)->ReturnType
+  scoped_name
+  if (consume('.'))
+    procedure_name
+    native_procedure_parameters
+    procedure_return_type
+    produce NativeMethodSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type):NativeProcedureSignature
+  elseIf (consume(':'))
+    procedure_name
+    native_procedure_parameters
+    procedure_return_type
+    produce NativeGlobalMethodSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type):NativeProcedureSignature
+  else
+    syntaxError "Expected '.' or ':'."
+  endIf
+
+- native_procedure_parameters
+  beginList
+    if (not consume('(')) produceList NativeParameters
+    consume_eols
+    if (consume(')')) produceList NativeParameters
+    consume_eols
+    native_procedure_parameter
+    consume_eols
+    while (consume(',')) native_procedure_parameter; consume_eols
+    mustConsume ')'
+  produceList NativeParameters
+
+- native_procedure_parameter
+  consume_eols
+
+  on '&'
+    type
+    create LiteralLogical(value="false":Logical):LiteralPrimitive
+    produce NativeParameter(type:Type,default_value)
+  endOn
+
+  type
+  optional_native_parameter_default_value
+  produce NativeParameter(type:Type,default_value)
+
+- optional_native_parameter_default_value
+  if (consume('='))
+    consume_eols
+    expression
+  else
+    createNull  # Cmd
+  endIf
+
+
 - additional_node_types
   create AddInt(left,right):Add
   create AddReal(left,right):Add
@@ -3323,6 +3374,7 @@ parser
   create ModReal(left,right):Mod
   create MultiplyInt(left,right):Multiply
   create MultiplyReal(left,right):Multiply
+  create NativeProcedureSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type)
   create PowerInt(left,right):Power
   create PowerReal(left,right):Power
   create Print(args:Args)
@@ -3339,6 +3391,7 @@ parser
   create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
   create CallMethod(context,info:Procedure,args:Args):CallProcedure
   create CallMethodPointer(pointer,param_types:TypeList,args:Args,return_type:Type)
+  create CallNativeProcedure
   create CallProcedure(info:Procedure,args:Args)
   create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure
   create CallThisDynamicMethod(info:Procedure,args:Args):CallProcedure
@@ -3449,3 +3502,4 @@ parser
   create IncrementLocal(info:Local)
   create IncrementProperty(context,info:Property)
   create IncrementThisProperty(info:Property)
+

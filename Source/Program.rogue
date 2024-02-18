@@ -50,6 +50,37 @@ class Program [singleton]
       temporarily Program=this, current_module=default_module
         CollectTypes.visit( forEach in pending_elements )
 
+        forEach (entry in BossVM.native_procedures.entries)
+          local sig = Parser(
+            "[BossVM.register($)]"(entry.key),
+            entry.key
+          ).parse( ParserCore.ip_native_procedure_signature )->(as NativeProcedureSignature)
+          local type = Program.default_module.type( sig.t, sig.scoped_type_name )
+          if (sig instanceOf NativeGlobalMethodSignature)
+            local m = GlobalMethod( sig.t, sig.name ).[ cmd_call=entry.value ]
+            if (sig.parameters.count)
+              ensure<<m.parameters>>( sig.t )
+              forEach (param at i in sig.parameters)
+                m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+              endForEach
+            endIf
+            m.return_type = sig.return_type
+            m.statements.add( entry.value.cloned )
+            type.add( m )
+          else
+            local m = Method( sig.t, sig.name ).[ cmd_call=entry.value ]
+            if (sig.parameters.count)
+              ensure<<m.parameters>>( sig.t )
+              forEach (param at i in sig.parameters)
+                m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+              endForEach
+            endIf
+            m.return_type = sig.return_type
+            m.statements.add( entry.value.cloned )
+            type.add( m )
+          endIf
+        endForEach
+
         forEach (elements in pending_elements)
           (forEach in elements.cloned).store
         endForEach
@@ -68,7 +99,7 @@ class Program [singleton]
 
     method _configure
       temporarily Program = this
-        t = Token( TokenType.IDENTIFIER, "[INTERNAL]", &content="Boss" )
+        t = Token( TokenType.IDENTIFIER, "[Boss]", &content="Boss" )
         default_module = Module( t, "Boss" )
 
         type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )

@@ -14,6 +14,8 @@ class Procedure : ControlStructure
     min_args       : Int
     max_args       : Int
 
+    cmd_call       : Cmd
+
   METHODS
     method init( t, name, parameters, return_type, attributes, doc, statements )
       ensure<<attributes>>(t)
@@ -28,6 +30,7 @@ class Procedure : ControlStructure
       if (existing.parameters) parameters = existing.parameters.cloned
       if (existing.return_type) return_type = existing.return_type.cloned
       if (existing.attributes) attributes = existing.attributes.cloned
+      cmd_call = existing.cmd_call
       doc = existing.doc
 
     method organize

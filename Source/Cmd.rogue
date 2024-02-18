@@ -4492,3 +4492,85 @@ class Include : Cmd
     method to->String: return filepath
 
 endClass
+
+class CallNativeProcedure : Cmd
+  PROPERTIES
+    callback : Function()->Variant
+
+  METHODS
+    method init( t )
+
+    method init( t, callback )
+
+    method init( existing:CallNativeProcedure )
+      prior.init( existing )
+      if (existing.callback) callback = existing.callback
+
+    method description->String
+      return "CallNativeProcedure($)" (%callback)
+
+endClass
+
+class NativeParameter : Cmd
+  PROPERTIES
+    type          : Type
+    default_value : Cmd
+
+  METHODS
+    method init( t, type, default_value )
+
+    method init( existing:NativeParameter )
+      prior.init( existing )
+      if (existing.type) type = existing.type.cloned
+      if (existing.default_value) default_value = existing.default_value.cloned
+
+    method description->String
+      return "NativeParameter($,$)" (%type,%default_value)
+
+endClass
+
+class NativeParameters : CmdList
+  METHODS
+    method description->String
+      return "NativeParameters" + list_description
+
+    method get( index:Int )->NativeParameter
+      return @list[index]->(as NativeParameter)
+endClass
+
+
+class NativeGlobalMethodSignature : NativeProcedureSignature
+  METHODS
+    method description->String
+      return "NativeGlobalMethodSignature($,$,$,$)" (%scoped_type_name,%name,%parameters,%return_type)
+
+endClass
+
+class NativeMethodSignature : NativeProcedureSignature
+  METHODS
+    method description->String
+      return "NativeMethodSignature($,$,$,$)" (%scoped_type_name,%name,%parameters,%return_type)
+
+endClass
+
+class NativeProcedureSignature : Cmd
+  PROPERTIES
+    scoped_type_name : String
+    name             : String
+    parameters       : NativeParameters
+    return_type      : Type
+
+  METHODS
+    method init( t, scoped_type_name, name, parameters, return_type )
+
+    method init( existing:NativeProcedureSignature )
+      prior.init( existing )
+      scoped_type_name = existing.scoped_type_name
+      name = existing.name
+      if (existing.parameters) parameters = existing.parameters.cloned
+      if (existing.return_type) return_type = existing.return_type.cloned
+
+    method description->String
+      return "NativeProcedureSignature($,$,$,$)" (%scoped_type_name,%name,%parameters,%return_type)
+
+endClass

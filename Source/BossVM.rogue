@@ -21,18 +21,20 @@ $include Type
 
 class BossVM [singleton]
   PROPERTIES
+    t                 = Token( TokenType.IDENTIFIER, "[Boss]", &content="Boss" )
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
 
-    native_procedures = [String:Function()->Variant]
+    native_procedures = [String:Cmd]
 
     program : Program
     stack   = Variant[]
     fp      : Int
 
   METHODS
-    method deregister_native( full_signature:String )
+    method deregister( full_signature:String )
       native_procedures.remove( full_signature )
+      _begin_staging
 
     method execute( script:String )->Variant
       local error = launch
@@ -85,7 +87,7 @@ class BossVM [singleton]
       file = _find_file( file )
       local filepath = file.filepath
 
-      _prepare_staging
+      _begin_staging
 
       try
         temporarily BossVM = this
@@ -104,11 +106,15 @@ class BossVM [singleton]
 
       return null
 
-    method register_native( full_signature:String, callback:Function()->Variant )
-      native_procedures[full_signature] = callback
+    method register( full_signature:String, cmd:Cmd )
+      native_procedures[full_signature] = cmd
+      _begin_staging
+
+    method register( full_signature:String, callback:Function()->Variant )
+      register( full_signature, CallNativeProcedure(t,callback) )
 
     method unload( file:File )
-      _prepare_staging
+      _begin_staging
 
       local filepath = file.abs.filepath
       new_elements.remove( filepath )
@@ -129,11 +135,7 @@ class BossVM [singleton]
 
       return null
 
-    method _find_file( file:File )->File
-      file .= with_extension( ".boss" )
-      return file.abs
-
-    method _prepare_staging
+    method _begin_staging
       if (not new_elements)
         if (resolved_elements)
           new_elements = resolved_elements.cloned
@@ -141,4 +143,9 @@ class BossVM [singleton]
           new_elements = [String:ProgramElements]
         endIf
       endIf
+
+    method _find_file( file:File )->File
+      file .= with_extension( ".boss" )
+      return file.abs
+
 endClass
