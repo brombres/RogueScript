@@ -14,7 +14,12 @@ augment
       #{
     method GlobalMethod.store( type_context:Type )
       type_context.add( this )
+      }#
 
+    method Include.store
+      noAction
+
+      #{
     method Method.store( type_context:Type )
       type_context.add( this )
       }#

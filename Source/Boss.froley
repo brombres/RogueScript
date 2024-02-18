@@ -626,6 +626,18 @@ parser
   consume_eols
   if (not hasAnother) return
 
+  on "$include"
+    if (nextIs(STRING))
+      string
+      produce Include(filepath:String)
+    elseIf (nextIs(IDENTIFIER))
+      id_filepath
+      produce Include(filepath:String)
+    else
+      syntaxError "Filepath string or ID expected."
+    endIf
+  endOn
+
   if (nextIs("class"))
     class
     return
@@ -745,6 +757,20 @@ parser
   endIf
 
   multi_line_statements
+
+- id_filepath
+  identifier
+  on '/'
+    create LiteralString(value="/")
+    call join_strings
+    id_filepath
+    call join_strings
+  elseOn '.'
+    create LiteralString(value=".")
+    call join_strings
+    id_filepath
+    call join_strings
+  endOn
 
 - parse_module_id
   if (nextIs("::"))

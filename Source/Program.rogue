@@ -48,7 +48,7 @@ class Program [singleton]
         CollectTypes.visit( forEach in pending_elements )
 
         forEach (elements in pending_elements)
-          (forEach in elements).store
+          (forEach in elements.cloned).store
         endForEach
 
         (forEach in modules).organize

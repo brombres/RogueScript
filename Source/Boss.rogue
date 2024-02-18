@@ -68,32 +68,11 @@ class Boss
     method load( file:File )->BossError
       return Runtime.load( file )
 
+    method unload( file:File )
+      Runtime.unload( file )
+
     method update->BossError
       return Runtime.update
-
-#{
-    method update->BossError
-      if (staging_program)
-        try
-trace
-          staging_program.organize
-trace
-        catch (err:BossError)
-          staging_program = null
-          return err
-        catch (err:Exception)
-          staging_program = null
-          return CompileError( "[INTERNAL ERROR] " + err )
-        endTry
-      endIf
-      return null
-
-    method _prepare_staging
-      if (not staging_program)
-        if (organized_program) staging_program = organized_program.cloned
-        else                   staging_program = Program()
-      endIf
-}#
 
     method _parse_args( args:String[] )->Variant
       # This method is unrelated to the Froley Parser

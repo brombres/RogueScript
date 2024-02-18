@@ -4464,16 +4464,31 @@ class ReturnResult : Cmd
 endClass
 
 class ProgramElements : CmdList
-  PROPERTIES
-    organized : Logical
-
   METHODS
-    method init( t )
-
-    method init( existing:ProgramElements )
-      organized = existing.organized
-
     method description->String
       return "ProgramElements" + list_description
+
+endClass
+
+class Include : Cmd
+  PROPERTIES
+    filepath : String
+
+  METHODS
+    method init( t, filepath )
+
+    method init( existing:Include )
+      prior.init( existing )
+      filepath = existing.filepath
+
+    method description->String
+      return "Include($)" (%filepath)
+
+    method to->Character
+      return Cmd.to_character(filepath)
+
+    method to->Int:     return filepath
+    method to->Logical: return filepath?
+    method to->String: return filepath
 
 endClass
