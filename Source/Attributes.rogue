@@ -7,24 +7,11 @@ class Attribute
     ENUM               = (Int64(1):<<:2)
     OBJECT             = (Int64(1):<<:3)
     ASPECT             = (Int64(1):<<:4)
-    MUTATING           = (Int64(1):<<:5)
     ESSENTIAL          = (Int64(1):<<:6)
     SINGLETON          = (Int64(1):<<:7)
-    DEFINED            = (Int64(1):<<:8)
-    RESOLVED           = (Int64(1):<<:9)
-    HAS_RETURN         = (Int64(1):<<:10)
-    VISITING           = (Int64(1):<<:11)
-    OVERRIDDEN         = (Int64(1):<<:12)
-    DYNAMIC_DISPATCH   = (Int64(1):<<:13)
     INSERT             = (Int64(1):<<:14)
     APPEND             = (Int64(1):<<:15)
-    CONTAINS_REFERENCE = (Int64(1):<<:16)
-    RETURNS_THIS       = (Int64(1):<<:17)
-    DEFAULT_PARAMETER  = (Int64(1):<<:18)
     IS_GLOBAL          = (Int64(1):<<:19)
-    REFERENCE_LIST     = (Int64(1):<<:20)
-    ANCHORED           = (Int64(1):<<:21)
-    OPTIONAL           = (Int64(1):<<:22)
     REQUIRES_CLEANUP   = (Int64(1):<<:23)
     ABSTRACT           = (Int64(1):<<:24)
     FALLBACK           = (Int64(1):<<:25)
@@ -73,21 +60,9 @@ class Attributes : CmdList
   BOSS_ATTRIBUTE<< is_exported,          Attribute.EXPORT >>
   BOSS_ATTRIBUTE<< is_essential,         Attribute.ESSENTIAL >>
   BOSS_ATTRIBUTE<< is_singleton,         Attribute.SINGLETON >>
-  BOSS_ATTRIBUTE<< is_defined,           Attribute.DEFINED >>
-  BOSS_ATTRIBUTE<< is_resolved,          Attribute.RESOLVED >>
-  BOSS_ATTRIBUTE<< has_return,           Attribute.HAS_RETURN >>
-  BOSS_ATTRIBUTE<< is_visiting,          Attribute.VISITING >>
-  BOSS_ATTRIBUTE<< is_overridden,        Attribute.OVERRIDDEN >>
-  BOSS_ATTRIBUTE<< dynamic_dispatch,     Attribute.DYNAMIC_DISPATCH >>
   BOSS_ATTRIBUTE<< is_insert,            Attribute.INSERT >>
   BOSS_ATTRIBUTE<< is_append,            Attribute.APPEND >>
-  BOSS_ATTRIBUTE<< contains_reference,   Attribute.CONTAINS_REFERENCE >>
-  BOSS_ATTRIBUTE<< returns_this,         Attribute.RETURNS_THIS >>
-  BOSS_ATTRIBUTE<< is_default_parameter, Attribute.DEFAULT_PARAMETER >>
   BOSS_ATTRIBUTE<< is_global,            Attribute.IS_GLOBAL >>
-  BOSS_ATTRIBUTE<< is_reference_list,    Attribute.REFERENCE_LIST >>
-  BOSS_ATTRIBUTE<< is_anchored,          Attribute.ANCHORED >>
-  BOSS_ATTRIBUTE<< is_optional,          Attribute.OPTIONAL >>
   BOSS_ATTRIBUTE<< requires_cleanup,     Attribute.REQUIRES_CLEANUP >>
   BOSS_ATTRIBUTE<< is_abstract,          Attribute.ABSTRACT >>
   BOSS_ATTRIBUTE<< is_fallback,          Attribute.FALLBACK >>
@@ -99,7 +74,6 @@ class Attributes : CmdList
   BOSS_ATTRIBUTE<< is_api,               Attribute.API >>
   BOSS_ATTRIBUTE<< is_primary,           Attribute.PRIMARY >>
   BOSS_ATTRIBUTE<< is_propagated,        Attribute.PROPAGATED >>
-  BOSS_ATTRIBUTE<< is_mutating,          Attribute.MUTATING >>
   BOSS_ATTRIBUTE<< is_anonymous_tuple,   Attribute.ANONYMOUS_TUPLE >>
   BOSS_ATTRIBUTE<< is_tuple,             Attribute.TUPLE >>
   BOSS_ATTRIBUTE<< is_direct_auto_store, Attribute.DIRECT_AUTO_STORE >>
@@ -180,12 +154,6 @@ augment
     method AttributeInsert.attribute_flags->Int64
       return Attribute.INSERT
 
-    method AttributeMutating.attribute_flags->Int64
-      return Attribute.MUTATING
-
-    method AttributeOptional.attribute_flags->Int64
-      return Attribute.OPTIONAL
-
     method AttributeOverride.attribute_flags->Int64
       return Attribute.OVERRIDE
 
@@ -200,9 +168,6 @@ augment
 
     method AttributeReplace.attribute_flags->Int64
       return Attribute.REPLACE
-
-    method AttributeReturnsThis.attribute_flags->Int64
-      return Attribute.RETURNS_THIS
 
     method AttributeSingleton.attribute_flags->Int64
       return Attribute.SINGLETON

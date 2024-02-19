@@ -817,11 +817,6 @@ parser
 
 - procedure_attributes
   beginList
-    if (procedure_returns_this)
-      create AttributeReturnsThis
-      procedure_returns_this = false
-    endIf
-
     on '['
       while (hasAnother and not nextIs(']'))
         procedure_attribute
@@ -838,12 +833,11 @@ parser
   on @"essential"  -> AttributeEssential
   on @"fallback"   -> AttributeFallback
   on @"insert"     -> AttributeInsert
-  on @"mutating"   -> AttributeMutating
   on @"override"   -> AttributeOverride
   on @"preferred"  -> AttributePreferred
   on @"propagated" -> AttributePropagated
   on @"replace"    -> AttributeReplace
-  syntaxError "Illegal procedure attribute. Expected one or more of [abstract api append essential fallback insert mutating override preferred propagated replace]."
+  syntaxError "Illegal procedure attribute. Expected one or more of [abstract api append essential fallback insert override preferred propagated replace]."
 
 - procedure_body
   multi_line_statements
