@@ -23,7 +23,16 @@ class Boss
       endIf
 
       local vm = BossVM()
-      vm.register( "Test:PI->Real", ()=>pi )
+      vm.register_method( "Test:PI->Real", ()=>pi )
+      vm.register_method( "String:create()->String", ()=>String() )
+      #vm.register_method( "String.count()->Int", ()=>Boss::BossVM.context.object->(as String).count )
+      vm.register_method( "String.count()->Int",
+        Cmd( BossVM.t ) subclass
+          METHODS
+            method execute->Variant
+              return BossVM.context.object->(as String).count
+        endSubclass
+      )
 
       local error : Exception
       contingent

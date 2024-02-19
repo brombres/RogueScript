@@ -32,6 +32,9 @@ class BossVM [singleton]
     fp      : Int
 
   METHODS
+    method context->Variant
+      return stack[fp]
+
     method deregister( full_signature:String )
       native_procedures.remove( full_signature )
       _begin_staging
@@ -106,12 +109,12 @@ class BossVM [singleton]
 
       return null
 
-    method register( full_signature:String, cmd:Cmd )
+    method register_method( full_signature:String, cmd:Cmd )
       native_procedures[full_signature] = cmd
       _begin_staging
 
-    method register( full_signature:String, callback:Function()->Variant )
-      register( full_signature, CallNativeProcedure(t,callback) )
+    method register_method( full_signature:String, callback:Function()->Variant )
+      register_method( full_signature, CallNativeProcedure(t,callback) )
 
     method unload( file:File )
       _begin_staging

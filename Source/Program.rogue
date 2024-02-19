@@ -52,7 +52,7 @@ class Program [singleton]
 
         forEach (entry in BossVM.native_procedures.entries)
           local sig = Parser(
-            "[BossVM.register($)]"(entry.key),
+          "[BossVM.register_method($)]"(entry.key),
             entry.key
           ).parse( ParserCore.ip_native_procedure_signature )->(as NativeProcedureSignature)
           local type = Program.default_module.type( sig.t, sig.scoped_type_name )

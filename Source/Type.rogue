@@ -45,6 +45,7 @@ class Type : Cmd
 
     method add( m:GlobalMethod )
       if (not m.type_context) m.type_context = this
+      m.organize
 
       block existing_m = global_methods[ m.signature ]
         if (existing_m and existing_m.type_context is m.type_context)
@@ -75,6 +76,7 @@ class Type : Cmd
 
     method add( m:Method )
       if (not m.type_context) m.type_context = this
+      m.organize
 
       block existing_m = global_methods[ m.signature ]
         if (existing_m)

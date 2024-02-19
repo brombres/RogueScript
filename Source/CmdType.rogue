@@ -44,6 +44,9 @@ augment
     method LiteralReal.type->Type
       return Program.type_Real
 
+    method LiteralString.type->Type
+      return Program.type_String
+
     method Local.type->Type
       return @type
 

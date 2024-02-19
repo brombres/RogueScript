@@ -37,7 +37,19 @@ class Procedure : ControlStructure
       if (parameters)
         max_args = parameters.count
         min_args = max_args
+
+        forEach (param in parameters)
+          if (param.type)
+            param.type = type_context.module_context.validate_type( param.type )
+          else
+            trace
+            throw param.t.error( "TODO: auto-store parameter" )
+          endIf
+        endForEach
       endIf
+
+      return_type = type_context.module_context.validate_type( return_type )
+
 
     method signature->String
       if (_signature) return _signature

@@ -24,16 +24,11 @@ class Organizer : Visitor [singleton]
     method on_visit_node( cmd:Class )
       (forEach in cmd.members).store( this_type )
 
-    method on_visit( cmd:Procedure )->Cmd
-      visit_children( cmd )
-      cmd.organize
-      return cmd
+      #method on_visit( cmd:Procedure )->Cmd
+      #  visit_children( cmd )
+      #  return cmd
 
     method on_visit( cmd:Type )->Cmd
-      if (not cmd.module_context)
-        return visit( Program.current_module.must_find_type(cmd.t, cmd.name) )
-      endIf
-      visit_children( cmd )
-      return cmd
+      return Program.current_module.validate_type( cmd )
 
 endClass

@@ -41,7 +41,7 @@ class Module
     method define_type( t:Token, type_name:String, attribute_flags:Int )->Type
       return define_type( t, type_name, Attributes(t,attribute_flags) )
 
-    method find_type( type_name:String )->Type
+    method find_type( type_name:String, &limited )->Type
       if (visiting) return null
 
       if (type_name.contains("::"))
@@ -51,6 +51,8 @@ class Module
 
       local result = types[type_name]
       if (result) return result
+
+      if (limited) return null
 
       temporarily visiting = true
         forEach (mod in used_modules)
@@ -65,8 +67,8 @@ class Module
         Program.execute( m_on_launch )
       endIf
 
-    method must_find_type( t:Token, type_name:String )->Type
-      local result = find_type( type_name )
+    method must_find_type( t:Token, type_name:String, &limited )->Type
+      local result = find_type( type_name, &=limited )
       if (result) return result
       throw t.error( "Reference to undefined type $."(type_name) )
 
@@ -102,4 +104,8 @@ class Module
         Program.modules[name] = mod
       endIf
       used_modules[ name ] = mod
+
+    method validate_type( type:Type )->Type
+      if (not type or type.module_context) return type
+      return must_find_type( type.t, type.name )
 endClass
