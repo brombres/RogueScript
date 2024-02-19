@@ -828,16 +828,14 @@ parser
 
 - procedure_attribute
   on @"abstract"   -> AttributeAbstract
-  on @"api"        -> AttributeEssential  # [api] is the same as [essential] for methods
   on @"append"     -> AttributeAppend
   on @"essential"  -> AttributeEssential
-  on @"fallback"   -> AttributeFallback
   on @"insert"     -> AttributeInsert
   on @"override"   -> AttributeOverride
   on @"preferred"  -> AttributePreferred
   on @"propagated" -> AttributePropagated
   on @"replace"    -> AttributeReplace
-  syntaxError "Illegal procedure attribute. Expected one or more of [abstract api append essential fallback insert override preferred propagated replace]."
+  syntaxError "Illegal procedure attribute. Expected one or more of [abstract append essential insert override preferred propagated replace]."
 
 - procedure_body
   multi_line_statements
@@ -1115,9 +1113,8 @@ parser
   produceList Attributes
 
 - module_attribute
-  on @"api"       -> AttributeAPI
   on @"essential" -> AttributeEssential
-  syntaxError "Illegal module attribute. Expected one or more of [api essential]."
+  syntaxError "Illegal module attribute. Expected [essential]."
 
 - class_attributes
   beginList
@@ -1132,7 +1129,6 @@ parser
 
 - class_attribute
   on @"abstract"  -> AttributeAbstract
-  on @"api"       -> AttributeAPI
   on @"aspect"    -> AttributeAspect
   on @"compound"  -> AttributeCompound
   on @"primitive" -> AttributePrimitive
@@ -1141,7 +1137,7 @@ parser
     #FIXME call class_attribute_essential
     produce AttributeEssential
   endIf
-  syntaxError "Illegal class attribute. Expected one or more of [abstract api aspect compound essential primitive singleton]."
+  syntaxError "Illegal class attribute. Expected one or more of [abstract aspect compound essential primitive singleton]."
 
 - class
   on "class"
@@ -1770,8 +1766,8 @@ parser
   produceList Attributes
 
 - property_attribute
-  on @"faux" -> AttributeFaux
-  syntaxError "Illegal property attribute. Expected [faux]."
+  #on @"faux" -> AttributeFaux
+  syntaxError "Illegal property attribute."
 
 - multi_line_statements
   consume_eols_and_semicolons
@@ -3243,10 +3239,6 @@ parser
   endOn
 
 - include_attribute
-  on @"api"
-    include_attribute_api = true
-    return
-  endOn
   on @"folder"
     include_attribute_folder = true
     return
@@ -3255,7 +3247,7 @@ parser
     include_attribute_optional = true
     return
   endOn
-  syntaxError "Illegal $include attribute. Expected one or more of [api folder optional]."
+  syntaxError "Illegal $include attribute. Expected one or more of [folder optional]."
 
 - meta_expression
   meta_term

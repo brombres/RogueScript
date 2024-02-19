@@ -1,49 +1,37 @@
 module Boss
 
-class Attribute
-  DEFINITIONS
-    PRIMITIVE          = (Int64(1):<<:0)
-    COMPOUND           = (Int64(1):<<:1)
-    ENUM               = (Int64(1):<<:2)
-    OBJECT             = (Int64(1):<<:3)
-    ASPECT             = (Int64(1):<<:4)
-    ESSENTIAL          = (Int64(1):<<:6)
-    SINGLETON          = (Int64(1):<<:7)
-    INSERT             = (Int64(1):<<:14)
-    APPEND             = (Int64(1):<<:15)
-    IS_GLOBAL          = (Int64(1):<<:19)
-    REQUIRES_CLEANUP   = (Int64(1):<<:23)
-    ABSTRACT           = (Int64(1):<<:24)
-    FALLBACK           = (Int64(1):<<:25)
-    AUGMENT            = (Int64(1):<<:26)
-    PLACEHOLDER        = (Int64(1):<<:27)
-    COLLECTED          = (Int64(1):<<:28)
-    HAS_NATIVE_CODE    = (Int64(1):<<:29)
-    USED               = (Int64(1):<<:30)
-    API                = (Int64(1):<<:31)
-    PRIMARY            = (Int64(1):<<:32)
-    PROPAGATED         = (Int64(1):<<:33)
-    EXPORT             = (Int64(1):<<:34)
-    ANONYMOUS_TUPLE    = (Int64(1):<<:35)
-    TUPLE              = (Int64(1):<<:36)
-    DIRECT_AUTO_STORE  = (Int64(1):<<:37)
-    BITFLAGS           = (Int64(1):<<:38)
-    OVERRIDE           = (Int64(1):<<:39)
-    FAUX               = (Int64(1):<<:40)
-    PREFERRED          = (Int64(1):<<:41)
-    NATIVE_TYPE        = (Int64(1):<<:42)
-    DOC_GENERATED      = (Int64(1):<<:43)
-    OMIT_DOC           = (Int64(1):<<:44)
-    AUGMENTED          = (Int64(1):<<:45)
-    REPLACE            = (Int64(1):<<:46)
+enum Attribute [bitflags]
+  CATEGORIES
+    ASPECT
+    COMPOUND
+    ENUM
+    OBJECT
+    PRIMITIVE
 
-    CLASSIFICATION     = (Attribute.PRIMITIVE|Attribute.COMPOUND|Attribute.ENUM|Attribute.OBJECT|Attribute.ASPECT)
-endClass
+    ABSTRACT
+    APPEND
+    BITFLAGS
+    ESSENTIAL
+    EXPORT
+    INSERT
+    OVERRIDE
+    PREFERRED
+    PROPAGATED
+    REPLACE
+    SINGLETON
+
+    IS_GLOBAL
+    REQUIRES_CLEANUP
+    NATIVE_TYPE
+
+  DEFINITIONS
+    CLASSIFICATION = (Attribute.PRIMITIVE|Attribute.COMPOUND|Attribute.ENUM|Attribute.OBJECT|Attribute.ASPECT)
+endEnum
 
 $localMacro BOSS_ATTRIBUTE<<$name, $value>>
   METHODS
     method $name->Logical
-      return (flags & ($value))
+      return (flags & ($value)).value
 
     method $id(set_,$name)( setting:Logical )
       if (setting) flags |= ($value)
@@ -62,33 +50,18 @@ class Attributes : CmdList
   BOSS_ATTRIBUTE<< is_singleton,         Attribute.SINGLETON >>
   BOSS_ATTRIBUTE<< is_insert,            Attribute.INSERT >>
   BOSS_ATTRIBUTE<< is_append,            Attribute.APPEND >>
+  BOSS_ATTRIBUTE<< is_replace,           Attribute.REPLACE >>
   BOSS_ATTRIBUTE<< is_global,            Attribute.IS_GLOBAL >>
   BOSS_ATTRIBUTE<< requires_cleanup,     Attribute.REQUIRES_CLEANUP >>
   BOSS_ATTRIBUTE<< is_abstract,          Attribute.ABSTRACT >>
-  BOSS_ATTRIBUTE<< is_fallback,          Attribute.FALLBACK >>
-  BOSS_ATTRIBUTE<< is_augment,           Attribute.AUGMENT >>
-  BOSS_ATTRIBUTE<< is_placeholder,       Attribute.PLACEHOLDER >>
-  BOSS_ATTRIBUTE<< is_collected,         Attribute.COLLECTED >>
-  BOSS_ATTRIBUTE<< has_native_code,      Attribute.HAS_NATIVE_CODE >>
-  BOSS_ATTRIBUTE<< is_used,              Attribute.USED >>
-  BOSS_ATTRIBUTE<< is_api,               Attribute.API >>
-  BOSS_ATTRIBUTE<< is_primary,           Attribute.PRIMARY >>
   BOSS_ATTRIBUTE<< is_propagated,        Attribute.PROPAGATED >>
-  BOSS_ATTRIBUTE<< is_anonymous_tuple,   Attribute.ANONYMOUS_TUPLE >>
-  BOSS_ATTRIBUTE<< is_tuple,             Attribute.TUPLE >>
-  BOSS_ATTRIBUTE<< is_direct_auto_store, Attribute.DIRECT_AUTO_STORE >>
   BOSS_ATTRIBUTE<< bitflags,             Attribute.BITFLAGS >>
   BOSS_ATTRIBUTE<< is_override,          Attribute.OVERRIDE >>
-  BOSS_ATTRIBUTE<< is_faux,              Attribute.FAUX >>
   BOSS_ATTRIBUTE<< is_preferred,         Attribute.PREFERRED >>
   BOSS_ATTRIBUTE<< is_native_type,       Attribute.NATIVE_TYPE >>
-  BOSS_ATTRIBUTE<< doc_generated,        Attribute.DOC_GENERATED >>
-  BOSS_ATTRIBUTE<< omit_doc,             Attribute.OMIT_DOC >>
-  BOSS_ATTRIBUTE<< augmented,            Attribute.AUGMENTED >>
-  BOSS_ATTRIBUTE<< is_replace,           Attribute.REPLACE >>
 
   PROPERTIES
-    flags : Int64
+    flags : Attribute
 
   METHODS
     method init( t )
@@ -121,55 +94,49 @@ endClass
 
 augment
   METHODS
-    method Cmd.attribute_flags->Int64
-      return 0
+    method Cmd.attribute_flags->Attribute
+      return Attribute(0)
 
-    method AttributeAbstract.attribute_flags->Int64
+    method AttributeAbstract.attribute_flags->Attribute
       return Attribute.ABSTRACT
 
-    method AttributeAppend.attribute_flags->Int64
+    method AttributeAppend.attribute_flags->Attribute
       return Attribute.APPEND
 
-    method AttributeAspect.attribute_flags->Int64
+    method AttributeAspect.attribute_flags->Attribute
       return Attribute.ASPECT
 
-    method AttributeAPI.attribute_flags->Int64
-      return Attribute.API
-
-    method AttributeBitflags.attribute_flags->Int64
+    method AttributeBitflags.attribute_flags->Attribute
       return Attribute.BITFLAGS
 
-    method AttributeCompound.attribute_flags->Int64
+    method AttributeCompound.attribute_flags->Attribute
       return Attribute.COMPOUND
 
-    method AttributeEssential.attribute_flags->Int64
+    method AttributeEssential.attribute_flags->Attribute
       return Attribute.ESSENTIAL
 
-    method AttributeExport.attribute_flags->Int64
+    method AttributeExport.attribute_flags->Attribute
       return Attribute.EXPORT
 
-    method AttributeFaux.attribute_flags->Int64
-      return Attribute.FAUX
-
-    method AttributeInsert.attribute_flags->Int64
+    method AttributeInsert.attribute_flags->Attribute
       return Attribute.INSERT
 
-    method AttributeOverride.attribute_flags->Int64
+    method AttributeOverride.attribute_flags->Attribute
       return Attribute.OVERRIDE
 
-    method AttributePreferred.attribute_flags->Int64
+    method AttributePreferred.attribute_flags->Attribute
       return Attribute.PREFERRED
 
-    method AttributePrimitive.attribute_flags->Int64
+    method AttributePrimitive.attribute_flags->Attribute
       return Attribute.PRIMITIVE
 
-    method AttributePropagated.attribute_flags->Int64
+    method AttributePropagated.attribute_flags->Attribute
       return Attribute.PROPAGATED
 
-    method AttributeReplace.attribute_flags->Int64
+    method AttributeReplace.attribute_flags->Attribute
       return Attribute.REPLACE
 
-    method AttributeSingleton.attribute_flags->Int64
+    method AttributeSingleton.attribute_flags->Attribute
       return Attribute.SINGLETON
 endAugment
 

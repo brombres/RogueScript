@@ -379,28 +379,10 @@ class AttributeExport : Cmd
       return "AttributeExport"
 endClass
 
-class AttributeFallback : Cmd
-  METHODS
-    method description->String
-      return "AttributeFallback"
-endClass
-
-class AttributeFaux : Cmd
-  METHODS
-    method description->String
-      return "AttributeFaux"
-endClass
-
 class AttributeInsert : Cmd
   METHODS
     method description->String
       return "AttributeInsert"
-endClass
-
-class AttributeMutating : Cmd
-  METHODS
-    method description->String
-      return "AttributeMutating"
 endClass
 
 class AttributeOverride : Cmd
