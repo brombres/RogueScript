@@ -24,6 +24,7 @@ class Module
 
   METHODS
     method init( t, name, initializer:Logical )
+      use_module( t, "Boss" )
 
     method define_type( def:Class )->Type
       return define_type( def.t, def.name->String, def.attributes.cloned ).[ definition=def ]
@@ -87,8 +88,13 @@ class Module
       return name
 
     method type( t:Token, name:String, attribute_flags=Attribute.OBJECT:Int )->Type
+      if (name.contains("::"))
+        return Program.get_module( t, name.before_last("::") ).type( t, name.after_last("::"), &=attribute_flags )
+      endIf
+
       local result = types[name]
       if (result) return result
+
       return define_type( t, name, attribute_flags )
 
     method type_Routine->Type

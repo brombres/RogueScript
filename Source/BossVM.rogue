@@ -25,7 +25,8 @@ class BossVM [singleton]
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
 
-    native_procedures = [String:Cmd]
+    native_types   = [String:String]
+    native_methods = [String:Cmd]
 
     program : Program
     stack   = Variant[]
@@ -35,9 +36,11 @@ class BossVM [singleton]
     method context->Variant
       return stack[fp]
 
-    method deregister( full_signature:String )
-      native_procedures.remove( full_signature )
-      _begin_staging
+    method deregister_method( full_signature:String )
+      if (native_methods.remove(full_signature)) _begin_staging
+
+    method deregister_type( scoped_name:String )
+      if (native_types.remove(scoped_name)) _begin_staging
 
     method execute( script:String )->Variant
       local error = launch
@@ -110,11 +113,14 @@ class BossVM [singleton]
       return null
 
     method register_method( full_signature:String, cmd:Cmd )
-      native_procedures[full_signature] = cmd
+      native_methods[full_signature] = cmd
       _begin_staging
 
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeProcedure(t,callback) )
+
+    method register_type( scoped_name:String )
+      native_types[scoped_name] = scoped_name
 
     method unload( file:File )
       _begin_staging

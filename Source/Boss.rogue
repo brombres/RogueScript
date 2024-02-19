@@ -23,7 +23,11 @@ class Boss
       endIf
 
       local vm = BossVM()
+
+      vm.register_type( "Rogue::Random" )
+
       vm.register_method( "Test:PI->Real", ()=>pi )
+      vm.register_method( "Rogue::Random.int->Int", ()=>Random.int )
       vm.register_method( "String:create()->String", ()=>String() )
       #vm.register_method( "String.count()->Int", ()=>Boss::BossVM.context.object->(as String).count )
       vm.register_method( "String.count()->Int",
