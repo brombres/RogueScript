@@ -25,7 +25,7 @@ enum Attribute [bitflags]
     NATIVE_TYPE
 
   DEFINITIONS
-    CLASSIFICATION = (Attribute.PRIMITIVE|Attribute.COMPOUND|Attribute.ENUM|Attribute.OBJECT|Attribute.ASPECT)
+    CLASSIFICATION = Attribute[PRIMITIVE,COMPOUND,ENUM,OBJECT,ASPECT]
 endEnum
 
 $localMacro BOSS_ATTRIBUTE<<$name, $value>>
