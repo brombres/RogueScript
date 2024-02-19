@@ -4582,3 +4582,31 @@ class NativeProcedureSignature : Cmd
       return "NativeProcedureSignature($,$,$,$)" (%scoped_type_name,%name,%parameters,%return_type)
 
 endClass
+
+class ReadNativeSingleton : Cmd
+  PROPERTIES
+    of_type          : Type
+    fn_get_singleton : Function()->Variant
+
+  METHODS
+    method init( t )
+      noAction
+
+    method init( t, of_type )
+      fn_get_singleton = of_type.native_get_singleton
+
+    method init( existing:ReadNativeSingleton )
+      t = existing.t
+      of_type = existing.of_type
+      fn_get_singleton = existing.fn_get_singleton
+
+    method description->String
+      return "ReadNativeSingleton($)"(%of_type)
+endClass
+
+class ReadLocalObject : ReadLocal
+  METHODS
+    method description->String
+      return "ReadLocalObject($)" (%info)
+
+endClass

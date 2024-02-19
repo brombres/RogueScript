@@ -234,6 +234,25 @@ class Resolver : Visitor [singleton]
         return visit( ReadLocal(cmd.t, v) )
       endIf
 
+      if local type = Program.current_module.find_type( cmd.name )
+        if (cmd.args)
+          return visit( Construct(cmd.t,type,cmd.args) )
+
+        elseIf (type.attributes.is_singleton)
+          if (type.attributes.is_native_type)
+            if (not type.native_get_singleton)
+              throw cmd.t.error( "$ is a write-only singleton."(type.scoped_name) )
+            endIf
+            return visit( ReadNativeSingleton(cmd.t,type) )
+          else
+            trace
+            throw cmd.t.error( "TODO: Boss Singleton" )
+          endIf
+        else
+          return TypeContext( cmd.t, type )
+        endIf
+      endIf
+
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
 
     method on_visit( cmd:Assign )->Cmd
@@ -254,7 +273,7 @@ class Resolver : Visitor [singleton]
       return cmd
 
     method on_visit( cmd:ContextAccess )->Cmd
-      return cmd.context.resolve_context_access( cmd, this )
+      return visit( cmd.context ).resolve_context_access( cmd, this )
 
     method on_visit( cmd:ForEachIn )->Cmd
       cmd.collection = visit( cmd.collection )
@@ -350,6 +369,10 @@ class Resolver : Visitor [singleton]
       which (cmd.info.type)
         case Program.type_Int: return visit( ReadLocalInt(cmd.t,cmd.info) )
         others
+          if (cmd.info.type.attributes.is_object)
+            return ReadLocalObject( cmd.t, cmd.info )
+          endIf
+          trace
           throw cmd.t.error( "[INTERNAL] Unhandled type $ in ReadLocal."(cmd.info.type) )
       endWhich
 
@@ -502,13 +525,8 @@ augment
       local resolved_type = resolved.require_type
       return resolver.resolve_access( access.t, resolved_type, resolved, access.name, access.args )
 
-    method Access.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
-      local type = Program.current_module.find_type( name )
-      if (type)
-        if (args) return Construct(t,type,args).resolve_context_access( access, resolver )
-        else      return TypeContext( t, type ).resolve_context_access( access, resolver )
-      endIf
-      throw t.error( "Invalid access - type or routine name expected." )
+    method TypeContext.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
+      return resolver.resolve_access( access.t, require_type, this, access.name, access.args )
 
     method Cmd.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
       throw t.error( "TODO: resolve_foreach_in($)"(type_name) )

@@ -3365,6 +3365,8 @@ parser
   create Println(args:Args)
   create ReadLocal(info:Local)
   create ReadLocalInt(info:Local):ReadLocal
+  create ReadLocalObject(info:Local):ReadLocal
+  create ReadNativeSingleton(of_type:Type)
   create ReturnResult(result)
   create SubtractInt(left,right):Subtract
   create SubtractReal(left,right):Subtract

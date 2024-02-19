@@ -116,8 +116,8 @@ augment
     method ReadLocal.execute->Variant
       return BossVM.stack[ BossVM.fp+info.index ]
 
-    method ReadLocalInt.execute->Variant
-      return BossVM.stack[ BossVM.fp+info.index ]
+    method ReadNativeSingleton.execute->Variant
+      return fn_get_singleton()
 
     method Statements.execute->Variant
       local result = undefined

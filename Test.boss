@@ -28,12 +28,14 @@ class Test
 #
 endClass
 
-Test.gmarco
-Test().marco
+#Test.gmarco
+#Test().marco
 
 #
 ##println "Marco"
-println Test().add(3,4)
-println Test.PI
-println "Marco".count
-#println Test().add(6,5)
+#println Test().add(3,4)
+#println Test.PI
+#println "Marco".count
+local r = Random
+forEach (i in 1..5) println r.int
+

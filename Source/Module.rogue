@@ -24,7 +24,9 @@ class Module
 
   METHODS
     method init( t, name, initializer:Logical )
+      Program.modules[name] = this
       use_module( t, "Boss" )
+      use_module( t, "Rogue" )
 
     method define_type( def:Class )->Type
       return define_type( def.t, def.name->String, def.attributes.cloned ).[ definition=def ]
@@ -107,7 +109,6 @@ class Module
       local mod = Program.modules[name]
       if (not mod)
         mod = Module( t, name )
-        Program.modules[name] = mod
       endIf
       used_modules[ name ] = mod
 

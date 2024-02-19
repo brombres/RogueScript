@@ -65,8 +65,11 @@ augment
     method PropertyDeclarations.type->Type
       return @type
 
-    method ReadLocalInt.type->Type
-      return Program.type_Int
+    method ReadLocal.type->Type
+      return info.type
+
+    method ReadNativeSingleton.type->Type
+      return of_type
 
     method TypeContext.type->Type
       return @type

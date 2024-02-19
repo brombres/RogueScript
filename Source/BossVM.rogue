@@ -10,6 +10,7 @@ $include CmdStore
 $include CmdType
 $include CollectTypes
 $include Module
+$include NativeTypeInfo
 $include Organizer
 $include Parser       [optional]
 $include Procedure
@@ -25,7 +26,7 @@ class BossVM [singleton]
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
 
-    native_types          = [String:String]
+    native_types          = [String:NativeTypeInfo]
     native_constructors   = [String:Cmd]
     native_global_methods = [String:Cmd]
     native_methods        = [String:Cmd]
@@ -38,8 +39,8 @@ class BossVM [singleton]
     method context->Variant
       return stack[fp]
 
-    method deregister_constructor( full_signature:String )
-      if (native_constructors.remove(full_signature)) _begin_staging
+    method deregister_constructor( signature:String )
+      if (native_constructors.remove(signature)) _begin_staging
 
     method deregister_global_method( full_signature:String )
       if (native_global_methods.remove(full_signature)) _begin_staging
@@ -120,8 +121,8 @@ class BossVM [singleton]
 
       return null
 
-    method register_constructor( full_signature:String, cmd:Cmd )
-      native_constructors[full_signature] = cmd
+    method register_constructor( signature:String, cmd:Cmd )
+      native_constructors[signature] = cmd
       _begin_staging
 
     method register_constructor( full_signature:String, callback:Function()->Variant )
@@ -141,8 +142,13 @@ class BossVM [singleton]
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeMethod(t,callback) )
 
-    method register_type( scoped_name:String )
-      native_types[scoped_name] = scoped_name
+    method register_type(
+        scoped_name:String,
+        instance_of:Function(Object)->Logical,
+        get_singleton=null:Function()->Variant,
+        set_singleton=null:Function(Variant)
+      )
+      native_types[scoped_name] = NativeTypeInfo( instance_of, get_singleton, set_singleton )
 
     method unload( file:File )
       _begin_staging
