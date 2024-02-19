@@ -1150,6 +1150,18 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.default_value)
       return result
 
+    method on_visit_children( cmd:NativeConstructorSignature )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.parameters)
+      return result
+
+    method on_visit_children( cmd:NativeMethodSignature )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.parameters)
+      if (result?) return result
+      result = visit(cmd.return_type)
+      return result
+
     method on_visit_children( cmd:NativeProcedureSignature )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.parameters)

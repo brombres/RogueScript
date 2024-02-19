@@ -53,38 +53,42 @@ class Program [singleton]
         forEach (type_name in BossVM.native_types)
           local type = Program.default_module.type( BossVM.t, type_name )
           type.attributes.is_native_type = true
-          trace type.scoped_name
+        endForEach
+
+        forEach (entry in BossVM.native_global_methods.entries)
+          local sig = Parser(
+          "[BossVM.register_global_method($)]"(entry.key),
+            entry.key
+          ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
+          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local m = GlobalMethod( sig.t, sig.name ).[ cmd_call=entry.value ]
+          if (sig.parameters.count)
+            ensure<<m.parameters>>( sig.t )
+            forEach (param at i in sig.parameters)
+              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+            endForEach
+          endIf
+          m.return_type = sig.return_type
+          m.statements.add( entry.value.cloned )
+          type.add( m )
         endForEach
 
         forEach (entry in BossVM.native_methods.entries)
           local sig = Parser(
           "[BossVM.register_method($)]"(entry.key),
             entry.key
-          ).parse( ParserCore.ip_native_procedure_signature )->(as NativeProcedureSignature)
+          ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
-          if (sig instanceOf NativeGlobalMethodSignature)
-            local m = GlobalMethod( sig.t, sig.name ).[ cmd_call=entry.value ]
-            if (sig.parameters.count)
-              ensure<<m.parameters>>( sig.t )
-              forEach (param at i in sig.parameters)
-                m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
-              endForEach
-            endIf
-            m.return_type = sig.return_type
-            m.statements.add( entry.value.cloned )
-            type.add( m )
-          else
-            local m = Method( sig.t, sig.name ).[ cmd_call=entry.value ]
-            if (sig.parameters.count)
-              ensure<<m.parameters>>( sig.t )
-              forEach (param at i in sig.parameters)
-                m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
-              endForEach
-            endIf
-            m.return_type = sig.return_type
-            m.statements.add( entry.value.cloned )
-            type.add( m )
+          local m = Method( sig.t, sig.name ).[ cmd_call=entry.value ]
+          if (sig.parameters.count)
+            ensure<<m.parameters>>( sig.t )
+            forEach (param at i in sig.parameters)
+              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+            endForEach
           endIf
+          m.return_type = sig.return_type
+          m.statements.add( entry.value.cloned )
+          type.add( m )
         endForEach
 
         forEach (elements in pending_elements)

@@ -45,7 +45,7 @@ augment
       BossVM.stack.discard_from( old_stack_count )
       return result
 
-    method CallNativeProcedure.execute->Variant
+    method CallNativeMethod.execute->Variant
       return callback()
 
     method CreateDefaultObject.execute->Variant

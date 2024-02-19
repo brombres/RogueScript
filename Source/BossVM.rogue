@@ -25,8 +25,10 @@ class BossVM [singleton]
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
 
-    native_types   = [String:String]
-    native_methods = [String:Cmd]
+    native_types          = [String:String]
+    native_constructors   = [String:Cmd]
+    native_global_methods = [String:Cmd]
+    native_methods        = [String:Cmd]
 
     program : Program
     stack   = Variant[]
@@ -35,6 +37,12 @@ class BossVM [singleton]
   METHODS
     method context->Variant
       return stack[fp]
+
+    method deregister_constructor( full_signature:String )
+      if (native_constructors.remove(full_signature)) _begin_staging
+
+    method deregister_global_method( full_signature:String )
+      if (native_global_methods.remove(full_signature)) _begin_staging
 
     method deregister_method( full_signature:String )
       if (native_methods.remove(full_signature)) _begin_staging
@@ -112,12 +120,26 @@ class BossVM [singleton]
 
       return null
 
+    method register_constructor( full_signature:String, cmd:Cmd )
+      native_constructors[full_signature] = cmd
+      _begin_staging
+
+    method register_constructor( full_signature:String, callback:Function()->Variant )
+      register_constructor( full_signature, CallNativeMethod(t,callback) )
+
+    method register_global_method( full_signature:String, cmd:Cmd )
+      native_global_methods[full_signature] = cmd
+      _begin_staging
+
+    method register_global_method( full_signature:String, callback:Function()->Variant )
+      register_global_method( full_signature, CallNativeMethod(t,callback) )
+
     method register_method( full_signature:String, cmd:Cmd )
       native_methods[full_signature] = cmd
       _begin_staging
 
     method register_method( full_signature:String, callback:Function()->Variant )
-      register_method( full_signature, CallNativeProcedure(t,callback) )
+      register_method( full_signature, CallNativeMethod(t,callback) )
 
     method register_type( scoped_name:String )
       native_types[scoped_name] = scoped_name
