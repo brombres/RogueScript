@@ -22,7 +22,7 @@ class Boss
         System.exit 0
       endIf
 
-      local vm = BossVM()
+      local vm = BossVM
 
       vm.register_type( "Rogue::Random", (obj)=>obj instanceOf Random, ()=>Random, (v)=>Random=v.object->(as Random)  )
 

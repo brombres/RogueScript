@@ -8,20 +8,23 @@ class Parser : ParserCore
     current_batch_id = 1
 
   METHODS
-    method join_identifiers
+    method join_identifiers->Int [override]
       if (not disable_output and _cmd_stack.count >= 2)
         local b = _cmd_stack.remove_last
         local a = _cmd_stack.remove_last
         _cmd_stack.add( Identifier(b.t, a->String + b->String) )
       endIf
+      return 0
 
-    method join_strings
+    method join_strings->Int [override]
       if (not disable_output and _cmd_stack.count >= 2)
         local b = _cmd_stack.remove_last
         local a = _cmd_stack.remove_last
         _cmd_stack.add( LiteralString(b.t, a->String + b->String) )
       endIf
+      return 0
 
-    method parse_doc_comment
+    method parse_doc_comment->Int [override]
       _push( null )
+      return 0
 endClass
