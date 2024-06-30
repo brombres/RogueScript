@@ -1,2 +1,2 @@
 # RogueScript
-An interpreted Roguelike language.
+An interpreted subset of Rogue, written in Rogue.
