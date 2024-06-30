@@ -1,12 +1,12 @@
-module Boss
+module RogueScript
 
 uses Console/CommandLineParser
 
-$include BossVM
+$include RogueScriptVM
 
-Boss( System.command_line_arguments )
+RogueScript( System.command_line_arguments )
 
-class Boss
+class RogueScript
   PROPERTIES
     command  : Variant
 
@@ -22,7 +22,7 @@ class Boss
         System.exit 0
       endIf
 
-      local vm = BossVM
+      local vm = RogueScriptVM
 
       vm.register_type( "Rogue::Random", (obj)=>obj instanceOf Random, ()=>Random, (v)=>Random=v.object->(as Random)  )
 
@@ -30,12 +30,12 @@ class Boss
       vm.register_method( "Rogue::Random.int->Int", ()=>Random.int )
       vm.register_method( "Rogue::Random.int32->Int", ()=>Random.int32 )
       #vm.register_method( "String:create()->String", ()=>String() )
-      #vm.register_method( "String.count()->Int", ()=>Boss::BossVM.context.object->(as String).count )
+      #vm.register_method( "String.count()->Int", ()=>RogueScript::RogueScriptVM.context.object->(as String).count )
       vm.register_method( "String.count()->Int",
-        Cmd( BossVM.t ) subclass
+        Cmd( RogueScriptVM.t ) subclass
           METHODS
             method execute->Variant
-              return BossVM.context.object->(as String).count
+              return RogueScriptVM.context.object->(as String).count
         endSubclass
       )
 
@@ -67,7 +67,7 @@ class Boss
 
     method _print_usage
       println @|USAGE
-               |  boss [OPTIONS] <filepath>
+               |  rogueScript [OPTIONS] <filepath>
                |
                |OPTIONS
                |  --help, -h, -?

@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 class NativeTypeInfo(
   instance_of:Function(Object)->Logical,

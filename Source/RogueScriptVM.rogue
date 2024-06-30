@@ -1,8 +1,8 @@
-module Boss
+module RogueScript
 
 $include Attributes
-$include BossObject
-$include BossVM
+$include RogueScriptObject
+$include RogueScriptVM
 $include CallCandidates
 $include CmdExecute
 $include CmdPreprocess
@@ -20,9 +20,9 @@ $include Scanner
 $include Type
 
 
-class BossVM [singleton]
+class RogueScriptVM [singleton]
   PROPERTIES
-    t                 = Token( TokenType.IDENTIFIER, "[Boss]", &content="Boss" )
+    t                 = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
 
@@ -55,7 +55,7 @@ class BossVM [singleton]
       local error = launch
       if (error) throw error
 
-      temporarily BossVM=this, Program=program
+      temporarily RogueScriptVM=this, Program=program
         local statements = Parser( "[EXECUTE]", script ).parse( Parser.ip_multi_line_statements )->(as Statements)
         local m_execute = GlobalMethod( statements.t, "execute", &statements=statements )
         m_execute.type_context = Program.default_module.type( Program.default_module.t, "Routine" )
@@ -63,16 +63,16 @@ class BossVM [singleton]
         return Program.execute( m_execute )
       endTemporarily
 
-    method include( file:File )->BossError
+    method include( file:File )->RogueScriptError
       # Loads file if not already loaded.
       file = _find_file( file )
       local filepath = file.filepath
       if (new_elements and new_elements.contains(filepath)) return null
       return load( file )
 
-    method launch->BossError
+    method launch->RogueScriptError
       try
-        temporarily BossVM = this
+        temporarily RogueScriptVM = this
           if (new_elements and new_elements.count)
             local staged_program = Program( new_elements.values )
             resolved_elements = new_elements
@@ -88,7 +88,7 @@ class BossVM [singleton]
             program.launch
           endIf
         endTemporarily
-      catch (error:BossError)
+      catch (error:RogueScriptError)
         new_elements = null
         return error
       catch (error:Exception)
@@ -98,20 +98,20 @@ class BossVM [singleton]
 
       return null
 
-    method load( file:File )->BossError
+    method load( file:File )->RogueScriptError
       file = _find_file( file )
       local filepath = file.filepath
 
       _begin_staging
 
       try
-        temporarily BossVM = this
+        temporarily RogueScriptVM = this
           local elements = Parser( File(filepath) ).parse->(as ProgramElements)
           new_elements[filepath] = elements
           (forEach in elements).preprocess
         endTemporarily
 
-      catch (error:BossError)
+      catch (error:RogueScriptError)
         new_elements = null
         return error
       catch (error:Exception)
@@ -157,12 +157,12 @@ class BossVM [singleton]
       new_elements.remove( filepath )
       resolved_elements?.remove( filepath )
 
-    method update->BossError
+    method update->RogueScriptError
       try
         local error = launch
         if (error) return error
 
-      catch (error:BossError)
+      catch (error:RogueScriptError)
         new_elements = null
         return error
       catch (error:Exception)
@@ -182,7 +182,7 @@ class BossVM [singleton]
       endIf
 
     method _find_file( file:File )->File
-      file .= with_extension( ".boss" )
+      file .= with_extension( ".rogue" )
       return file.abs
 
 endClass

@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 class Procedure : ControlStructure
   PROPERTIES

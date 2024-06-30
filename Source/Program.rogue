@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 class Program [singleton]
   PROPERTIES
@@ -6,7 +6,7 @@ class Program [singleton]
     default_module : Module
     current_module : Module
     modules        = [String:Module]
-    types          = [String:Type]  # All types, fully qualified e.g. Boss::Int
+    types          = [String:Type]  # All types, fully qualified e.g. RogueScript::Int
 
     type_Int       : Type
     type_Logical   : Type
@@ -50,8 +50,8 @@ class Program [singleton]
       temporarily Program=this, current_module=default_module
         CollectTypes.visit( forEach in pending_elements )
 
-        forEach (entry in BossVM.native_types.entries)
-          local type = Program.default_module.type( BossVM.t, entry.key )
+        forEach (entry in RogueScriptVM.native_types.entries)
+          local type = Program.default_module.type( RogueScriptVM.t, entry.key )
           type.attributes.is_native_type = true
           type.native_instance_of   = entry.value.instance_of
           type.native_get_singleton = entry.value.get_singleton
@@ -59,9 +59,9 @@ class Program [singleton]
           type.attributes.is_singleton = (type.native_get_singleton or type.native_set_singleton)
         endForEach
 
-        forEach (entry in BossVM.native_constructors.entries)
+        forEach (entry in RogueScriptVM.native_constructors.entries)
           local sig = Parser(
-            "[BossVM.register_constructor($)]"(entry.key),
+            "[RogueScriptVM.register_constructor($)]"(entry.key),
             entry.key
           ).parse( ParserCore.ip_native_constructor_signature )->(as NativeConstructorSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
@@ -77,9 +77,9 @@ class Program [singleton]
           type.add( m )
         endForEach
 
-        forEach (entry in BossVM.native_global_methods.entries)
+        forEach (entry in RogueScriptVM.native_global_methods.entries)
           local sig = Parser(
-            "[BossVM.register_global_method($)]"(entry.key),
+            "[RogueScriptVM.register_global_method($)]"(entry.key),
             entry.key
           ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
@@ -95,9 +95,9 @@ class Program [singleton]
           type.add( m )
         endForEach
 
-        forEach (entry in BossVM.native_methods.entries)
+        forEach (entry in RogueScriptVM.native_methods.entries)
           local sig = Parser(
-            "[BossVM.register_method($)]"(entry.key),
+            "[RogueScriptVM.register_method($)]"(entry.key),
             entry.key
           ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
@@ -131,8 +131,8 @@ class Program [singleton]
 
     method _configure
       temporarily Program = this
-        t = Token( TokenType.IDENTIFIER, "[Boss]", &content="Boss" )
-        default_module = Module( t, "Boss" )
+        t = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
+        default_module = Module( t, "RogueScript" )
 
         type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )
         type_Logical = default_module.define_type( t, "Logical", Attribute.PRIMITIVE )

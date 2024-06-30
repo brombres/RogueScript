@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 class Module
   GLOBAL METHODS
@@ -25,7 +25,7 @@ class Module
   METHODS
     method init( t, name, initializer:Logical )
       Program.modules[name] = this
-      use_module( t, "Boss" )
+      use_module( t, "RogueScript" )
       use_module( t, "Rogue" )
 
     method define_type( def:Class )->Type

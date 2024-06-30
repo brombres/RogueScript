@@ -1,5 +1,5 @@
 ================================================================================
-# Boss.froley
+# RogueScript.froley
 ================================================================================
 
 --------------------------------------------------------------------------------
@@ -776,17 +776,17 @@ parser
   if (nextIs("::"))
     on "::"
       if (nextIs(IDENTIFIER))
-        create Identifier(name="Boss::")
+        create Identifier(name="RogueScript::")
         identifier
         call join_identifiers
       else
-        produce Identifier(name="Boss")
+        produce Identifier(name="RogueScript")
       endIf
     endOn
   elseIf (nextIs(IDENTIFIER))
     identifier
   else
-    produce Identifier(name="Boss")
+    produce Identifier(name="RogueScript")
   endIf
 
   while (consume("::"))
@@ -1055,7 +1055,7 @@ parser
 - scoped_name
   savePosition
   on "::"
-    create Identifier(name="Boss":String)
+    create Identifier(name="RogueScript":String)
     identifier
     create ModuleQualifiedID(context,name:String)
     discardPosition

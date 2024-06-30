@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 enum Attribute [bitflags]
   CATEGORIES
@@ -28,7 +28,7 @@ enum Attribute [bitflags]
     CLASSIFICATION = Attribute[PRIMITIVE,COMPOUND,ENUM,OBJECT,ASPECT]
 endEnum
 
-$localMacro BOSS_ATTRIBUTE<<$name, $value>>
+$localMacro ROGUE_SCRIPT_ATTRIBUTE<<$name, $value>>
   METHODS
     method $name->Logical
       return (flags & ($value)).value
@@ -39,26 +39,26 @@ $localMacro BOSS_ATTRIBUTE<<$name, $value>>
 $endLocalMacro
 
 class Attributes : CmdList
-  BOSS_ATTRIBUTE<< is_primitive,         Attribute.PRIMITIVE >>
-  BOSS_ATTRIBUTE<< is_compound,          Attribute.COMPOUND >>
-  BOSS_ATTRIBUTE<< is_enum,              Attribute.ENUM >>
-  BOSS_ATTRIBUTE<< is_object,            Attribute.OBJECT >>
-  BOSS_ATTRIBUTE<< is_aspect,            Attribute.ASPECT >>
-  BOSS_ATTRIBUTE<< classification,       Attribute.CLASSIFICATION >>
-  BOSS_ATTRIBUTE<< is_exported,          Attribute.EXPORT >>
-  BOSS_ATTRIBUTE<< is_essential,         Attribute.ESSENTIAL >>
-  BOSS_ATTRIBUTE<< is_singleton,         Attribute.SINGLETON >>
-  BOSS_ATTRIBUTE<< is_insert,            Attribute.INSERT >>
-  BOSS_ATTRIBUTE<< is_append,            Attribute.APPEND >>
-  BOSS_ATTRIBUTE<< is_replace,           Attribute.REPLACE >>
-  BOSS_ATTRIBUTE<< is_global,            Attribute.IS_GLOBAL >>
-  BOSS_ATTRIBUTE<< requires_cleanup,     Attribute.REQUIRES_CLEANUP >>
-  BOSS_ATTRIBUTE<< is_abstract,          Attribute.ABSTRACT >>
-  BOSS_ATTRIBUTE<< is_propagated,        Attribute.PROPAGATED >>
-  BOSS_ATTRIBUTE<< bitflags,             Attribute.BITFLAGS >>
-  BOSS_ATTRIBUTE<< is_override,          Attribute.OVERRIDE >>
-  BOSS_ATTRIBUTE<< is_preferred,         Attribute.PREFERRED >>
-  BOSS_ATTRIBUTE<< is_native_type,       Attribute.NATIVE_TYPE >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_primitive,         Attribute.PRIMITIVE >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_compound,          Attribute.COMPOUND >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_enum,              Attribute.ENUM >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_object,            Attribute.OBJECT >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_aspect,            Attribute.ASPECT >>
+  ROGUE_SCRIPT_ATTRIBUTE<< classification,       Attribute.CLASSIFICATION >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_exported,          Attribute.EXPORT >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_essential,         Attribute.ESSENTIAL >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_singleton,         Attribute.SINGLETON >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_insert,            Attribute.INSERT >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_append,            Attribute.APPEND >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_replace,           Attribute.REPLACE >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_global,            Attribute.IS_GLOBAL >>
+  ROGUE_SCRIPT_ATTRIBUTE<< requires_cleanup,     Attribute.REQUIRES_CLEANUP >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_abstract,          Attribute.ABSTRACT >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_propagated,        Attribute.PROPAGATED >>
+  ROGUE_SCRIPT_ATTRIBUTE<< bitflags,             Attribute.BITFLAGS >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_override,          Attribute.OVERRIDE >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_preferred,         Attribute.PREFERRED >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_native_type,       Attribute.NATIVE_TYPE >>
 
   PROPERTIES
     flags : Attribute

@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 $localMacro GENERAL_OP_RESOLVE<<$Cmd,$op>>
 augment Resolver
@@ -246,7 +246,7 @@ class Resolver : Visitor [singleton]
             return visit( ReadNativeSingleton(cmd.t,type) )
           else
             trace
-            throw cmd.t.error( "TODO: Boss Singleton" )
+            throw cmd.t.error( "TODO: RogueScript Singleton" )
           endIf
         else
           return TypeContext( cmd.t, type )

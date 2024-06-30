@@ -1,12 +1,12 @@
-module Boss
+module RogueScript
 
-class BossException : Exception
+class RogueScriptException : Exception
   METHODS
     method save_stack_trace
       noAction
 endClass
 
-class ReturnResultException( result:Variant ) : BossException [singleton]
+class ReturnResultException( result:Variant ) : RogueScriptException [singleton]
   METHODS
     method to->String
       return result->String
@@ -20,10 +20,10 @@ augment
 
     method CallGlobalMethod.execute->Variant
       if (args and args.count)
-        local old_stack_count = BossVM.stack.count
-        BossVM.stack.add( (forEach in args).execute )
+        local old_stack_count = RogueScriptVM.stack.count
+        RogueScriptVM.stack.add( (forEach in args).execute )
         local result = info.execute
-        BossVM.stack.discard_from( old_stack_count )
+        RogueScriptVM.stack.discard_from( old_stack_count )
         return result
       else
         return info.execute
@@ -33,16 +33,16 @@ augment
       local context = context.execute
       which (context.type)
         case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
-          throw t.error( "Boss call context is null or undefined." )
+          throw t.error( "RogueScript call context is null or undefined." )
       endWhich
 
-      local old_stack_count = BossVM.stack.count
-      BossVM.stack.add( context )
+      local old_stack_count = RogueScriptVM.stack.count
+      RogueScriptVM.stack.add( context )
 
-      if (args and args.count) BossVM.stack.add( (forEach in args).execute )
+      if (args and args.count) RogueScriptVM.stack.add( (forEach in args).execute )
 
       local result = info.execute
-      BossVM.stack.discard_from( old_stack_count )
+      RogueScriptVM.stack.discard_from( old_stack_count )
       return result
 
     method CallNativeMethod.execute->Variant
@@ -55,10 +55,10 @@ augment
       return statements.execute
 
     method ForEachElementInRangeUpToInt.execute->Variant
-      local v_index = BossVM.fp + element_info.index
+      local v_index = RogueScriptVM.fp + element_info.index
       localize statements
       forEach (i in start.execute->Int..limit.execute->Int)
-        BossVM.stack[ v_index ] = i
+        RogueScriptVM.stack[ v_index ] = i
         statements.execute
       endForEach
       return undefined
@@ -96,12 +96,12 @@ augment
       endForEach
 
     method Procedure.execute->Variant
-      local old_stack_count = BossVM.stack.count
-      temporarily BossVM.fp = old_stack_count - this.param_count
+      local old_stack_count = RogueScriptVM.stack.count
+      temporarily RogueScriptVM.fp = old_stack_count - this.param_count
         try
-          BossVM.stack.expand( this.local_count )
+          RogueScriptVM.stack.expand( this.local_count )
           local result = statements.execute
-          BossVM.stack.discard_from( old_stack_count )
+          RogueScriptVM.stack.discard_from( old_stack_count )
           return result
         catch (on_return_result:ReturnResultException)
           return on_return_result.result
@@ -114,7 +114,7 @@ augment
       throw exception
 
     method ReadLocal.execute->Variant
-      return BossVM.stack[ BossVM.fp+info.index ]
+      return RogueScriptVM.stack[ RogueScriptVM.fp+info.index ]
 
     method ReadNativeSingleton.execute->Variant
       return fn_get_singleton()
@@ -137,7 +137,7 @@ augment
 
     method WriteLocal.execute->Variant
       local new_value = new_value.execute
-      BossVM.stack[ BossVM.fp+info.index ] = new_value
+      RogueScriptVM.stack[ RogueScriptVM.fp+info.index ] = new_value
       return new_value
 
 endAugment

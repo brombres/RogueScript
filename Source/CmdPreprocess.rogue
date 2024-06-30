@@ -1,4 +1,4 @@
-module Boss
+module RogueScript
 
 augment
   METHODS
@@ -6,6 +6,6 @@ augment
       noAction
 
     method Include.preprocess
-      BossVM.include( File(filepath) )
+      RogueScriptVM.include( File(filepath) )
 
 endAugment
