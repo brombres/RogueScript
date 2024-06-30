@@ -1,2 +1,2 @@
-# Boss
-An interpreted Roguelike language.
+# RogueScript
+An interpreted subset of Rogue, written in Rogue.
