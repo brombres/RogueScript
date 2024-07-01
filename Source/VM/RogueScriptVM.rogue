@@ -1,25 +1,5 @@
 module RogueScript
 
-$include Attributes
-$include RogueScriptObject
-$include RogueScriptVM
-$include CallCandidates
-$include CmdExecute
-$include CmdPreprocess
-$include CmdStore
-$include CmdType
-$include CollectTypes
-$include Module
-$include NativeTypeInfo
-$include Organizer
-$include Parser       [optional]
-$include Procedure
-$include Program
-$include Resolver
-$include Scanner
-$include Type
-
-
 class RogueScriptVM [singleton]
   PROPERTIES
     t                 = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )

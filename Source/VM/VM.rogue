@@ -1,0 +1,21 @@
+module RogueScript
+
+$include VM/Attributes
+$include VM/RogueScriptObject
+$include VM/RogueScriptVM
+$include VM/CallCandidates
+$include VM/CmdExecute
+$include VM/CmdPreprocess
+$include VM/CmdStore
+$include VM/CmdType
+$include VM/CollectTypes
+$include VM/Module
+$include VM/NativeTypeInfo
+$include VM/Organizer
+$include VM/Parser        [optional]
+$include VM/Procedure
+$include VM/Program
+$include VM/Resolver
+$include VM/RogueScriptVM
+$include VM/Scanner
+$include VM/Type

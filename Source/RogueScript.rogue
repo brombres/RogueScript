@@ -2,7 +2,7 @@ module RogueScript
 
 uses Console/CommandLineParser
 
-$include RogueScriptVM
+$include VM
 
 RogueScript( System.command_line_arguments )
 
