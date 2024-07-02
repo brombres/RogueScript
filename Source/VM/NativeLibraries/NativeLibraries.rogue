@@ -1,0 +1,11 @@
+module RogueScript
+
+$include VM/NativeLibraries/NativeGeometry
+$include VM/NativeLibraries/NativeMath
+
+class NativeLibraries [singleton]
+  METHODS
+    method register( vm:VM )
+      NativeGeometry.register( vm )
+      NativeMath.register( vm )
+endClass

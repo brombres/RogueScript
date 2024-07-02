@@ -1,0 +1,7 @@
+module RogueScript
+
+class NativeString [singleton]
+  METHODS
+    method register( vm:VM )
+
+endClass

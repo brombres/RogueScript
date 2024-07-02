@@ -1,0 +1,11 @@
+module RogueScript
+
+class NativeXY [singleton]
+  METHODS
+    method register( vm:VM )
+      vm.register_type( "XY", (value)=>value.is_xy, &variant_type=Variant.TYPE_XY )
+      vm.register_constructor( "XY(Real,Real)", ()=>XY(3,4) )
+      #vm.register_method( "Random.int->Int", ()=>Random.int )
+      #vm.register_method( "Random.int32->Int", ()=>Random.int32 )
+      #vm.register_method( "Random.real->Real", ()=>Random.real )
+endClass

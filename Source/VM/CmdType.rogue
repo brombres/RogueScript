@@ -17,10 +17,25 @@ augment
     method Cmd.type->Type
       return null
 
+    method CallProcedure.type->Type
+      return info.return_type
+
     method Construct.type->Type
       return @type
 
     method CreateDefaultObject.type->Type
+      return of_type
+
+    method CreateDefaultString.type->Type
+      return of_type
+
+    method CreateDefaultList.type->Type
+      return of_type
+
+    method CreateDefaultTable.type->Type
+      return of_type
+
+    method CreateDefaultVariant.type->Type
       return of_type
 
     method CreateObject.type->Type
@@ -58,6 +73,9 @@ augment
 
     method LogicalUnary.type->Type
       return Program.type_Logical
+
+    method NativeParameter.type->Type
+      return @type
 
     method Property.type->Type
       return @type

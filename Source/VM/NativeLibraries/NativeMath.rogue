@@ -1,0 +1,10 @@
+module RogueScript
+
+$include NativeRandom
+
+class NativeMath [singleton]
+  METHODS
+    method register( vm:VM )
+      NativeRandom.register( vm )
+      NativeTriangle.register( vm )
+endClass

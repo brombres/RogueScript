@@ -1,0 +1,73 @@
+module RogueScript
+
+$include "Scanner.rogue"
+$include "Parser.rogue" [optional]
+uses RogueScript
+uses Console/CommandLineParser
+
+try
+  RogueScript( System.command_line_arguments )
+catch (error:CompileError)
+  Console.error.println error
+  System.exit 1
+catch (error:Error)
+  Console.error.println error
+  Console.error.println error.stack_trace
+  System.exit 1
+endTry
+
+class RogueScript
+  PROPERTIES
+    command : Variant
+
+  METHODS
+    method init( args:String[] )
+      command = parse_args( args )
+
+      # trace command
+      # has //options and possibly //args
+
+      if (command//options//help or command//args.count == 0)
+        print_usage
+        System.exit 0
+      endIf
+
+      if ($isDefined(PARSER_EXISTS)) parse_files
+      else                           scan_files
+
+    method scan_files
+      forEach (arg in command//args)
+        local filepath = arg->String
+        local scanner = Scanner( File(filepath) )
+        local tokens = scanner.tokenize
+        println (forEach in tokens)
+      endForEach
+
+    method parse_files
+      if ($isDefined(PARSER_EXISTS))
+        forEach (arg in command//args)
+          local filepath = arg->String
+          local parser = Parser( File(filepath) )
+          local ast = parser.parse
+          @trace ast
+        endForEach
+      endIf
+
+    method parse_args( args:String[] )->Variant
+      # This method is unrelated to the Froley Parser
+      local command = CommandLineParser().
+      [
+        option( "--flag",     &alias="-f" )
+        option( "--help",     &aliases=["-h","-?"] )
+        option( "--setting=", &alias="-s" )
+      ].parse( args )
+      return command
+
+    method print_usage
+      println @|USAGE
+               |  roguescript [OPTIONS] <filepath>
+               |
+               |OPTIONS
+               |  --help, -h, -?
+               |    Show this help text.
+endClass

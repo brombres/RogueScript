@@ -275,6 +275,22 @@ class Resolver : Visitor [singleton]
     method on_visit( cmd:ContextAccess )->Cmd
       return visit( cmd.context ).resolve_context_access( cmd, this )
 
+    method on_visit( cmd:DefaultConstructor )->Cmd
+      local t = cmd.t
+      local type = cmd.of_type
+      which (type.variant_type)
+        case Variant.TYPE_OBJECT
+          return visit( CreateDefaultObject(t,type) )
+        case Variant.TYPE_STRING
+          return visit( CreateDefaultString(t,type) )
+        case Variant.TYPE_LIST
+          return visit( CreateDefaultList(t,type) )
+        case Variant.TYPE_TABLE
+          return visit( CreateDefaultTable(t,type) )
+        others
+          return visit( CreateDefaultVariant(t,type) )
+      endWhich
+
     method on_visit( cmd:ForEachIn )->Cmd
       cmd.collection = visit( cmd.collection )
       return cmd.collection.resolve_foreach_in( cmd, this )
@@ -312,6 +328,7 @@ class Resolver : Visitor [singleton]
           v.type = cmd.type
         elseIf (v.initial_value)
           v.type = v.initial_value.type
+trace v.initial_value.type_name
           if (not v.type)
             throw cmd.t.error( "Cannot implicitly determine type from initial value." )
           endIf
@@ -417,7 +434,7 @@ class Resolver : Visitor [singleton]
         if (is_constructor)
           type_context.collect_global_methods( "create" )
           type_context.collect_methods( "init" )
-          if (CallCandidates.count == 0) return visit( CreateDefaultObject(t,type_context) )
+          if (CallCandidates.count == 0) return visit( DefaultConstructor(t,type_context) )
         elseIf (context and context instanceOf TypeContext)
           type_context.collect_global_methods( name )
         else

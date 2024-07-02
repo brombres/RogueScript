@@ -1,0 +1,10 @@
+module RogueScript
+
+class NativeTriangle [singleton]
+  METHODS
+    method register( vm:VM )
+      #vm.register_type( "Triangle", (obj)=>obj instanceOf Triangle )
+      #vm.register_method( "Random.int->Int", ()=>Random.int )
+      #vm.register_method( "Random.int32->Int", ()=>Random.int32 )
+      #vm.register_method( "Random.real->Real", ()=>Random.real )
+endClass

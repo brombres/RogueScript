@@ -4610,3 +4610,85 @@ class ReadLocalObject : ReadLocal
       return "ReadLocalObject($)" (%info)
 
 endClass
+
+class DefaultConstructor : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:DefaultConstructor )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "DefaultConstructor($)" (%of_type)
+
+endClass
+
+
+class CreateDefaultList : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:CreateDefaultList )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "CreateDefaultList($)" (%of_type)
+
+endClass
+
+class CreateDefaultString : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:CreateDefaultString )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "CreateDefaultString($)" (%of_type)
+
+endClass
+
+class CreateDefaultTable : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:CreateDefaultTable )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "CreateDefaultTable($)" (%of_type)
+
+endClass
+
+
+class CreateDefaultVariant : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:CreateDefaultVariant )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "CreateDefaultVariant($)" (%of_type)
+
+endClass

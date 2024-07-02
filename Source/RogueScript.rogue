@@ -3,6 +3,7 @@ module RogueScript
 uses Console/CommandLineParser
 
 $include VM
+$include VM/NativeLibraries
 
 RogueScript( System.command_line_arguments )
 
@@ -22,22 +23,22 @@ class RogueScript
         System.exit 0
       endIf
 
-      local vm = RogueScriptVM
+      local vm = VM
+      NativeLibraries.register( vm )
 
-      vm.register_type( "Rogue::Random", (obj)=>obj instanceOf Random, ()=>Random, (v)=>Random=v.object->(as Random)  )
 
       vm.register_global_method( "Test.PI->Real", ()=>pi )
-      vm.register_method( "Rogue::Random.int->Int", ()=>Random.int )
-      vm.register_method( "Rogue::Random.int32->Int", ()=>Random.int32 )
       #vm.register_method( "String:create()->String", ()=>String() )
-      #vm.register_method( "String.count()->Int", ()=>RogueScript::RogueScriptVM.context.object->(as String).count )
+      vm.register_method( "String.count()->Int", ()=>VM.context.object->(as String).count )
+      #{
       vm.register_method( "String.count()->Int",
-        Cmd( RogueScriptVM.t ) subclass
+        Cmd( VM.t ) subclass
           METHODS
             method execute->Variant
-              return RogueScriptVM.context.object->(as String).count
+              return VM.context.object->(as String).count
         endSubclass
       )
+      }#
 
       local error : Exception
       contingent

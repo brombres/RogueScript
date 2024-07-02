@@ -1174,4 +1174,29 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.of_type)
       return result
 
+    method on_visit_children( cmd:DefaultConstructor )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:CreateDefaultList )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:CreateDefaultString )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:CreateDefaultTable )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:CreateDefaultVariant )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
+      return result
+
 endClass

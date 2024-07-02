@@ -6,6 +6,6 @@ augment
       noAction
 
     method Include.preprocess
-      RogueScriptVM.include( File(filepath) )
+      VM.include( File(filepath) )
 
 endAugment

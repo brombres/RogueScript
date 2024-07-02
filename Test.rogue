@@ -38,4 +38,7 @@ endClass
 #println "Marco".count
 local r = Random
 forEach (i in 1..5) println r.int
+println Random.real
 
+local pos = XY(1,2)
+println pos

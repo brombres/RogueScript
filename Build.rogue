@@ -58,7 +58,7 @@ routine rogo_build
   # Recompiles Rogue -> C -> Exe if needed. 'rogo rebuild' forces a build.
   localize exe_file
 
-  if (File("Source/$.froley"(Build.PROJECT)).is_newer_than(exe_file))
+  if (File("Source/VM/$.froley"(Build.PROJECT)).is_newer_than(exe_file))
     rogo_froley
   endIf
 
@@ -73,8 +73,8 @@ routine rogo_build
 endRoutine
 
 routine rogo_froley
-  local froley_src = File( "Source/$.froley"(Build.PROJECT) )
-  execute "froley --main $ Source"(froley_src.esc)
+  local froley_src = File( "Source/VM/$.froley"(Build.PROJECT) )
+  execute "froley --main $ Source/VM"(froley_src.esc)
 endRoutine
 
 routine rogo_build_debug

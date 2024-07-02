@@ -15,9 +15,10 @@ class Type : Cmd
     scoped_name          : String
     element_type         : Type
     is_optional_type     : Logical
-    native_instance_of   : Function(Object)->Logical
+    native_instance_of   : Function(Variant)->Logical
     native_get_singleton : Function()->Variant
     native_set_singleton : Function(Variant)
+    variant_type         : Int
 
     global_methods         = [String:GlobalMethod]
     global_methods_by_name = [String:GlobalMethod[]]

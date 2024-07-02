@@ -3313,12 +3313,12 @@ parser
   on '&'
     type
     create LiteralLogical(value="false":Logical):LiteralPrimitive
-    produce NativeParameter(type:Type,default_value)
+    produce NativeParameter(of_type:Type,default_value)
   endOn
 
   type
   optional_native_parameter_default_value
-  produce NativeParameter(type:Type,default_value)
+  produce NativeParameter(of_type:Type,default_value)
 
 - optional_native_parameter_default_value
   if (consume('='))
@@ -3398,6 +3398,11 @@ parser
   create ConvertToReal(operand):Convert
   create ConvertToReal64(operand):Convert
   create CreateDefaultObject(of_type:Type)
+  create CreateDefaultString(of_type:Type)
+  create CreateDefaultList(of_type:Type)
+  create CreateDefaultTable(of_type:Type)
+  create CreateDefaultVariant(of_type:Type)
+  create DefaultConstructor(of_type:Type)
   create CreateObject(of_type:Type,m_init:Procedure,args:Args)
   create CreateCompound(of_type:Type,args:Args)
   create DefaultArg(operand):Unary
