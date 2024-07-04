@@ -1,15 +1,11 @@
-#println "Hello World!"
-#
-#forEach (i in 1..15)
-#  if (i % 3 == 0)
-#    if (i % 5 == 0) println "FizzBuzz"
-#    else            println "Fizz"
-#  elseIf (i % 5 == 0)
-#    println "Buzz"
-#  else
-#    println i
-#  endIf
-#endForEach
+class Color( argb:Int32 ) [compound]
+  DEFINITIONS
+    BLUE = Color(0xFF0000FF)
+
+  METHODS
+    method test
+      println this.argb
+endClass
 
 class Test
   GLOBAL METHODS
@@ -36,9 +32,14 @@ endClass
 #println Test().add(3,4)
 #println Test.PI
 #println "Marco".count
-local r = Random
-forEach (i in 1..5) println r.int
-println Random.real
+#local r = Random
+#forEach (i in 1..5) println r.int
+#println Random.real
+#
+Color.BLUE.test
 
-local pos = XY(1,2)
-println pos
+#test
+
+routine test
+  println "success"
+endRoutine

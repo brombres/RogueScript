@@ -328,7 +328,6 @@ class Resolver : Visitor [singleton]
           v.type = cmd.type
         elseIf (v.initial_value)
           v.type = v.initial_value.type
-trace v.initial_value.type_name
           if (not v.type)
             throw cmd.t.error( "Cannot implicitly determine type from initial value." )
           endIf
@@ -360,9 +359,11 @@ trace v.initial_value.type_name
         scope_stack.add( proc )
 
         proc.param_count = which{ proc.parameters:proc.parameters.count || 0 }
+        ++proc.param_count
         if (proc instanceOf Method)
-          ++proc.param_count
           add_local( this_type.t, "this", this_type )
+        else
+          add_local( this_type.t, "null-context", this_type )
         endIf
 
         if (proc.parameters)
@@ -399,6 +400,14 @@ trace v.initial_value.type_name
     method on_visit( cmd:Return )->Cmd
       if (cmd.result) return visit( ReturnResult(cmd.t,cmd.result) )
       else            return cmd
+
+    method on_visit( cmd:This )->Cmd
+      if (this_procedure.attributes.is_global)
+        throw cmd.t.error( "Global methods and routines do not have a 'this' object context." )
+      endIf
+      cmd.type = this_type
+      visit_children( cmd )
+      return cmd
 
     method on_validate( cmd:Unary )->Cmd
       cmd.operand.require_type
@@ -442,24 +451,41 @@ trace v.initial_value.type_name
           type_context.collect_global_methods( name )
         endIf
 
-        local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor )
-        if (is_constructor)
-          if (m.attributes.is_global)
+        local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor, &suppress_error )
+
+        #trace this_type.module_context.types//Routine.global_methods
+
+        if (m)
+          if (is_constructor)
+            if (m.attributes.is_global)
+              return visit( CallGlobalMethod(t, m, args) )
+            else
+              return visit( CreateObject(t, type_context, m, args) )
+            endIf
+          elseIf (m.attributes.is_global)
             return visit( CallGlobalMethod(t, m, args) )
           else
-            return visit( CreateObject(t, type_context, m, args) )
+            return visit( CallMethod(t, context, m, args) )
           endIf
-        elseIf (m.attributes.is_global)
-          return visit( CallGlobalMethod(t, m, args) )
-        else
-          return visit( CallMethod(t, context, m, args) )
         endIf
+
+        if (not args)
+          # Check DEFINITIONS
+          if local def = type_context.definitions[name]
+            return visit( def.cloned )
+          endIf
+        endIf
+
+        # throw error
+        select_call_candidate( t, type_context, context, name, args, &=is_constructor )
       endUse
 
-    method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args, &is_constructor )->Procedure
+    method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
+        &is_constructor, &suppress_error )->Procedure
       local m = select_call_candidate( name, args )
-      if (m) return m
+      if (m or suppress_error) return m
 
+      # Construct and throw error message
       local call_sig = String()
       if (args)
         if (context)

@@ -1,5 +1,7 @@
 module RogueScript
 
+uses Geometry [export]
+
 $include VM/Attributes
 $include VM/RogueScriptObject
 $include VM/CallCandidates
@@ -34,21 +36,38 @@ class VM [singleton]
     stack   = Variant[]
     fp      : Int
 
-  METHODS
+  METHODS # Runtime
     method context->Variant
       return stack[fp]
 
+    method int( index:Int )->Int
+      return stack[fp+index]->Int
+
+    method logical( index:Int )->Int
+      return stack[fp+index]?
+
+    method parameter( index:Int )->Variant
+      # First parameter is index 1.
+      return stack[fp+index]
+
+    method real( index:Int )->Real
+      return stack[fp+index]->Real
+
+    method xy( index:Int )->XY
+      return stack[fp+index]->XY
+
+  METHODS # Configuration
     method deregister_constructor( signature:String )
-      if (native_constructors.remove(signature)) _begin_staging
+      if (native_constructors.remove(signature)) .begin_staging
 
     method deregister_global_method( full_signature:String )
-      if (native_global_methods.remove(full_signature)) _begin_staging
+      if (native_global_methods.remove(full_signature)) .begin_staging
 
     method deregister_method( full_signature:String )
-      if (native_methods.remove(full_signature)) _begin_staging
+      if (native_methods.remove(full_signature)) .begin_staging
 
     method deregister_type( scoped_name:String )
-      if (native_types.remove(scoped_name)) _begin_staging
+      if (native_types.remove(scoped_name)) .begin_staging
 
     method execute( script:String )->Variant
       local error = launch
@@ -64,7 +83,7 @@ class VM [singleton]
 
     method include( file:File )->RogueScriptError
       # Loads file if not already loaded.
-      file = _find_file( file )
+      file = .find_file( file )
       local filepath = file.filepath
       if (new_elements and new_elements.contains(filepath)) return null
       return load( file )
@@ -98,10 +117,10 @@ class VM [singleton]
       return null
 
     method load( file:File )->RogueScriptError
-      file = _find_file( file )
+      file = .find_file( file )
       local filepath = file.filepath
 
-      _begin_staging
+      .begin_staging
 
       try
         temporarily VM = this
@@ -122,21 +141,21 @@ class VM [singleton]
 
     method register_constructor( signature:String, cmd:Cmd )
       native_constructors[signature] = cmd
-      _begin_staging
+      .begin_staging
 
     method register_constructor( full_signature:String, callback:Function()->Variant )
       register_constructor( full_signature, CallNativeMethod(t,callback) )
 
     method register_global_method( full_signature:String, cmd:Cmd )
       native_global_methods[full_signature] = cmd
-      _begin_staging
+      .begin_staging
 
     method register_global_method( full_signature:String, callback:Function()->Variant )
       register_global_method( full_signature, CallNativeMethod(t,callback) )
 
     method register_method( full_signature:String, cmd:Cmd )
       native_methods[full_signature] = cmd
-      _begin_staging
+      .begin_staging
 
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeMethod(t,callback) )
@@ -151,7 +170,7 @@ class VM [singleton]
       native_types[scoped_name] = NativeTypeInfo( instance_of, get_singleton, set_singleton, variant_type )
 
     method unload( file:File )
-      _begin_staging
+      .begin_staging
 
       local filepath = file.abs.filepath
       new_elements.remove( filepath )
@@ -172,7 +191,7 @@ class VM [singleton]
 
       return null
 
-    method _begin_staging
+    method .begin_staging
       if (not new_elements)
         if (resolved_elements)
           new_elements = resolved_elements.cloned
@@ -181,7 +200,7 @@ class VM [singleton]
         endIf
       endIf
 
-    method _find_file( file:File )->File
+    method .find_file( file:File )->File
       file .= with_extension( ".rogue" )
       return file.abs
 

@@ -19,15 +19,16 @@ augment
       throw t.error( "[TODO] $.execute"(type_name) )
 
     method CallGlobalMethod.execute->Variant
+      local old_stack_count = VM.stack.count
+
+      VM.stack.add( Variant() )
       if (args and args.count)
-        local old_stack_count = VM.stack.count
         VM.stack.add( (forEach in args).execute )
-        local result = info.execute
-        VM.stack.discard_from( old_stack_count )
-        return result
-      else
-        return info.execute
       endIf
+
+      local result = info.execute
+      VM.stack.discard_from( old_stack_count )
+      return result
 
     method CallMethod.execute->Variant
       local context = context.execute
@@ -95,6 +96,9 @@ augment
     method LiteralLogical.execute->Variant
       return value
 
+    method LiteralPi.execute->Variant
+      return pi
+
     method LiteralReal.execute->Variant
       return value
 
@@ -111,7 +115,7 @@ augment
 
     method Procedure.execute->Variant
       local old_stack_count = VM.stack.count
-      temporarily VM.fp = old_stack_count - this.param_count
+      temporarily VM.fp = (old_stack_count - this.param_count)
         try
           VM.stack.expand( this.local_count )
           local result = statements.execute
@@ -139,6 +143,9 @@ augment
         result = statement.execute
       endForEach
       return result
+
+    method This.execute->Variant
+      return VM.context
 
     method While.execute->Variant
       localize condition

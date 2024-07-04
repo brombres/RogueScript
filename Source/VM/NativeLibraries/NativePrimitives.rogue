@@ -1,0 +1,7 @@
+module RogueScript
+
+class NativePrimitives [singleton]
+  METHODS
+    method register( vm:VM )
+      vm.register_type( "Int32", (value)=>value.is_int32, &variant_type=Variant.TYPE_INT32 )
+endClass

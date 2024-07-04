@@ -18,12 +18,13 @@ class Type : Cmd
     native_instance_of   : Function(Variant)->Logical
     native_get_singleton : Function()->Variant
     native_set_singleton : Function(Variant)
-    variant_type         : Int
+    variant_type         = Variant.TYPE_OBJECT : Int
 
     global_methods         = [String:GlobalMethod]
     global_methods_by_name = [String:GlobalMethod[]]
     methods                = [String:Method]
     methods_by_name        = [String:Method[]]
+    definitions            = [String:Cmd]
 
     visiting  : Logical
     resolved  : Logical

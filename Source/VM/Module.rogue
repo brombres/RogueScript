@@ -67,6 +67,7 @@ class Module
 
     method launch
       if (m_on_launch)
+        VM.stack.add( Variant() )
         Program.execute( m_on_launch )
       endIf
 

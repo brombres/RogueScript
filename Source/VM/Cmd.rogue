@@ -2740,12 +2740,6 @@ class TemporaryAssignments : CmdList
       return "TemporaryAssignments" + list_description
 endClass
 
-class This : Cmd
-  METHODS
-    method description->String
-      return "This"
-endClass
-
 class TracedExpression : Cmd
   PROPERTIES
     expression : Cmd
@@ -4690,5 +4684,22 @@ class CreateDefaultVariant : Cmd
 
     method description->String
       return "CreateDefaultVariant($)" (%of_type)
+
+endClass
+
+
+class This : Cmd
+  PROPERTIES
+    type : Type
+
+  METHODS
+    method init( t )
+
+    method init( existing:This )
+      prior.init( existing )
+      if (existing.type) type = existing.type.cloned
+
+    method description->String
+      return "This($)" (%type)
 
 endClass

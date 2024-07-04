@@ -1,0 +1,9 @@
+module RogueScript
+
+$include NativeColor
+
+class NativeGraphics [singleton]
+  METHODS
+    method register( vm:VM )
+      NativeColor.register( vm )
+endClass

@@ -11,6 +11,9 @@ augment
     method Class.store
       noAction
 
+    method Definition.store( type_context:Type )
+      type_context.definitions[name] = value
+
     method GlobalMethod.store( type_context:Type )
       type_context.add( this )
 

@@ -89,6 +89,9 @@ augment
     method ReadNativeSingleton.type->Type
       return of_type
 
+    method This.type->Type
+      return @type
+
     method TypeContext.type->Type
       return @type
 
