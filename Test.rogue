@@ -1,45 +1,45 @@
-class Color( argb:Int32 ) [compound]
-  DEFINITIONS
-    BLUE = Color(0xFF0000FF)
-
-  METHODS
-    method test
-      println this.argb
-endClass
-
-class Test
-  GLOBAL METHODS
-    method gmarco
-      println "GPolo"
-
-  METHODS
-    method marco
-      println "Polo"
-
-    method add( a:Int, b:Int )->Int
-      return a + b
+#class Color( argb:Int32 ) [compound]
+#  DEFINITIONS
+#    BLUE = Color(0xFF0000FF)
 #
-#  #  method to->String
-#  #    println "hey"
+#  METHODS
+#    method test
+#      println this.argb
+#endClass
 #
-endClass
-
-#Test.gmarco
-#Test().marco
-
+#class Test
+#  GLOBAL METHODS
+#    method gmarco
+#      println "GPolo"
 #
-##println "Marco"
-#println Test().add(3,4)
-#println Test.PI
-#println "Marco".count
-#local r = Random
-#forEach (i in 1..5) println r.int
-#println Random.real
+#  METHODS
+#    method marco
+#      println "Polo"
 #
-Color.BLUE.test
+#    method add( a:Int, b:Int )->Int
+#      return a + b
+##
+##  #  method to->String
+##  #    println "hey"
+##
+#endClass
+#
+##Test.gmarco
+##Test().marco
+#
+##
+###println "Marco"
+##println Test().add(3,4)
+##println Test.PI
+##println "Marco".count
+##local r = Random
+##forEach (i in 1..5) println r.int
+##println Random.real
+##
+#Color.BLUE.test
 
-#test
+test(5)
 
-routine test
-  println "success"
+routine test( n:Int )
+  println "success", n
 endRoutine

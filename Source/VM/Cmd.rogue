@@ -4703,3 +4703,27 @@ class This : Cmd
       return "This($)" (%type)
 
 endClass
+
+class RoutineDef : Cmd
+  PROPERTIES
+    name        : String
+    parameters  : Parameters
+    return_type : Type
+    attributes  : Attributes
+    statements  : Statements
+
+  METHODS
+    method init( t, name, parameters, return_type, attributes, statements )
+
+    method init( existing:RoutineDef )
+      prior.init( existing )
+      name = existing.name
+      if (existing.parameters) parameters = existing.parameters.cloned
+      if (existing.return_type) return_type = existing.return_type.cloned
+      if (existing.attributes) attributes = existing.attributes.cloned
+      if (existing.statements) statements = existing.statements.cloned
+
+    method description->String
+      return "RoutineDef($,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%statements)
+
+endClass

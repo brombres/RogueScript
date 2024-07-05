@@ -253,6 +253,15 @@ class Resolver : Visitor [singleton]
         endIf
       endIf
 
+      if local result = resolve_access( cmd.t, this_type, null, cmd.name, cmd.args, &suppress_error )
+        return result
+      else
+        local type_Routine = this_type.module_context.type_Routine
+        if local result = resolve_access( cmd.t, type_Routine, null, cmd.name, cmd.args, &suppress_error )
+          return result
+        endIf
+      endIf
+
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
 
     method on_visit( cmd:Assign )->Cmd
@@ -433,7 +442,8 @@ class Resolver : Visitor [singleton]
           throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
       endWhich
 
-    method resolve_access( t:Token, type_context:Type, context:Cmd, name:String, args:Args, &is_constructor )->Cmd
+    method resolve_access( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
+        &is_constructor, &suppress_error )->Cmd
       if (args)
         visit( args )
         (forEach in args).require_value
@@ -452,8 +462,6 @@ class Resolver : Visitor [singleton]
         endIf
 
         local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor, &suppress_error )
-
-        #trace this_type.module_context.types//Routine.global_methods
 
         if (m)
           if (is_constructor)
@@ -475,6 +483,8 @@ class Resolver : Visitor [singleton]
             return visit( def.cloned )
           endIf
         endIf
+
+        if (suppress_error) return null
 
         # throw error
         select_call_candidate( t, type_context, context, name, args, &=is_constructor )

@@ -703,24 +703,15 @@ parser
   endOn
 
   if (nextIs("class"))
-    savePosition     # Pass 1: position to scan template tokens from (node output already disabled)
-    ++disable_output # Pass 2: also disable output; just parse to get past
-
     consume("class")
     identifier
     class
     #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
 
-    --disable_output
-    discardPosition
-
     return
   endIf
 
   if (nextIs("routine"))
-    savePosition     # Pass 1: position to scan template tokens from (node output already disabled)
-    ++disable_output # Pass 2: also disable output; just parse to get past
-
     consume "routine"
     procedure_name
     procedure_parameters
@@ -728,14 +719,13 @@ parser
     procedure_attributes
     if (consume(':'))
       single_line_statements
-      store_routine
     else
       multi_line_statements
-      store_routine
       mustConsume "endRoutine"
     endIf
-
-    return
+    produce RoutineDef(
+      name:String, parameters:Parameters, return_type:Type, attributes:Attributes, statements:Statements
+    )
 
   endIf
 
@@ -776,17 +766,17 @@ parser
   if (nextIs("::"))
     on "::"
       if (nextIs(IDENTIFIER))
-        create Identifier(name="RogueScript::")
+        create Identifier(name="Rogue::")
         identifier
         call join_identifiers
       else
-        produce Identifier(name="RogueScript")
+        produce Identifier(name="Rogue")
       endIf
     endOn
   elseIf (nextIs(IDENTIFIER))
     identifier
   else
-    produce Identifier(name="RogueScript")
+    produce Identifier(name="Rogue")
   endIf
 
   while (consume("::"))
@@ -809,11 +799,6 @@ parser
                              # Pass 2: does nothing.
     discardPosition
   endIf
-
-- store_routine
-  #FIXME call on_parsed_routine  # Pass 1: stores routine as class template tokens. Pass 2: does nothing.
-  --disable_output
-  discardPosition
 
 - procedure_attributes
   beginList
@@ -1055,7 +1040,7 @@ parser
 - scoped_name
   savePosition
   on "::"
-    create Identifier(name="RogueScript":String)
+    create Identifier(name="Rogue":String)
     identifier
     create ModuleQualifiedID(context,name:String)
     discardPosition

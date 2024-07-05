@@ -131,14 +131,14 @@ class Program [singleton]
       endTemporarily
 
     method .configure
-      temporarily Program = this
-        t = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
-        default_module = Module( t, "RogueScript" )
+      Program = this
+      t = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
+      default_module = Module( t, "Rogue" )
+      current_module = default_module
 
-        type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )
-        type_Logical = default_module.define_type( t, "Logical", Attribute.PRIMITIVE )
-        type_Real    = default_module.define_type( t, "Real",    Attribute.PRIMITIVE )
-        type_String  = default_module.define_type( t, "String",  Attribute.PRIMITIVE )
-      endTemporarily
+      type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )
+      type_Logical = default_module.define_type( t, "Logical", Attribute.PRIMITIVE )
+      type_Real    = default_module.define_type( t, "Real",    Attribute.PRIMITIVE )
+      type_String  = default_module.define_type( t, "String",  Attribute.PRIMITIVE )
 
 endClass

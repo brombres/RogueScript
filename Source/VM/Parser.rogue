@@ -32,4 +32,5 @@ class Parser : ParserCore
       @trace _cmd_stack
       if (_cmd_stack.last) @trace _cmd_stack.last.type_name
       return 0
+
 endClass

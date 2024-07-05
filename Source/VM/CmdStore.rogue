@@ -26,6 +26,11 @@ augment
     method SetModuleContext.store
       Program.current_module = Program.modules[name]
 
+    method RoutineDef.store
+      local type_Routine = Program.current_module.type( t, "Routine" )
+      local m = GlobalMethod( t, name, parameters, return_type, attributes, null, &=statements )
+      type_Routine.add( m )
+
     method Statements.store
       local mod = Program.current_module
       if (mod.global_statements)

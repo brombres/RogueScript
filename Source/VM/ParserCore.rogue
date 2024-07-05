@@ -17,165 +17,164 @@ class ParserCore [abstract]
     ip_id_filepath = 5
     ip_parse_module_id = 6
     ip_subclass = 7
-    ip_store_routine = 8
-    ip_procedure_attributes = 9
-    ip_procedure_attribute = 10
-    ip_procedure_body = 11
-    ip_procedure_name = 12
-    ip_procedure_parameters = 13
-    ip_procedure_parameter = 14
-    ip_optional_initial_value = 15
-    ip_optional_parameter_initial_value = 16
-    ip_procedure_return_type = 17
-    ip_procedure_doc_comment_and_statements = 18
-    ip_function_definition = 19
-    ip_with_values = 20
-    ip_with_value = 21
-    ip_id_or_type = 22
-    ip_type = 23
-    ip_remaining_type = 24
-    ip_list_or_optional_type = 25
-    ip_function_param_types = 26
-    ip_function_type_parameter = 27
-    ip_function_return_type = 28
-    ip_scoped_name = 29
-    ip_optional_type = 30
-    ip_identifier = 31
-    ip_string = 32
-    ip_module_attributes = 33
-    ip_module_attribute = 34
-    ip_class_attributes = 35
-    ip_class_attribute = 36
-    ip_class = 37
-    ip_enum_attributes = 38
-    ip_enum_attribute = 39
-    ip_enum = 40
-    ip_placeholder = 41
-    ip_constructor_properties = 42
-    ip_base_types = 43
-    ip_class_sections = 44
-    ip_class_section = 45
-    ip_state = 46
-    ip_enum_sections = 47
-    ip_enum_section = 48
-    ip_categories = 49
-    ip_category = 50
-    ip_native_code_blocks = 51
-    ip_native_code_block = 52
-    ip_definition = 53
-    ip_forEach_loop = 54
-    ip_forEach_assignable_expression = 55
-    ip_forEach_collection = 56
-    ip_forEach_body = 57
-    ip_inline_forEach = 58
-    ip_if_statement = 59
-    ip_if_local_elseifs_or_else = 60
-    ip_if_statement_multi_line_elseIf_else = 61
-    ip_if_statement_single_line_elseIf_else = 62
-    ip_inline_which = 63
-    ip_inline_which_case = 64
-    ip_method = 65
-    ip_scoped_single_line_statements = 66
-    ip_scoped_multi_line_statements = 67
-    ip_global_method = 68
-    ip_global_properties = 69
-    ip_properties = 70
-    ip_property_declaration = 71
-    ip_global_property_attributes = 72
-    ip_global_property_attribute = 73
-    ip_property_attributes = 74
-    ip_property_attribute = 75
-    ip_multi_line_statements = 76
-    ip_single_line_statements = 77
-    ip_control_structure = 78
-    ip_optional_args = 79
-    ip_args = 80
-    ip_arg = 81
-    ip_arg_inner = 82
-    ip_statement = 83
-    ip_verbose_trace = 84
-    ip_brief_trace = 85
-    ip_local_declarations = 86
-    ip_local_declaration = 87
-    ip_localize = 88
-    ip_localize_declaration = 89
-    ip_block = 90
-    ip_block_assignment = 91
-    ip_contingent = 92
-    ip_loop = 93
-    ip_which_conditional = 94
-    ip_while_loop = 95
-    ip_try_catch = 96
-    ip_catches = 97
-    ip_catch_clause = 98
-    ip_temporarily = 99
-    ip_temporary_assignment = 100
-    ip_use = 101
-    ip_used_resource = 102
-    ip_module_path = 103
-    ip_uses_attributes = 104
-    ip_uses_attribute = 105
-    ip_access_args = 106
-    ip_optional_expression = 107
-    ip_expression = 108
-    ip_logical_xor = 109
-    ip_logical_xor__inner = 110
-    ip_logical_or = 111
-    ip_logical_or__inner = 112
-    ip_logical_and = 113
-    ip_logical_and__inner = 114
-    ip_comparison = 115
-    ip_comparison__inner = 116
-    ip_reference_comparison = 117
-    ip_range = 118
-    ip_bitwise_xor = 119
-    ip_bitwise_xor__inner = 120
-    ip_bitwise_or = 121
-    ip_bitwise_or__inner = 122
-    ip_bitwise_and = 123
-    ip_bitwise_and__inner = 124
-    ip_add_subtract = 125
-    ip_add_subtract__inner = 126
-    ip_bitwise_shift = 127
-    ip_bitwise_shift__inner = 128
-    ip_multiply_divide_mod = 129
-    ip_multiply_divide_mod__inner = 130
-    ip_power = 131
-    ip_power__inner = 132
-    ip_pre_unary = 133
-    ip_post_unary = 134
-    ip_post_unary__inner = 135
-    ip_access = 136
-    ip_access_inner = 137
-    ip_context_block = 138
-    ip_member_access = 139
-    ip_context_block_command = 140
-    ip_term = 141
-    ip_create_InvokeContext = 142
-    ip_variant_expression = 143
-    ip_variant_list = 144
-    ip_variant_table = 145
-    ip_variant_key_value_pair = 146
-    ip_type_access_or_typed_literal_list = 147
-    ip_remaining_generic_function_definition = 148
-    ip_native_code = 149
-    ip_literal_list = 150
-    ip_remaining_typed_literal_list = 151
-    ip_literal_table = 152
-    ip_literal_table_entry = 153
-    ip_preprocess = 154
-    ip_process_another = 155
-    ip_include_attributes = 156
-    ip_include_attribute = 157
-    ip_meta_expression = 158
-    ip_meta_term = 159
-    ip_collect_meta_filepath = 160
-    ip_native_constructor_signature = 161
-    ip_native_method_signature = 162
-    ip_native_method_parameters = 163
-    ip_native_method_parameter = 164
-    ip_optional_native_parameter_default_value = 165
-    ip_additional_node_types = 166
+    ip_procedure_attributes = 8
+    ip_procedure_attribute = 9
+    ip_procedure_body = 10
+    ip_procedure_name = 11
+    ip_procedure_parameters = 12
+    ip_procedure_parameter = 13
+    ip_optional_initial_value = 14
+    ip_optional_parameter_initial_value = 15
+    ip_procedure_return_type = 16
+    ip_procedure_doc_comment_and_statements = 17
+    ip_function_definition = 18
+    ip_with_values = 19
+    ip_with_value = 20
+    ip_id_or_type = 21
+    ip_type = 22
+    ip_remaining_type = 23
+    ip_list_or_optional_type = 24
+    ip_function_param_types = 25
+    ip_function_type_parameter = 26
+    ip_function_return_type = 27
+    ip_scoped_name = 28
+    ip_optional_type = 29
+    ip_identifier = 30
+    ip_string = 31
+    ip_module_attributes = 32
+    ip_module_attribute = 33
+    ip_class_attributes = 34
+    ip_class_attribute = 35
+    ip_class = 36
+    ip_enum_attributes = 37
+    ip_enum_attribute = 38
+    ip_enum = 39
+    ip_placeholder = 40
+    ip_constructor_properties = 41
+    ip_base_types = 42
+    ip_class_sections = 43
+    ip_class_section = 44
+    ip_state = 45
+    ip_enum_sections = 46
+    ip_enum_section = 47
+    ip_categories = 48
+    ip_category = 49
+    ip_native_code_blocks = 50
+    ip_native_code_block = 51
+    ip_definition = 52
+    ip_forEach_loop = 53
+    ip_forEach_assignable_expression = 54
+    ip_forEach_collection = 55
+    ip_forEach_body = 56
+    ip_inline_forEach = 57
+    ip_if_statement = 58
+    ip_if_local_elseifs_or_else = 59
+    ip_if_statement_multi_line_elseIf_else = 60
+    ip_if_statement_single_line_elseIf_else = 61
+    ip_inline_which = 62
+    ip_inline_which_case = 63
+    ip_method = 64
+    ip_scoped_single_line_statements = 65
+    ip_scoped_multi_line_statements = 66
+    ip_global_method = 67
+    ip_global_properties = 68
+    ip_properties = 69
+    ip_property_declaration = 70
+    ip_global_property_attributes = 71
+    ip_global_property_attribute = 72
+    ip_property_attributes = 73
+    ip_property_attribute = 74
+    ip_multi_line_statements = 75
+    ip_single_line_statements = 76
+    ip_control_structure = 77
+    ip_optional_args = 78
+    ip_args = 79
+    ip_arg = 80
+    ip_arg_inner = 81
+    ip_statement = 82
+    ip_verbose_trace = 83
+    ip_brief_trace = 84
+    ip_local_declarations = 85
+    ip_local_declaration = 86
+    ip_localize = 87
+    ip_localize_declaration = 88
+    ip_block = 89
+    ip_block_assignment = 90
+    ip_contingent = 91
+    ip_loop = 92
+    ip_which_conditional = 93
+    ip_while_loop = 94
+    ip_try_catch = 95
+    ip_catches = 96
+    ip_catch_clause = 97
+    ip_temporarily = 98
+    ip_temporary_assignment = 99
+    ip_use = 100
+    ip_used_resource = 101
+    ip_module_path = 102
+    ip_uses_attributes = 103
+    ip_uses_attribute = 104
+    ip_access_args = 105
+    ip_optional_expression = 106
+    ip_expression = 107
+    ip_logical_xor = 108
+    ip_logical_xor__inner = 109
+    ip_logical_or = 110
+    ip_logical_or__inner = 111
+    ip_logical_and = 112
+    ip_logical_and__inner = 113
+    ip_comparison = 114
+    ip_comparison__inner = 115
+    ip_reference_comparison = 116
+    ip_range = 117
+    ip_bitwise_xor = 118
+    ip_bitwise_xor__inner = 119
+    ip_bitwise_or = 120
+    ip_bitwise_or__inner = 121
+    ip_bitwise_and = 122
+    ip_bitwise_and__inner = 123
+    ip_add_subtract = 124
+    ip_add_subtract__inner = 125
+    ip_bitwise_shift = 126
+    ip_bitwise_shift__inner = 127
+    ip_multiply_divide_mod = 128
+    ip_multiply_divide_mod__inner = 129
+    ip_power = 130
+    ip_power__inner = 131
+    ip_pre_unary = 132
+    ip_post_unary = 133
+    ip_post_unary__inner = 134
+    ip_access = 135
+    ip_access_inner = 136
+    ip_context_block = 137
+    ip_member_access = 138
+    ip_context_block_command = 139
+    ip_term = 140
+    ip_create_InvokeContext = 141
+    ip_variant_expression = 142
+    ip_variant_list = 143
+    ip_variant_table = 144
+    ip_variant_key_value_pair = 145
+    ip_type_access_or_typed_literal_list = 146
+    ip_remaining_generic_function_definition = 147
+    ip_native_code = 148
+    ip_literal_list = 149
+    ip_remaining_typed_literal_list = 150
+    ip_literal_table = 151
+    ip_literal_table_entry = 152
+    ip_preprocess = 153
+    ip_process_another = 154
+    ip_include_attributes = 155
+    ip_include_attribute = 156
+    ip_meta_expression = 157
+    ip_meta_term = 158
+    ip_collect_meta_filepath = 159
+    ip_native_constructor_signature = 160
+    ip_native_method_signature = 161
+    ip_native_method_parameters = 162
+    ip_native_method_parameter = 163
+    ip_optional_native_parameter_default_value = 164
+    ip_additional_node_types = 165
 
   PROPERTIES
     _tokens          : Token[]
@@ -430,7 +429,6 @@ class ParserCore [abstract]
         case ip_id_filepath: r_id_filepath
         case ip_parse_module_id: r_parse_module_id
         case ip_subclass: r_subclass
-        case ip_store_routine: r_store_routine
         case ip_procedure_attributes: r_procedure_attributes
         case ip_procedure_attribute: r_procedure_attribute
         case ip_procedure_body: r_procedure_body
@@ -716,19 +714,13 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       if ((_next_t.type == TokenType.KEYWORD_CLASS))
-        _save_position
-        ++disable_output
         _consume(TokenType.KEYWORD_CLASS)
         r_identifier
         r_class
-        --disable_output
-        _discard_position
         _cur_t = _previous_cur_t
         return 0
       endIf
       if ((_next_t.type == TokenType.KEYWORD_ROUTINE))
-        _save_position
-        ++disable_output
         _consume(TokenType.KEYWORD_ROUTINE)
         r_procedure_name
         r_procedure_parameters
@@ -736,12 +728,11 @@ class ParserCore [abstract]
         r_procedure_attributes
         if (_consume(TokenType.SYMBOL_COLON))
           r_single_line_statements
-          r_store_routine
         else
           r_multi_line_statements
-          r_store_routine
           if (not _consume(TokenType.KEYWORD_END_ROUTINE)) _throw_syntax_error( &expected=TokenType.KEYWORD_END_ROUTINE )
         endIf
+        if (not disable_output) _push( RoutineDef(_cur_t,_string_arg(-5),_node_arg(-4)->(as Parameters),_node_arg(-3)->(as Type),_node_arg(-2)->(as Attributes),_node_arg(-1)->(as Statements)), 5 )
         _cur_t = _previous_cur_t
         return 0
       endIf
@@ -797,12 +788,12 @@ class ParserCore [abstract]
         if (_next_t.type == TokenType.SYMBOL_COLON_COLON)
           temporarily _cur_t = _on_t
             if ((_next_t.type == TokenType.IDENTIFIER))
-              if (not disable_output) _push( Identifier(_cur_t,"RogueScript::"), 0 )
+              if (not disable_output) _push( Identifier(_cur_t,"Rogue::"), 0 )
               r_identifier
               join_identifiers
 
             else
-              if (not disable_output) _push( Identifier(_cur_t,"RogueScript"), 0 )
+              if (not disable_output) _push( Identifier(_cur_t,"Rogue"), 0 )
               _cur_t = _previous_cur_t
               return 0
             endIf
@@ -811,7 +802,7 @@ class ParserCore [abstract]
       elseIf ((_next_t.type == TokenType.IDENTIFIER))
         r_identifier
       else
-        if (not disable_output) _push( Identifier(_cur_t,"RogueScript"), 0 )
+        if (not disable_output) _push( Identifier(_cur_t,"Rogue"), 0 )
         _cur_t = _previous_cur_t
         return 0
       endIf
@@ -837,13 +828,6 @@ class ParserCore [abstract]
         --disable_output
         _discard_position
       endIf
-      _cur_t = _previous_cur_t
-      return 0
-
-    method r_store_routine->Int
-      local _previous_cur_t = _cur_t
-      --disable_output
-      _discard_position
       _cur_t = _previous_cur_t
       return 0
 
@@ -1462,7 +1446,7 @@ class ParserCore [abstract]
       _save_position
       if (_next_t.type == TokenType.SYMBOL_COLON_COLON)
         temporarily _cur_t = _on_t
-          if (not disable_output) _push( Identifier(_cur_t,"RogueScript"), 0 )
+          if (not disable_output) _push( Identifier(_cur_t,"Rogue"), 0 )
           r_identifier
           if (not disable_output) _push( ModuleQualifiedID(_cur_t,_node_arg(-2),_string_arg(-1)), 2 )
           _discard_position
