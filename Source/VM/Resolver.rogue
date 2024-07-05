@@ -260,6 +260,12 @@ class Resolver : Visitor [singleton]
         if local result = resolve_access( cmd.t, type_Routine, null, cmd.name, cmd.args, &suppress_error )
           return result
         endIf
+        forEach (mod in this_type.module_context.used_modules)
+          type_Routine = mod.type_Routine
+          if local result = resolve_access( cmd.t, type_Routine, null, cmd.name, cmd.args, &suppress_error )
+            return result
+          endIf
+        endForEach
       endIf
 
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
@@ -447,6 +453,17 @@ class Resolver : Visitor [singleton]
       if (args)
         visit( args )
         (forEach in args).require_value
+      endIf
+
+      if (name.contains("::"))
+        local parts = name.split("::")
+        local mod = Program.get_module( t, parts[0] )
+        name = parts[1]
+        if local type = mod.types[name]
+          type_context = type
+        elseIf local m = mod.type_Routine.global_methods_by_name[name]
+          type_context = mod.type_Routine
+        endIf
       endIf
 
       use CallCandidates

@@ -644,16 +644,10 @@ parser
   endIf
 
   if (nextIs("enum"))
-    savePosition     # Pass 1: save position to scan template tokens from (node output already disabled)
-    ++disable_output # Pass 2: also disable output; just parse to get past
-
     consume("enum")
     identifier
     enum
     #FIXME call on_parsed_enum  # Pass 1: stores enum template tokens. Pass 2: does nothing.
-
-    --disable_output
-    discardPosition
 
     return
   endIf
@@ -730,16 +724,9 @@ parser
   endIf
 
   on "uses"
-    saved_setting = 0
-    saved_setting = disable_output
-    disable_output = 0
-
-    string
+    id_filepath
     uses_attributes
-
-    disable_output = saved_setting
-    #FIXME call on_uses_module
-    return
+    produce Uses( id_filepath:String, attributes:Attributes )
   endOn
 
   if (nextHasAttribute(structural))
@@ -788,16 +775,11 @@ parser
 
 - subclass
   if (nextIs("subclass"))
-    savePosition     # Pass 1: position to scan template tokens from (node output already disabled)
-    ++disable_output # Pass 2: also disable output; just parse to get past
-
     consume "subclass"
     class_sections
     mustConsume "endSubclass"
-    --disable_output
     #FIXME call on_parsed_subclass  # Pass 1: stores class template tokens & replaces access with generated type name.
                              # Pass 2: does nothing.
-    discardPosition
   endIf
 
 - procedure_attributes
@@ -2277,11 +2259,8 @@ parser
   produceList Attributes
 
 - uses_attribute
-  on "export"    -> AttributeExport
-  if (consume @"noInclude")
-    #FIXME call uses_attribute_no_include
-    return
-  endIf
+  on "export"     -> AttributeExport
+  on @"noInclude" -> AttributeNoInclude
   syntaxError "Illegal 'uses' attribute. Expected any of [export noInclude]."
 
 #- import_module_by_path_or_filepath

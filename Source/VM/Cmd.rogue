@@ -4727,3 +4727,27 @@ class RoutineDef : Cmd
       return "RoutineDef($,$,$,$,$)" (%name,%parameters,%return_type,%attributes,%statements)
 
 endClass
+
+class Uses : Cmd
+  PROPERTIES
+    id_filepath : String
+    attributes  : Attributes
+
+  METHODS
+    method init( t, id_filepath, attributes )
+
+    method init( existing:Uses )
+      prior.init( existing )
+      id_filepath = existing.id_filepath
+      if (existing.attributes) attributes = existing.attributes.cloned
+
+    method description->String
+      return "Uses($,$)" (%id_filepath,%attributes)
+
+endClass
+
+class AttributeNoInclude : Cmd
+  METHODS
+    method description->String
+      return "AttributeNoInclude"
+endClass

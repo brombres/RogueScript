@@ -81,11 +81,12 @@ class VM [singleton]
         return Program.execute( m_execute )
       endTemporarily
 
-    method include( file:File )->RogueScriptError
+    method include( file:File, &suppress_error )->RogueScriptError
       # Loads file if not already loaded.
       file = .find_file( file )
       local filepath = file.filepath
       if (new_elements and new_elements.contains(filepath)) return null
+      if (not file.exists and suppress_error) return CompileError( "File not found." )
       return load( file )
 
     method launch->RogueScriptError

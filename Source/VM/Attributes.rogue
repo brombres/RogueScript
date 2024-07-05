@@ -24,6 +24,8 @@ enum Attribute [bitflags]
     REQUIRES_CLEANUP
     NATIVE_TYPE
 
+    NO_INCLUDE
+
   DEFINITIONS
     CLASSIFICATION = Attribute[PRIMITIVE,COMPOUND,ENUM,OBJECT,ASPECT]
 endEnum
@@ -59,6 +61,7 @@ class Attributes : CmdList
   ROGUE_SCRIPT_ATTRIBUTE<< is_override,          Attribute.OVERRIDE >>
   ROGUE_SCRIPT_ATTRIBUTE<< is_preferred,         Attribute.PREFERRED >>
   ROGUE_SCRIPT_ATTRIBUTE<< is_native_type,       Attribute.NATIVE_TYPE >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_no_include,        Attribute.NO_INCLUDE >>
 
   PROPERTIES
     flags : Attribute
@@ -120,6 +123,9 @@ augment
 
     method AttributeInsert.attribute_flags->Attribute
       return Attribute.INSERT
+
+    method AttributeNoInclude.attribute_flags->Attribute
+      return Attribute.NO_INCLUDE
 
     method AttributeOverride.attribute_flags->Attribute
       return Attribute.OVERRIDE

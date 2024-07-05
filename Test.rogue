@@ -1,45 +1,15 @@
-#class Color( argb:Int32 ) [compound]
-#  DEFINITIONS
-#    BLUE = Color(0xFF0000FF)
-#
-#  METHODS
-#    method test
-#      println this.argb
-#endClass
-#
-#class Test
-#  GLOBAL METHODS
-#    method gmarco
-#      println "GPolo"
-#
-#  METHODS
-#    method marco
-#      println "Polo"
-#
-#    method add( a:Int, b:Int )->Int
-#      return a + b
-##
-##  #  method to->String
-##  #    println "hey"
-##
-#endClass
-#
-##Test.gmarco
-##Test().marco
-#
-##
-###println "Marco"
-##println Test().add(3,4)
-##println Test.PI
-##println "Marco".count
-##local r = Random
-##forEach (i in 1..5) println r.int
-##println Random.real
-##
-#Color.BLUE.test
+uses Beta
 
-test(5)
+Alpha::test
 
-routine test( n:Int )
-  println "success", n
+module Alpha
+
+routine test
+  println "alpha"
+endRoutine
+
+module Beta
+
+routine test
+  println "beta"
 endRoutine

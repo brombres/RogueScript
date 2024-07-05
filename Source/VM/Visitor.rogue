@@ -761,4 +761,7 @@ class Visitor
       cmd.attributes = visit(cmd.attributes)->(as Attributes)
       cmd.statements = visit(cmd.statements)->(as Statements)
 
+    method on_visit_children( cmd:Uses )
+      cmd.attributes = visit(cmd.attributes)->(as Attributes)
+
 endClass

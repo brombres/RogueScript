@@ -193,7 +193,6 @@ class ParserCore [abstract]
 
     disable_output             : Int
     is_batch_augment           : Logical
-    saved_setting              : Int
     initial_value_tokens       : Cmd
     include_attribute_api      : Logical
     include_attribute_folder   : Logical
@@ -660,13 +659,9 @@ class ParserCore [abstract]
         return 0
       endIf
       if ((_next_t.type == TokenType.KEYWORD_ENUM))
-        _save_position
-        ++disable_output
         _consume(TokenType.KEYWORD_ENUM)
         r_identifier
         r_enum
-        --disable_output
-        _discard_position
         _cur_t = _previous_cur_t
         return 0
       endIf
@@ -738,12 +733,9 @@ class ParserCore [abstract]
       endIf
       if (_next_t.type == TokenType.KEYWORD_USES)
         temporarily _cur_t = _on_t
-          saved_setting = 0
-          saved_setting = disable_output
-          disable_output = 0
-          r_string
+          r_id_filepath
           r_uses_attributes
-          disable_output = saved_setting
+          if (not disable_output) _push( Uses(_cur_t,_string_arg(-2),_node_arg(-1)->(as Attributes)), 2 )
           _cur_t = _previous_cur_t
           return 0
         endTemporarily
@@ -820,13 +812,9 @@ class ParserCore [abstract]
     method r_subclass->Int
       local _previous_cur_t = _cur_t
       if ((_next_t.type == TokenType.KEYWORD_SUBCLASS))
-        _save_position
-        ++disable_output
         _consume(TokenType.KEYWORD_SUBCLASS)
         r_class_sections
         if (not _consume(TokenType.KEYWORD_END_SUBCLASS)) _throw_syntax_error( &expected=TokenType.KEYWORD_END_SUBCLASS )
-        --disable_output
-        _discard_position
       endIf
       _cur_t = _previous_cur_t
       return 0
@@ -3617,9 +3605,12 @@ class ParserCore [abstract]
           return 0
         endTemporarily
       endIf
-      if (_consume_content("noInclude"))
-        _cur_t = _previous_cur_t
-        return 0
+      if (_next_t.content and _next_t.content == "noInclude")
+        temporarily _cur_t = _on_t
+          if (not disable_output) _push( AttributeNoInclude(_cur_t), 0 )
+          _cur_t = _previous_cur_t
+          return 0
+        endTemporarily
       endIf
       _throw_syntax_error("Illegal 'uses' attribute. Expected any of [export noInclude].")
       _cur_t = _previous_cur_t

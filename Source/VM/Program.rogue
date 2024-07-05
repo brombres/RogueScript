@@ -49,7 +49,9 @@ class Program [singleton]
     method organize
       temporarily Program=this, current_module=default_module
         CollectTypes.visit( forEach in pending_elements )
+      endTemporarily
 
+      temporarily Program=this, current_module=default_module
         forEach (entry in VM.native_types.entries)
           local type = Program.default_module.type( VM.t, entry.key )
           type.attributes.is_native_type = true

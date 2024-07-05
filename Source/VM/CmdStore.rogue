@@ -42,4 +42,10 @@ augment
     method ToTypeMethod.store( type_context:Type )
       local m = Method( t, "to_"+to_type, parameters, to_type, statements )
       type_context.add( m )
+
+    method Uses.store
+      Program.current_module.use_module( t, id_filepath.replacing("/","::") )
+      if (not attributes.is_no_include)
+        VM.include( id_filepath, &suppress_error )
+      endIf
 endAugment
