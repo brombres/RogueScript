@@ -1,26 +1,5 @@
 module RogueScript
 
-uses Geometry [export]
-
-$include VM/Attributes
-$include VM/RogueScriptObject
-$include VM/CallCandidates
-$include VM/CmdExecute
-$include VM/CmdPreprocess
-$include VM/CmdStore
-$include VM/CmdType
-$include VM/CollectTypes
-$include VM/Module
-$include VM/NativeTypeInfo
-$include VM/Organizer
-$include VM/Parser        [optional]
-$include VM/Procedure
-$include VM/Program
-$include VM/Resolver
-$include VM/Scanner
-$include VM/Type
-$include VM/VM
-
 class VM [singleton]
   PROPERTIES
     t                 = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )

@@ -10,8 +10,8 @@ augment Build
   # You can create a Local.settings file with overrides for these values, e.g.:
   # BUILD_MODE = release
   PROPERTIES
-    PROJECT          = "RogueScript"
-    LAUNCHER_NAME    = "rs" : String
+    PROJECT          = "RogueS"
+    LAUNCHER_NAME    = "rogues" : String
 
     BUILD_MODE       = "debug"  # set to "debug" or "release"
     LAUNCHER_FOLDER  = "/usr/local/bin"
@@ -58,11 +58,11 @@ routine rogo_build
   # Recompiles Rogue -> C -> Exe if needed. 'rogo rebuild' forces a build.
   localize exe_file
 
-  if (File("Source/VM/$.froley"(Build.PROJECT)).is_newer_than(exe_file))
+  if (File("Source/VM/RogueScript.froley").is_newer_than(exe_file))
     rogo_froley
   endIf
 
-  local source_files = Files( "Source", "RogueScript.rogue" )
+  local source_files = Files( "Source", "RogueS.rogue" )
   source_files.add( "VM/**" )
   if (source_files.any_newer_than(exe_file))
     local c_filepath = "Build/$-$.c" (Build.PROJECT,System.os)
@@ -74,7 +74,7 @@ routine rogo_build
 endRoutine
 
 routine rogo_froley
-  local froley_src = File( "Source/VM/$.froley"(Build.PROJECT) )
+  local froley_src = File( "Source/VM/RogueScript.froley" )
   execute "froley $ Source/VM"(froley_src.esc)
 endRoutine
 

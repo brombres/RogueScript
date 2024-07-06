@@ -2,12 +2,12 @@ module RogueScript
 
 uses Console/CommandLineParser
 
-$include VM
-$include VM/NativeLibraries
+$include RogueScript
+$include RogueScript/NativeLibraries
 
-RogueScript( System.command_line_arguments )
+RogueS( System.command_line_arguments )
 
-class RogueScript
+class RogueS
   PROPERTIES
     command  : Variant
 
