@@ -621,7 +621,6 @@ class ScannerCore [abstract]
       if (not r_scan_number) return false
       _throw_syntax_error
       return false
-      return true
 
     method r_scan_comment->Logical
       if (_scan('#'))
@@ -1242,7 +1241,6 @@ class ScannerCore [abstract]
       buffer.print("'. Supported: \\b \\e \\f \\n \\r \\t \\v \\0 \\? \\/ \\' \\\\ \\\" \\xHH \\uHHHH \\[H*].")
       _throw_syntax_error(buffer)
       return false
-      return true
 
     method r_read_hex4->Logical
       if (not r_read_hex2) return false

@@ -74,8 +74,8 @@ routine rogo_build
 endRoutine
 
 routine rogo_froley
-  local froley_src = File( "Source/VM/RogueScript.froley" )
-  execute "froley $ Source/VM"(froley_src.esc)
+  local froley_src = File( "Source/RogueScript/RogueScript.froley" )
+  execute "froley $ Source/RogueScript"(froley_src.esc)
 endRoutine
 
 routine rogo_build_debug

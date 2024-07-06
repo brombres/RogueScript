@@ -897,8 +897,6 @@ class ParserCore [abstract]
       _throw_syntax_error("Illegal procedure attribute. Expected one or more of [abstract append essential insert override preferred propagated replace].")
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_procedure_body->Int
       local _previous_cur_t = _cur_t
@@ -1497,8 +1495,6 @@ class ParserCore [abstract]
       _throw_syntax_error("Identifier expected.")
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_string->Int
       local _previous_cur_t = _cur_t
@@ -1517,8 +1513,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error("Literal string expected.")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -1549,8 +1543,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error("Illegal module attribute. Expected [essential].")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -1616,8 +1608,6 @@ class ParserCore [abstract]
       _throw_syntax_error("Illegal class attribute. Expected one or more of [abstract aspect compound essential primitive singleton].")
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_class->Int
       local _previous_cur_t = _cur_t
@@ -1672,8 +1662,6 @@ class ParserCore [abstract]
       _throw_syntax_error("Illegal enum attribute. Expected [bitflags].")
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_enum->Int
       local _previous_cur_t = _cur_t
@@ -1702,8 +1690,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error("'$Placeholder' name expected.")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -1829,8 +1815,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -1998,8 +1982,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error("Expected 'nativeHeader', or 'nativeCode'.")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -2533,8 +2515,6 @@ class ParserCore [abstract]
       _throw_syntax_error("Illegal global property attribute.")
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_property_attributes->Int
       local _previous_cur_t = _cur_t
@@ -2556,8 +2536,6 @@ class ParserCore [abstract]
     method r_property_attribute->Int
       local _previous_cur_t = _cur_t
       _throw_syntax_error("Illegal property attribute.")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -3613,8 +3591,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error("Illegal 'uses' attribute. Expected any of [export noInclude].")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
@@ -4830,8 +4806,6 @@ class ParserCore [abstract]
       _throw_syntax_error
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_create_InvokeContext->Int
       local _previous_cur_t = _cur_t
@@ -5368,8 +5342,6 @@ class ParserCore [abstract]
       _throw_syntax_error("Illegal $include attribute. Expected one or more of [folder optional].")
       _cur_t = _previous_cur_t
       return 0
-      _cur_t = _previous_cur_t
-      return 0
 
     method r_meta_expression->Int
       local _previous_cur_t = _cur_t
@@ -5402,8 +5374,6 @@ class ParserCore [abstract]
         endTemporarily
       endIf
       _throw_syntax_error("Invalid metacondition.")
-      _cur_t = _previous_cur_t
-      return 0
       _cur_t = _previous_cur_t
       return 0
 
