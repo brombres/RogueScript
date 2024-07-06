@@ -385,7 +385,6 @@ class Resolver : Visitor [singleton]
         if (proc.parameters)
           forEach (param in proc.parameters)
             if (not param.type) throw param.t.error( "TODO: auto-store parameter" )
-            if (param.initial_value) throw param.t.error( "TODO: initial parameter value" )
             param.type.resolve
             add_local( param.t, param.name, param.type )
           endForEach
@@ -482,6 +481,7 @@ class Resolver : Visitor [singleton]
         local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor, &suppress_error )
 
         if (m)
+          resolve_args( t, m, args )
           if (is_constructor)
             if (m.attributes.is_global)
               return visit( CallGlobalMethod(t, m, args) )
@@ -507,6 +507,14 @@ class Resolver : Visitor [singleton]
         # throw error
         select_call_candidate( t, type_context, context, name, args, &=is_constructor )
       endUse
+
+    method resolve_args( t:Token, m:Procedure, args:Args )
+      ensure<<args>>( t )
+      while (args.count < m.max_args)
+        local default_arg = m.parameters[args.count].initial_value
+        assert default_arg
+        args.add( visit(default_arg.cloned) )
+      endWhile
 
     method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
         &is_constructor, &suppress_error )->Procedure
@@ -574,7 +582,9 @@ class Resolver : Visitor [singleton]
         if (arg_count >= m.min_args and arg_count <= m.max_args) CallCandidates.keep( m )
       endForEach
 
-      if (CallCandidates.found_match) return CallCandidates.match
+      if (CallCandidates.found_match)
+        return CallCandidates.match
+      endIf
       CallCandidates.refine
 
       return null

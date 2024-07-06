@@ -1,2 +1,5 @@
 uses Graphics
-Color(0).test
+
+local a = XY(3,4.5)
+println Triangle(a,a,a)
+println Color.BLUE

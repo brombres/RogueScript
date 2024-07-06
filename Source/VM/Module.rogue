@@ -31,13 +31,20 @@ class Module
       return define_type( def.t, def.name->String, def.attributes.cloned ).[ definition=def ]
 
     method define_type( t:Token, type_name:String, attributes:Attributes )->Type
-      if (types.contains(type_name))
-        throw t.error( "Type $::$ is already defined."(name,type_name) )
+      local type = types[type_name]
+
+      if (type)
+        if (type.definition)
+          throw t.error( "Type $::$ is already defined."(name,type_name) )
+        endIf
+        type.attributes.flags |= attributes.flags
+        type.attributes.add( forEach in attributes )
+      else
+        type = Type( t, this, type_name, attributes )
+        types[type_name] = type
+        Program.types[type.scoped_name] = type
       endIf
 
-      local type = Type( t, this, type_name, attributes )
-      types[type_name] = type
-      Program.types[type.scoped_name] = type
       return type
 
     method define_type( t:Token, type_name:String, attribute_flags:Int )->Type

@@ -26,8 +26,7 @@ class RogueScript
       try
         local vm = VM
         NativeLibraries.register( vm )
-        vm.include_folders.add( "Source/Libraries" )
-        vm.include( "Graphics" )
+        vm.include( "Source/Libraries" )
 
         forEach (arg in command//args)
           vm.include( File(arg->String) )

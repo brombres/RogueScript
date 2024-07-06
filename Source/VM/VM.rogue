@@ -54,6 +54,9 @@ class VM [singleton]
     method real( index:Int )->Real
       return stack[fp+index]->Real
 
+    method string( index:Int )->String
+      return stack[fp+index]->String
+
     method xy( index:Int )->XY
       return stack[fp+index]->XY
 
