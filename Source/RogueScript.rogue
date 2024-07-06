@@ -23,37 +23,28 @@ class RogueScript
         System.exit 0
       endIf
 
-      local vm = VM
-      NativeLibraries.register( vm )
+      try
+        local vm = VM
+        NativeLibraries.register( vm )
+        vm.include_folders.add( "Source/Libraries" )
+        vm.include( "Graphics" )
 
-
-      #vm.register_method( "String:create()->String", ()=>String() )
-      #vm.register_method( "String.count()->Int", ()=>VM.context.object->(as String).count )
-      #{
-      vm.register_method( "String.count()->Int",
-        Cmd( VM.t ) subclass
-          METHODS
-            method execute->Variant
-              return VM.context.object->(as String).count
-        endSubclass
-      )
-      }#
-
-      local error : Exception
-      contingent
         forEach (arg in command//args)
-          error = vm.include( File(arg->String) )
-          necessary (not error)
+          vm.include( File(arg->String) )
         endForEach
 
-        error = vm.update
-        necessary (not error)
+        vm.update
 
-      unsatisfied
-        #error.display
+      catch (error:RogueScriptError)
         Global.error.println error
         System.exit 1
-      endContingent
+
+      catch (error:Exception)
+        Global.error.print   "[INTERNAL ERROR] "
+        Global.error.println error
+        System.exit 1
+
+      endTry
 
     method _parse_args( args:String[] )->Variant
       # This method is unrelated to the Froley Parser

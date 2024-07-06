@@ -26,6 +26,7 @@ class VM [singleton]
     t                 = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
     new_elements      : [String:ProgramElements]
     resolved_elements : [String:ProgramElements]
+    include_folders   = Set<<String>>().[ add("") ]
 
     native_types          = [String:NativeTypeInfo]
     native_constructors   = [String:Cmd]
@@ -81,15 +82,18 @@ class VM [singleton]
         return Program.execute( m_execute )
       endTemporarily
 
-    method include( file:File, &suppress_error )->RogueScriptError
+    method include( file:File, &suppress_error )->Logical
       # Loads file if not already loaded.
-      file = .find_file( file )
-      local filepath = file.filepath
-      if (new_elements and new_elements.contains(filepath)) return null
-      if (not file.exists and suppress_error) return CompileError( "File not found." )
-      return load( file )
+      if local found_file = .find_file( file )
+        local filepath = found_file.filepath
+        if (new_elements and new_elements.contains(filepath)) return true
+        return load( found_file, &=suppress_error )
+      else
+        if (suppress_error) return false
+        throw CompileError( "File not found: $"(file) )
+      endIf
 
-    method launch->RogueScriptError
+    method launch
       try
         temporarily VM = this
           if (new_elements and new_elements.count)
@@ -107,18 +111,19 @@ class VM [singleton]
             program.launch
           endIf
         endTemporarily
-      catch (error:RogueScriptError)
-        new_elements = null
-        return error
       catch (error:Exception)
         new_elements = null
-        return CompileError( "[INTERNAL ERROR] " + error )
+        throw error
       endTry
 
-      return null
+    method load( file:File, &suppress_error )->Logical
+      if local found_file = .find_file( file )
+        file = found_file
+      else
+        if (suppress_error) return false
+        throw RogueScriptError( "File not found: " + file )
+      endIf
 
-    method load( file:File )->RogueScriptError
-      file = .find_file( file )
       local filepath = file.filepath
 
       .begin_staging
@@ -130,15 +135,14 @@ class VM [singleton]
           (forEach in elements).preprocess
         endTemporarily
 
-      catch (error:RogueScriptError)
-        new_elements = null
-        return error
       catch (error:Exception)
         new_elements = null
-        return CompileError( "[INTERNAL ERROR] " + error, file.filepath )
+        if (suppress_error) return false
+        throw error
+
       endTry
 
-      return null
+      return true
 
     method register_constructor( signature:String, cmd:Cmd )
       native_constructors[signature] = cmd
@@ -177,20 +181,13 @@ class VM [singleton]
       new_elements.remove( filepath )
       resolved_elements?.remove( filepath )
 
-    method update->RogueScriptError
+    method update
       try
-        local error = launch
-        if (error) return error
-
-      catch (error:RogueScriptError)
-        new_elements = null
-        return error
+        launch
       catch (error:Exception)
         new_elements = null
-        return CompileError( "[INTERNAL ERROR] " + error )
+        throw error
       endTry
-
-      return null
 
     method .begin_staging
       if (not new_elements)
@@ -201,8 +198,30 @@ class VM [singleton]
         endIf
       endIf
 
-    method .find_file( file:File )->File
-      file .= with_extension( ".rogue" )
-      return file.abs
+    method .find_file( file:File )->File?
+      local found_file = file
+      contingent
+        sufficient (found_file.exists)
+
+        forEach (folder in include_folders)
+          found_file = folder / file
+          if (not found_file.exists) found_file .= with_extension( ".rogue" )
+          sufficient (found_file.exists)
+        endForEach
+
+        return null
+
+      satisfied
+        file = found_file
+      endContingent
+
+      if (file.is_folder) file = (file / file.filename) + ".rogue"
+
+      file .= abs
+
+      local folder = file.abs.folder
+      include_folders[folder] = folder
+
+      return file
 
 endClass

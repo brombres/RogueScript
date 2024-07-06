@@ -256,19 +256,20 @@ class Resolver : Visitor [singleton]
       if local result = resolve_access( cmd.t, this_type, null, cmd.name, cmd.args, &suppress_error )
         return result
       else
-        local type_Routine = this_type.module_context.type_Routine
-        if local result = resolve_access( cmd.t, type_Routine, null, cmd.name, cmd.args, &suppress_error )
+        if local result = resolve_routine( cmd.t, this_type.module_context, cmd.name, cmd.args )
           return result
         endIf
         forEach (mod in this_type.module_context.used_modules)
-          type_Routine = mod.type_Routine
-          if local result = resolve_access( cmd.t, type_Routine, null, cmd.name, cmd.args, &suppress_error )
+          if local result = resolve_routine( cmd.t, mod, cmd.name, cmd.args )
             return result
           endIf
         endForEach
       endIf
 
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
+
+    method resolve_routine( t:Token, mod:Module, name:String, args:Args )->Cmd
+      return resolve_access( t, mod.type_Routine, null, name, args, &suppress_error )
 
     method on_visit( cmd:Assign )->Cmd
       return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )

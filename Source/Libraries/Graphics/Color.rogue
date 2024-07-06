@@ -1,0 +1,7 @@
+module Graphics
+
+class Color
+  METHODS
+    method test
+      println "Success"
+endClass

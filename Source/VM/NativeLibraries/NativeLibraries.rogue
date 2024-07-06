@@ -1,15 +1,15 @@
 module RogueScript
 
-$include VM/NativeLibraries/NativeGeometry
-$include VM/NativeLibraries/NativeGraphics
-$include VM/NativeLibraries/NativeMath
-$include VM/NativeLibraries/NativePrimitives
+$include NativeLibraries/NativeCore
+$include NativeLibraries/NativeGeometry
+$include NativeLibraries/NativeGraphics
+$include NativeLibraries/NativeMath
 
 class NativeLibraries [singleton]
   METHODS
     method register( vm:VM )
+      NativeCore.register( vm )
       NativeGeometry.register( vm )
       NativeGraphics.register( vm )
-      NativePrimitives.register( vm )
       NativeMath.register( vm )
 endClass

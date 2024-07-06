@@ -1,0 +1,9 @@
+module RogueScript
+
+$include NativePrimitives
+
+class NativeCore [singleton]
+  METHODS
+    method register( vm:VM )
+      NativePrimitives.register( vm )
+endClass

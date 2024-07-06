@@ -1,15 +1,2 @@
-uses Beta
-
-Alpha::test
-
-module Alpha
-
-routine test
-  println "alpha"
-endRoutine
-
-module Beta
-
-routine test
-  println "beta"
-endRoutine
+uses Graphics
+Color(0).test

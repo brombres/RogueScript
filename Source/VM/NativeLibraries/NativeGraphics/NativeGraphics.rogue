@@ -1,6 +1,6 @@
 module RogueScript
 
-$include NativeColor
+$include NativeGraphics/NativeColor
 
 class NativeGraphics [singleton]
   METHODS
