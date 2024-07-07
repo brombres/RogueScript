@@ -1,5 +1,1 @@
-uses Graphics
-
-local a = XY(3,4.5)
-println Triangle(a,a,a)
-println Color.BLUE
+println "Hello"

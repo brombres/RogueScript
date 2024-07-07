@@ -2,6 +2,7 @@ module RogueScript
 
 class NativeTypeInfo(
   instance_of:Function(Variant)->Logical,
+  base_class_name:String,
   get_singleton=null:Function()->Variant,
   set_singleton=null:Function(Variant),
   variant_type=Varant.TYPE_OBJECT:Int

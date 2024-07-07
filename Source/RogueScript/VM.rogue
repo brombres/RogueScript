@@ -16,6 +16,8 @@ class VM [singleton]
     stack   = Variant[]
     fp      : Int
 
+    resolve_filepath = (filepath) => filepath : Function(String)->String
+
   METHODS # Runtime
     method context->Variant
       return stack[fp]
@@ -150,11 +152,14 @@ class VM [singleton]
     method register_type(
         scoped_name:String,
         instance_of:Function(Variant)->Logical,
+        base_class_name=null:String,
         get_singleton=null:Function()->Variant,
         set_singleton=null:Function(Variant),
         variant_type=Variant.TYPE_OBJECT:Int
       )
-      native_types[scoped_name] = NativeTypeInfo( instance_of, get_singleton, set_singleton, variant_type )
+      native_types[scoped_name] = NativeTypeInfo(
+        instance_of, base_class_name, get_singleton, set_singleton, variant_type
+      )
 
     method unload( file:File )
       .begin_staging
@@ -181,13 +186,15 @@ class VM [singleton]
       endIf
 
     method .find_file( file:File )->File?
-      local found_file = file
+      local found_file = File( resolve_filepath(file) )
       contingent
         sufficient (found_file.exists)
 
         forEach (folder in include_folders)
-          found_file = folder / file
-          if (not found_file.exists) found_file .= with_extension( ".rogue" )
+          found_file = File( resolve_filepath(folder / file) )
+          if (not found_file.exists)
+            found_file = File( resolve_filepath(found_file.with_extension(".rogue")) )
+          endIf
           sufficient (found_file.exists)
         endForEach
 

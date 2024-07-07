@@ -54,6 +54,14 @@ class Program [singleton]
       temporarily Program=this, current_module=default_module
         forEach (entry in VM.native_types.entries)
           local type = Program.default_module.type( VM.t, entry.key )
+          if (entry.value.base_class_name)
+            local base_class = Program.default_module.type( VM.t, entry.value.base_class_name )
+            if (type.base_class and type.base_class is not base_class)
+              throw CompileError( "Multiple base types defined for $: $ and $."...
+                                  (type,type.base_class,base_class) )
+            endIf
+            type.base_class = base_class
+          endIf
           type.attributes.is_native_type = true
           type.native_instance_of   = entry.value.instance_of
           type.native_get_singleton = entry.value.get_singleton

@@ -1,6 +1,7 @@
 module RogueScript
 
-$include NativePrimitives
+$include NativeCore/NativePrimitives
+#$include NativeCore/NativeObject
 
 class NativeCore [singleton]
   METHODS
