@@ -3312,6 +3312,22 @@ class WriteLocal : Cmd
 
 endClass
 
+class SetLocalToDefaultValue : Cmd
+  PROPERTIES
+    info : Local
+
+  METHODS
+    method init( t, info )
+
+    method init( existing:SetLocalToDefaultValue )
+      prior.init( existing )
+      if (existing.info) info = existing.info.cloned
+
+    method description->String
+      return "SetLocalToDefaultValue($)" (%info)
+
+endClass
+
 class ReadLocal : Cmd
   PROPERTIES
     info : Local
@@ -4676,20 +4692,4 @@ class AttributeNative : Cmd
   METHODS
     method description->String
       return "AttributeNative"
-endClass
-
-class SetLocalToDefaultValue : Cmd
-  PROPERTIES
-    info : Local
-
-  METHODS
-    method init( t, info )
-
-    method init( existing:SetLocalToDefaultValue )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "SetLocalToDefaultValue($)" (%info)
-
 endClass

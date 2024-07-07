@@ -693,6 +693,11 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.new_value)
       return result
 
+    method on_visit_children( cmd:SetLocalToDefaultValue )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      return result
+
     method on_visit_children( cmd:ReadLocal )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.info)
@@ -1177,11 +1182,6 @@ class InspectionVisitor<<$ReturnType>>
     method on_visit_children( cmd:ReadSingleton )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.of_type)
-      return result
-
-    method on_visit_children( cmd:SetLocalToDefaultValue )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
       return result
 
 endClass

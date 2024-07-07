@@ -3396,13 +3396,13 @@ parser
   create PushStackTraceCutoff
   create CreateRange(start,limit,step_size)
   create ReturnOnException
+  create SetLocalToDefaultValue(info:Local)
   create Stepper(operand)
   create Switch(condition,cases:WhichCases,statements:Statements):Conditional
   create TypeContext(type:Type)
   create TypeIndex(of_type:Type)
   create WideningCast(operand,to_type:Type)
 
-  create SetLocalToDefaultValue(info:Local)
   create ResolvedOpAndAssignLocal(info:Local,operand)
   create ResolvedOpAndAssignProperty(info:Property,operand)
   create AddAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
