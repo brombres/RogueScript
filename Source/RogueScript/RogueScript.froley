@@ -3324,16 +3324,24 @@ parser
   create PowerReal(left,right):Power
   create Print(args:Args)
   create Println(args:Args)
+  create ReadGlobalProperty(info:Property)
   create ReadLocal(info:Local)
   create ReadLocalInt(info:Local):ReadLocal
   create ReadLocalObject(info:Local):ReadLocal
   create ReadNativeSingleton(of_type:Type)
+  create ReadObjectProperty(context,info:Property)
+  create ReadProperty(context,info:Property)
   create ReadSingleton(of_type:Type)
+  create ReadThisObjectProperty(info:Property)
+  create ReadThisProperty(info:Property)
   create ReturnResult(result)
   create SubtractInt(left,right):Subtract
   create SubtractReal(left,right):Subtract
+  create WriteGlobalProperty(info:Property,new_value)
   create WriteLocal(info:Local,new_value)
   create WriteLocalInt(info:Local,new_value):WriteLocal
+  create WriteProperty(context,info:Property,new_value)
+  create WriteThisProperty(info:Property,new_value)
 
   create CallDynamicMethod(context,info:Procedure,args:Args):CallProcedure
   create CallGlobalMethod(info:Procedure,args:Args):CallProcedure

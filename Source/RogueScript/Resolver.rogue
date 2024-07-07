@@ -226,8 +226,16 @@ class Resolver : Visitor [singleton]
         case "println": return Println( cmd.t, visit(cmd.args)->(as Args) )
       endWhich
 
-      if local v = find_local( cmd.name )
-        return visit( ReadLocal(cmd.t, v) )
+      if (not cmd.args)
+        if local v = find_local( cmd.name )
+          return visit( ReadLocal(cmd.t, v) )
+        endIf
+
+        if local p = this_type.properties[cmd.name]
+          return visit( ReadThisProperty(cmd.t,p) )
+        elseIf local p = this_type.global_properties[cmd.name]
+          return visit( ReadGlobalProperty(cmd.t,p) )
+        endIf
       endIf
 
       if local type = Program.current_module.find_type( cmd.name )
@@ -407,6 +415,20 @@ class Resolver : Visitor [singleton]
     method on_visit( cmd:ReadLocalInt )->Cmd
       return cmd
 
+    method on_visit( cmd:ReadProperty )->Cmd
+      which (cmd.info.type.variant_type)
+        case Variant.TYPE_OBJECT: return visit( ReadObjectProperty(cmd.t, cmd.context, cmd.info) )
+        others: trace "TODO"
+      endWhich
+      return cmd
+
+    method on_visit( cmd:ReadThisProperty )->Cmd
+      which (cmd.info.type.variant_type)
+        case Variant.TYPE_OBJECT: return visit( ReadThisObjectProperty(cmd.t, cmd.info) )
+        others: trace "TODO"
+      endWhich
+      return cmd
+
     method on_visit( cmd:Return )->Cmd
       if (cmd.result) return visit( ReturnResult(cmd.t,cmd.result) )
       else            return cmd
@@ -432,6 +454,10 @@ class Resolver : Visitor [singleton]
       scope_stack.remove_last
       return cmd
 
+    method on_validate( cmd:WriteGlobalProperty )->Cmd
+      cmd.new_value.require_type
+      return cmd
+
     method on_visit( cmd:WriteLocal )->Cmd
       local new_value = convert_to( visit(cmd.new_value), cmd.info.type )
 
@@ -442,6 +468,14 @@ class Resolver : Visitor [singleton]
           trace cmd.info.type
           throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
       endWhich
+
+    method on_validate( cmd:WriteProperty )->Cmd
+      cmd.new_value.require_type
+      return cmd
+
+    method on_validate( cmd:WriteThisProperty )->Cmd
+      cmd.new_value.require_type
+      return cmd
 
     method resolve_access( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
         &is_constructor, &suppress_error )->Cmd
@@ -495,6 +529,19 @@ class Resolver : Visitor [singleton]
           if local def = type_context.definitions[name]
             return visit( def.cloned )
           endIf
+
+          # PROPERTIES
+          if (context)
+            if local p = type_context.properties[name]
+              return visit( ReadProperty(t,context,p) )
+            endIf
+          endIf
+
+          # GLOBAL PROPERTIES
+          if local p = type_context.global_properties[name]
+            return visit( ReadGlobalProperty(t,p) )
+          endIf
+
         endIf
 
         if (suppress_error) return null
@@ -590,12 +637,20 @@ endClass
 augment
   METHODS
     method Cmd.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
-      throw t.error( "Invalid assignment." )
+      throw this.t.error( "Invalid assignment." )
 
     method Access.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
-      local v = resolver.find_local( name )
-      if (v) return resolver.visit( WriteLocal(t,v,new_value) )
-      throw t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
+      if local v = resolver.find_local( name )
+        return resolver.visit( WriteLocal(t,v,new_value) )
+      endIf
+
+      if local p = resolver.this_type.properties[name]
+        return resolver.visit( WriteThisProperty(t, p, new_value) )
+      elseIf local p = resolver.this_type.global_properties[name]
+        return resolver.visit( WriteGlobalProperty(t, p, new_value) )
+      endIf
+
+      throw this.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
 
     method Cmd.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
       local resolved = resolver.visit( this )

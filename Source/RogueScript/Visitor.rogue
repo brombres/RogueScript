@@ -729,4 +729,34 @@ class Visitor
     method on_visit_children( cmd:GetTypeInfo )
       cmd.of_type = visit(cmd.of_type)->(as Type)
 
+    method on_visit_children( cmd:ReadProperty )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+
+    method on_visit_children( cmd:WriteProperty )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.new_value = visit(cmd.new_value)
+
+    method on_visit_children( cmd:ReadGlobalProperty )
+      cmd.info = visit(cmd.info)->(as Property)
+
+    method on_visit_children( cmd:ReadThisProperty )
+      cmd.info = visit(cmd.info)->(as Property)
+
+    method on_visit_children( cmd:WriteGlobalProperty )
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.new_value = visit(cmd.new_value)
+
+    method on_visit_children( cmd:WriteThisProperty )
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.new_value = visit(cmd.new_value)
+
+    method on_visit_children( cmd:ReadObjectProperty )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+
+    method on_visit_children( cmd:ReadThisObjectProperty )
+      cmd.info = visit(cmd.info)->(as Property)
+
 endClass

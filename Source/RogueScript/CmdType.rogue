@@ -83,14 +83,29 @@ augment
     method PropertyDeclarations.type->Type
       return @type
 
+    method ReadGlobalProperty.type->Type
+      return info.type
+
     method ReadLocal.type->Type
       return info.type
 
     method ReadNativeSingleton.type->Type
       return of_type
 
+    method ReadObjectProperty.type->Type
+      return info.type
+
+    method ReadProperty.type->Type
+      return info.type
+
     method ReadSingleton.type->Type
       return of_type
+
+    method ReadThisObjectProperty.type->Type
+      return info.type
+
+    method ReadThisProperty.type->Type
+      return info.type
 
     method This.type->Type
       return @type

@@ -15,7 +15,7 @@ endClass
 augment
   METHODS
     method Cmd.execute->Variant
-      println this
+      trace this
       throw t.error( "[TODO] $.execute"(type_name) )
 
     method CallGlobalMethod.execute->Variant
@@ -142,6 +142,13 @@ augment
     method ReadNativeSingleton.execute->Variant
       return fn_get_singleton()
 
+    method ReadObjectProperty.execute->Variant
+      if local obj = this.context.execute.object->(as RogueScript::Object)
+        return obj.properties[info.name]
+      else
+        throw t.error( "Null context reading property '$'."(info.name) )
+      endIf
+
     method ReadSingleton.execute->Variant
       if (of_type.singleton_value) return of_type.singleton_value
       local instance = Object( of_type )
@@ -149,6 +156,13 @@ augment
       if (of_type.m_init_object) VM.call_method( instance, of_type.m_init_object )
       if (of_type.m_init)        VM.call_method( instance, of_type.m_init )
       return instance
+
+    method ReadThisObjectProperty.execute->Variant
+      if local obj = VM.context.object->(as RogueScript::Object)
+        return obj.properties[info.name]
+      else
+        throw t.error( "Null context reading property '$'."(info.name) )
+      endIf
 
     method Statements.execute->Variant
       local result = undefined
@@ -174,4 +188,17 @@ augment
       VM.stack[ VM.fp+info.index ] = new_value
       return new_value
 
+    method WriteProperty.execute->Variant
+      if local obj = this.context.execute.object->(as RogueScript::Object)
+        obj.properties[info.name] = new_value.execute
+      else
+        throw t.error( "Null context assigning property '$'."(info.name) )
+      endIf
+
+    method WriteThisProperty.execute->Variant
+      if local obj = VM.context.object->(as Object)
+        obj.properties[info.name] = new_value.execute
+      else
+        throw t.error( "Null context assigning property '$'."(info.name) )
+      endIf
 endAugment

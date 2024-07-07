@@ -1157,4 +1157,56 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.of_type)
       return result
 
+    method on_visit_children( cmd:ReadProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      return result
+
+    method on_visit_children( cmd:WriteProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.new_value)
+      return result
+
+    method on_visit_children( cmd:ReadGlobalProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      return result
+
+    method on_visit_children( cmd:ReadThisProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      return result
+
+    method on_visit_children( cmd:WriteGlobalProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.new_value)
+      return result
+
+    method on_visit_children( cmd:WriteThisProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.new_value)
+      return result
+
+    method on_visit_children( cmd:ReadObjectProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      return result
+
+    method on_visit_children( cmd:ReadThisObjectProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
+      return result
+
 endClass

@@ -5,6 +5,7 @@ class Alpha
   METHODS
     method init
       a = 5
+      println a
 endClass
 
 println Alpha().a

@@ -2,7 +2,8 @@ module RogueScript
 
 class Object
   PROPERTIES
-    type : Type
+    type       : Type
+    properties = [String:Variant]
 
   METHODS
     method init( type )
