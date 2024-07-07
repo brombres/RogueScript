@@ -3312,6 +3312,11 @@ parser
   create Else(statements:Statements)
   create ForEachElementInRangeUpToInt(element_info:Local,start,limit,statements:Statements):ControlStructure
   #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
+  create GetGlobalProperty(info:Property)
+  create GetLocal(info:Local)
+  create GetProperty(context,info:Property)
+  create GetThisProperty(info:Property)
+  create GetSingleton(type:Type)
   create IntToReal(operand):Unary
   create LogicalBinary(left,right):Binary
   create LogicalUnary(operand):Unary
@@ -3330,8 +3335,6 @@ parser
   create ReadNativeSingleton(of_type:Type)
   create ReadSingleton(of_type:Type)
   create ReturnResult(result)
-  create SetGlobalProperty(info:Property,new_value)
-  create SetProperty(context,info:Property,new_value)
   create SubtractInt(left,right):Subtract
   create SubtractReal(left,right):Subtract
   create WriteLocal(info:Local,new_value)
@@ -3382,11 +3385,6 @@ parser
   create InlineAssignment(info:Local,value)
   create IntrospectionGetObjectProperty(info:Property,context)
   create Iterator(control,condition,statements:Statements,upkeep):Conditional
-  create GetGlobalProperty(info:Property)
-  create GetLocal(info:Local)
-  create GetProperty(context,info:Property)
-  create GetThisProperty(info:Property)
-  create GetSingleton(type:Type)
   create Literal
   create LiteralPrimitive:Literal
   create LiteralNullOptional(optional_type:Type):Literal
@@ -3398,9 +3396,6 @@ parser
   create PushStackTraceCutoff
   create CreateRange(start,limit,step_size)
   create ReturnOnException
-  create SetLocal(info:Local,new_value)
-  create SetSingleton(of_type:Type,new_value)
-  create SetThisProperty(info:Property,new_value)
   create Stepper(operand)
   create Switch(condition,cases:WhichCases,statements:Statements):Conditional
   create TypeContext(type:Type)

@@ -521,43 +521,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.operand)
       return result
 
-    method on_visit_children( cmd:SetGlobalProperty )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
-      if (result?) return result
-      result = visit(cmd.new_value)
-      return result
-
-    method on_visit_children( cmd:SetLocal )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
-      if (result?) return result
-      result = visit(cmd.new_value)
-      return result
-
-    method on_visit_children( cmd:SetProperty )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.context)
-      if (result?) return result
-      result = visit(cmd.info)
-      if (result?) return result
-      result = visit(cmd.new_value)
-      return result
-
-    method on_visit_children( cmd:SetSingleton )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.of_type)
-      if (result?) return result
-      result = visit(cmd.new_value)
-      return result
-
-    method on_visit_children( cmd:SetThisProperty )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
-      if (result?) return result
-      result = visit(cmd.new_value)
-      return result
-
     method on_visit_children( cmd:StateDef )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.methods)
@@ -728,11 +691,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.info)
       if (result?) return result
       result = visit(cmd.new_value)
-      return result
-
-    method on_visit_children( cmd:SetLocalToDefaultValue )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
       return result
 
     method on_visit_children( cmd:ReadLocal )->$ReturnType
@@ -1219,6 +1177,11 @@ class InspectionVisitor<<$ReturnType>>
     method on_visit_children( cmd:ReadSingleton )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:SetLocalToDefaultValue )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.info)
       return result
 
 endClass

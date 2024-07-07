@@ -2525,98 +2525,6 @@ class ReturnOnException : Cmd
       return "ReturnOnException"
 endClass
 
-class SetGlobalProperty : Cmd
-  PROPERTIES
-    info      : Property
-    new_value : Cmd
-
-  METHODS
-    method init( t, info, new_value )
-
-    method init( existing:SetGlobalProperty )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-      if (existing.new_value) new_value = existing.new_value.cloned
-
-    method description->String
-      return "SetGlobalProperty($,$)" (%info,%new_value)
-
-endClass
-
-class SetLocal : Cmd
-  PROPERTIES
-    info      : Local
-    new_value : Cmd
-
-  METHODS
-    method init( t, info, new_value )
-
-    method init( existing:SetLocal )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-      if (existing.new_value) new_value = existing.new_value.cloned
-
-    method description->String
-      return "SetLocal($,$)" (%info,%new_value)
-
-endClass
-
-class SetProperty : Cmd
-  PROPERTIES
-    context   : Cmd
-    info      : Property
-    new_value : Cmd
-
-  METHODS
-    method init( t, context, info, new_value )
-
-    method init( existing:SetProperty )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-      if (existing.info) info = existing.info.cloned
-      if (existing.new_value) new_value = existing.new_value.cloned
-
-    method description->String
-      return "SetProperty($,$,$)" (%context,%info,%new_value)
-
-endClass
-
-class SetSingleton : Cmd
-  PROPERTIES
-    of_type   : Type
-    new_value : Cmd
-
-  METHODS
-    method init( t, of_type, new_value )
-
-    method init( existing:SetSingleton )
-      prior.init( existing )
-      if (existing.of_type) of_type = existing.of_type.cloned
-      if (existing.new_value) new_value = existing.new_value.cloned
-
-    method description->String
-      return "SetSingleton($,$)" (%of_type,%new_value)
-
-endClass
-
-class SetThisProperty : Cmd
-  PROPERTIES
-    info      : Property
-    new_value : Cmd
-
-  METHODS
-    method init( t, info, new_value )
-
-    method init( existing:SetThisProperty )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-      if (existing.new_value) new_value = existing.new_value.cloned
-
-    method description->String
-      return "SetThisProperty($,$)" (%info,%new_value)
-
-endClass
-
 class StateDef : Cmd
   PROPERTIES
     name    : String
@@ -3401,22 +3309,6 @@ class WriteLocal : Cmd
 
     method description->String
       return "WriteLocal($,$)" (%info,%new_value)
-
-endClass
-
-class SetLocalToDefaultValue : Cmd
-  PROPERTIES
-    info : Local
-
-  METHODS
-    method init( t, info )
-
-    method init( existing:SetLocalToDefaultValue )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "SetLocalToDefaultValue($)" (%info)
 
 endClass
 
@@ -4784,4 +4676,20 @@ class AttributeNative : Cmd
   METHODS
     method description->String
       return "AttributeNative"
+endClass
+
+class SetLocalToDefaultValue : Cmd
+  PROPERTIES
+    info : Local
+
+  METHODS
+    method init( t, info )
+
+    method init( existing:SetLocalToDefaultValue )
+      prior.init( existing )
+      if (existing.info) info = existing.info.cloned
+
+    method description->String
+      return "SetLocalToDefaultValue($)" (%info)
+
 endClass

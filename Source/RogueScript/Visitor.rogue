@@ -357,27 +357,6 @@ class Visitor
       cmd.info = visit(cmd.info)->(as Property)
       cmd.operand = visit(cmd.operand)
 
-    method on_visit_children( cmd:SetGlobalProperty )
-      cmd.info = visit(cmd.info)->(as Property)
-      cmd.new_value = visit(cmd.new_value)
-
-    method on_visit_children( cmd:SetLocal )
-      cmd.info = visit(cmd.info)->(as Local)
-      cmd.new_value = visit(cmd.new_value)
-
-    method on_visit_children( cmd:SetProperty )
-      cmd.context = visit(cmd.context)
-      cmd.info = visit(cmd.info)->(as Property)
-      cmd.new_value = visit(cmd.new_value)
-
-    method on_visit_children( cmd:SetSingleton )
-      cmd.of_type = visit(cmd.of_type)->(as Type)
-      cmd.new_value = visit(cmd.new_value)
-
-    method on_visit_children( cmd:SetThisProperty )
-      cmd.info = visit(cmd.info)->(as Property)
-      cmd.new_value = visit(cmd.new_value)
-
     method on_visit_children( cmd:StateDef )
       cmd.methods = visit(cmd.methods)->(as Methods)
 
@@ -486,9 +465,6 @@ class Visitor
     method on_visit_children( cmd:WriteLocal )
       cmd.info = visit(cmd.info)->(as Local)
       cmd.new_value = visit(cmd.new_value)
-
-    method on_visit_children( cmd:SetLocalToDefaultValue )
-      cmd.info = visit(cmd.info)->(as Local)
 
     method on_visit_children( cmd:ReadLocal )
       cmd.info = visit(cmd.info)->(as Local)
@@ -765,5 +741,8 @@ class Visitor
 
     method on_visit_children( cmd:ReadSingleton )
       cmd.of_type = visit(cmd.of_type)->(as Type)
+
+    method on_visit_children( cmd:SetLocalToDefaultValue )
+      cmd.info = visit(cmd.info)->(as Local)
 
 endClass
