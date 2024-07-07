@@ -18,7 +18,26 @@ class VM [singleton]
 
     resolve_filepath = (filepath) => filepath : Function(String)->String
 
-  METHODS # Runtime
+  METHODS # External runtime API
+    method compile( script:String )->(Function->Variant)
+      launch
+
+      temporarily VM=this, Program=program
+        local statements = Parser( "[EXECUTE]", script ).parse( Parser.ip_multi_line_statements )->(as Statements)
+        local m_execute = GlobalMethod( statements.t, "execute", &statements=statements )
+        m_execute.type_context = Program.default_module.type( Program.default_module.t, "Routine" )
+        Resolver.resolve( m_execute )
+        return function()->Variant with (vm=this)
+          temporarily VM=vm, Program=program
+            return program.execute( m_execute )
+          endTemporarily
+        endFunction
+      endTemporarily
+
+    method execute( script:String )->Variant
+      return compile(script)()
+
+  METHODS # Internal runtime API
     method context->Variant
       return stack[fp]
 
@@ -53,18 +72,6 @@ class VM [singleton]
 
     method deregister_type( scoped_name:String )
       if (native_types.remove(scoped_name)) .begin_staging
-
-    method execute( script:String )->Variant
-      local error = launch
-      if (error) throw error
-
-      temporarily VM=this, Program=program
-        local statements = Parser( "[EXECUTE]", script ).parse( Parser.ip_multi_line_statements )->(as Statements)
-        local m_execute = GlobalMethod( statements.t, "execute", &statements=statements )
-        m_execute.type_context = Program.default_module.type( Program.default_module.t, "Routine" )
-        Resolver.resolve( m_execute )
-        return Program.execute( m_execute )
-      endTemporarily
 
     method include( file:File, &suppress_error )->Logical
       # Loads file if not already loaded.
