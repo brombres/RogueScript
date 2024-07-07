@@ -3312,11 +3312,6 @@ parser
   create Else(statements:Statements)
   create ForEachElementInRangeUpToInt(element_info:Local,start,limit,statements:Statements):ControlStructure
   #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
-  create GetGlobalProperty(info:Property)
-  create GetLocal(info:Local)
-  create GetProperty(context,info:Property)
-  create GetThisProperty(info:Property)
-  create GetSingleton(type:Type)
   create IntToReal(operand):Unary
   create LogicalBinary(left,right):Binary
   create LogicalUnary(operand):Unary

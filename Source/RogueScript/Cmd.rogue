@@ -1394,104 +1394,6 @@ class GenericFunctionDefinition : Cmd
 
 endClass
 
-class GetGlobalProperty : Cmd
-  PROPERTIES
-    info : Property
-
-  METHODS
-    method init( t, info )
-
-    method init( existing:GetGlobalProperty )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "GetGlobalProperty($)" (%info)
-
-endClass
-
-class GetLocal : Cmd
-  PROPERTIES
-    info : Local
-
-  METHODS
-    method init( t, info )
-
-    method init( existing:GetLocal )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "GetLocal($)" (%info)
-
-endClass
-
-class GetProperty : Cmd
-  PROPERTIES
-    context : Cmd
-    info    : Property
-
-  METHODS
-    method init( t, context, info )
-
-    method init( existing:GetProperty )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "GetProperty($,$)" (%context,%info)
-
-endClass
-
-class GetSingleton : Cmd
-  PROPERTIES
-    type : Type
-
-  METHODS
-    method init( t, type )
-
-    method init( existing:GetSingleton )
-      prior.init( existing )
-      if (existing.type) type = existing.type.cloned
-
-    method description->String
-      return "GetSingleton($)" (%type)
-
-endClass
-
-class GetThisProperty : Cmd
-  PROPERTIES
-    info : Property
-
-  METHODS
-    method init( t, info )
-
-    method init( existing:GetThisProperty )
-      prior.init( existing )
-      if (existing.info) info = existing.info.cloned
-
-    method description->String
-      return "GetThisProperty($)" (%info)
-
-endClass
-
-class GetTypeInfo : Cmd
-  PROPERTIES
-    of_type : Type
-
-  METHODS
-    method init( t, of_type )
-
-    method init( existing:GetTypeInfo )
-      prior.init( existing )
-      if (existing.of_type) of_type = existing.of_type.cloned
-
-    method description->String
-      return "GetTypeInfo($)" (%of_type)
-
-endClass
-
 class GlobalPropertyDeclarations : Cmd
   PROPERTIES
     list : Cmd
@@ -4692,4 +4594,20 @@ class AttributeNative : Cmd
   METHODS
     method description->String
       return "AttributeNative"
+endClass
+
+class GetTypeInfo : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:GetTypeInfo )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "GetTypeInfo($)" (%of_type)
+
 endClass

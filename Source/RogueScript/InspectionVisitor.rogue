@@ -267,38 +267,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.statements)
       return result
 
-    method on_visit_children( cmd:GetGlobalProperty )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
-      return result
-
-    method on_visit_children( cmd:GetLocal )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
-      return result
-
-    method on_visit_children( cmd:GetProperty )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.context)
-      if (result?) return result
-      result = visit(cmd.info)
-      return result
-
-    method on_visit_children( cmd:GetSingleton )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.type)
-      return result
-
-    method on_visit_children( cmd:GetThisProperty )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.info)
-      return result
-
-    method on_visit_children( cmd:GetTypeInfo )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.of_type)
-      return result
-
     method on_visit_children( cmd:IfConditionalContext )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.conditional_context)
@@ -1180,6 +1148,11 @@ class InspectionVisitor<<$ReturnType>>
       return result
 
     method on_visit_children( cmd:ReadSingleton )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:GetTypeInfo )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.of_type)
       return result
