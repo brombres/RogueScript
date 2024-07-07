@@ -28,7 +28,7 @@ class Module
       use_module( t, "Rogue" )
 
     method define_type( def:Class )->Type
-      return define_type( def.t, def.name->String, def.attributes.cloned ).[ definition=def ]
+      return define_type( def.t, def.name->String, def.attributes.cloned ).[ t=t, definition=def ]
 
     method define_type( t:Token, type_name:String, attributes:Attributes )->Type
       local type = types[type_name]
@@ -88,7 +88,7 @@ class Module
           m_on_launch.statements.add( forEach in global_statements )
         else
           m_on_launch = GlobalMethod( t, "on_launch", &statements=global_statements )
-          type( t, "Routine" ).add( m_on_launch )
+          type( t, "Routine" ).add_global_method( m_on_launch )
         endIf
         global_statements = null
       endIf

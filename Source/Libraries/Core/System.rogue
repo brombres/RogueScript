@@ -1,0 +1,4 @@
+class System [singleton]
+  METHODS
+    method time_ms->Int64 [native]
+endClass

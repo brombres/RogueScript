@@ -25,9 +25,15 @@ class Type : Cmd
     methods                = [String:Method]
     methods_by_name        = [String:Method[]]
     definitions            = [String:Cmd]
+    global_properties      = [String:Property]
+    properties             = [String:Property]
 
     visiting  : Logical
     resolved  : Logical
+
+    singleton_value : Variant
+    m_init_object   : Procedure
+    m_init          : Procedure
 
   METHODS
     method init( t, name )
@@ -49,11 +55,20 @@ class Type : Cmd
       batch_id = Parser.current_batch_id
 
     method add( m:GlobalMethod )
+      println StackTrace()
+      add_global_method( m )
+
+    method add( m:Method )
+      println StackTrace()
+      add_method( m )
+
+    method add_global_method( m:GlobalMethod )
       if (not m.type_context) m.type_context = this
       m.organize
 
       block existing_m = global_methods[ m.signature ]
-        if (existing_m and existing_m.type_context is m.type_context)
+        if (existing_m and existing_m.type_context is m.type_context and not existing_m.attributes.is_native)
+          if (m.attributes.is_native) return
           local m_type = which{ name=="Routine":"routine " || "global method $."(this) }
           throw m.t.error( "A $$ already exists."(m_type,m.signature) )
         endIf
@@ -79,7 +94,7 @@ class Type : Cmd
       endIf
       global_methods_by_name[m.name].add( m )
 
-    method add( m:Method )
+    method add_method( m:Method )
       if (not m.type_context) m.type_context = this
       m.organize
 
@@ -90,7 +105,8 @@ class Type : Cmd
       endBlock
 
       block existing_m = methods[ m.signature ]
-        if (existing_m and existing_m.type_context is m.type_context)
+        if (existing_m and existing_m.type_context is m.type_context and not existing_m.attributes.is_native)
+          if (m.attributes.is_native) return
           throw m.t.error( "A method $.$ already exists."(this,m.signature) )
         endIf
       endBlock
@@ -108,6 +124,20 @@ class Type : Cmd
         methods_by_name[m.name] = Method[]
       endIf
       methods_by_name[m.name].add( m )
+
+    method add_global_property( p:Property )
+      p.type_context = this
+      if (properties.contains(p.name))
+        throw p.t.error( "A property named '$' already exists."(p.name) )
+      endIf
+      properties[p.name] = p
+
+    method add_property( p:Property )
+      p.type_context = this
+      if (properties.contains(p.name))
+        throw p.t.error( "A property named '$' already exists."(p.name) )
+      endIf
+      properties[p.name] = p
 
     method collect_base_types
       if (not definition) return
@@ -135,6 +165,65 @@ class Type : Cmd
     method description->String
       return name
 
+    method inherit_properties
+      if (visiting) return
+      visiting = true
+
+      if (base_class) inherit_properties( base_class )
+      if (aspects)
+        forEach (a in aspects)
+          inherit_properties( a )
+        endForEach
+      endIf
+
+    method inherit_properties( of_type:Type )
+      of_type.inherit_properties
+
+      forEach (base_p in of_type.global_properties)
+        local this_p = global_properties[base_p.name]
+        if (this_p)
+          throw this_p.t.error( "Global property '$' already exists in a base type and cannot be redefined." (base_p.name) )
+        else
+          global_properties[base_p.name] = base_p
+        endIf
+      endForEach
+
+      forEach (base_p in of_type.properties)
+        local this_p = properties[base_p.name]
+        if (this_p)
+          if (this_p.type)
+            if (this_p.type is not base_p.type)
+              throw this_p.t.error( "Inherited property '$' redefined with different type."(base_p.name) )
+            endIf
+          else
+            this_p.type = base_p.type
+          endIf
+        else
+          properties[base_p.name] = base_p
+        endIf
+      endForEach
+
+    method inherit_methods
+      if (base_class) inherit_methods( base_class )
+      if (aspects)
+        forEach (a in aspects)
+          inherit_methods( a )
+        endForEach
+      endIf
+
+    method inherit_methods( of_type:Type )
+      of_type.inherit_methods
+
+    method instance_of( ancestor_type:Type )->Logical
+      if (this is ancestor_type) return true
+      if (base_class and base_class.instance_of(ancestor_type)) return true
+      if (aspects)
+        forEach (a in aspects)
+          if (a.instance_of(ancestor_type)) return true
+        endForEach
+      endIf
+      return false
+
     method resolve
       if (resolved) return
       resolved = true
@@ -147,6 +236,39 @@ class Type : Cmd
 
     method to->String
       return name
+
+    method validate_properties
+      forEach (p in global_properties)
+        if (not p.type)
+          if (p.initial_value)
+            p.type = p.initial_value.type
+            if (not p.type)
+              throw p.t.error( "Unable to implicitly determine type of global property '$' from initial value."...
+                " Add ': TypeName' to explicitly declare type." (p.name) )
+            endIf
+          else
+            throw p.t.error(
+              "Cannot determine type of global property '$' - add '= initial_value' or ': TypeName'."(p.name)
+            )
+          endIf
+        endIf
+      endForEach
+
+      forEach (p in properties)
+        if (not p.type)
+          if (p.initial_value)
+            p.type = p.initial_value.type
+            if (not p.type)
+              throw p.t.error( "Unable to implicitly determine type of property '$' from initial value."...
+                " Add ': TypeName' to explicitly declare type." (p.name) )
+            endIf
+          else
+            throw p.t.error(
+              "Cannot determine type of property '$' - add '= initial_value' or ': TypeName'."(p.name)
+            )
+          endIf
+        endIf
+      endForEach
 
     method validate_type_hierarchy
       validate_type_hierarchy( this )

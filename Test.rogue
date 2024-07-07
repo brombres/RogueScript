@@ -1,1 +1,10 @@
-println "Hello"
+class Alpha
+  PROPERTIES
+    a : Int
+
+  METHODS
+    method init
+      a = 5
+endClass
+
+println Alpha().a

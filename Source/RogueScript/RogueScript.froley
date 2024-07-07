@@ -700,8 +700,6 @@ parser
     consume("class")
     identifier
     class
-    #FIXME call on_parsed_class  # Pass 1: stores class template tokens. Pass 2: does nothing.
-
     return
   endIf
 
@@ -778,8 +776,6 @@ parser
     consume "subclass"
     class_sections
     mustConsume "endSubclass"
-    #FIXME call on_parsed_subclass  # Pass 1: stores class template tokens & replaces access with generated type name.
-                             # Pass 2: does nothing.
   endIf
 
 - procedure_attributes
@@ -798,11 +794,12 @@ parser
   on @"append"     -> AttributeAppend
   on @"essential"  -> AttributeEssential
   on @"insert"     -> AttributeInsert
+  on  "native"     -> AttributeNative
   on @"override"   -> AttributeOverride
   on @"preferred"  -> AttributePreferred
   on @"propagated" -> AttributePropagated
   on @"replace"    -> AttributeReplace
-  syntaxError "Illegal procedure attribute. Expected one or more of [abstract append essential insert override preferred propagated replace]."
+  syntaxError "Illegal procedure attribute. Expected one or more of [abstract append essential insert native override preferred propagated replace]."
 
 - procedure_body
   multi_line_statements
@@ -1291,7 +1288,7 @@ parser
     elseOnOthers
       createNull
     endOn
-    #FIXME call parse_doc_comment
+    call parse_doc_comment
     produce Category(name:String,args:Args,value,doc:String)
   endOn
   identifier  # syntax error
@@ -1664,11 +1661,11 @@ parser
       consume_eols
       property_declaration
     endWhile
-  createList
+  createList PropertyList
   optional_type
   global_property_attributes
-  #FIXME call parse_doc_comment
-  produce GlobalPropertyDeclarations( list, type:Type, attributes:Attributes, doc:String )
+  call parse_doc_comment
+  produce GlobalPropertyDeclarations( list:PropertyList, type:Type, attributes:Attributes, doc:String )
 
 - properties
   beginList
@@ -1678,11 +1675,11 @@ parser
       consume_eols
       property_declaration
     endWhile
-  createList
+  createList PropertyList
   optional_type
   property_attributes
-  #FIXME call parse_doc_comment
-  produce PropertyDeclarations( list, type:Type, attributes:Attributes, doc:String )
+  call parse_doc_comment
+  produce PropertyDeclarations( list:PropertyList, type:Type, attributes:Attributes, doc:String )
 
 - property_declaration
   on IDENTIFIER
@@ -3331,7 +3328,10 @@ parser
   create ReadLocalInt(info:Local):ReadLocal
   create ReadLocalObject(info:Local):ReadLocal
   create ReadNativeSingleton(of_type:Type)
+  create ReadSingleton(of_type:Type)
   create ReturnResult(result)
+  create SetGlobalProperty(info:Property,new_value)
+  create SetProperty(context,info:Property,new_value)
   create SubtractInt(left,right):Subtract
   create SubtractReal(left,right):Subtract
   create WriteLocal(info:Local,new_value)
@@ -3398,9 +3398,7 @@ parser
   create PushStackTraceCutoff
   create CreateRange(start,limit,step_size)
   create ReturnOnException
-  create SetGlobalProperty(info:Property,new_value)
   create SetLocal(info:Local,new_value)
-  create SetProperty(context,info:Property,new_value)
   create SetSingleton(of_type:Type,new_value)
   create SetThisProperty(info:Property,new_value)
   create Stepper(operand)

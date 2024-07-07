@@ -15,13 +15,21 @@ augment
       type_context.definitions[name] = value
 
     method GlobalMethod.store( type_context:Type )
-      type_context.add( this )
+      type_context.add_global_method( this )
 
     method Include.store
       noAction
 
     method Method.store( type_context:Type )
-      type_context.add( this )
+      type_context.add_method( this )
+
+    method PropertyDeclarations.store( type_context:Type )
+      localize type
+      forEach (p in list)
+        if (not p.type) p.type = type
+        p.attributes = attributes.cloned
+        type_context.add_property( p )
+      endForEach
 
     method SetModuleContext.store
       Program.current_module = Program.modules[name]
@@ -29,7 +37,7 @@ augment
     method RoutineDef.store
       local type_Routine = Program.current_module.type( t, "Routine" )
       local m = GlobalMethod( t, name, parameters, return_type, attributes, null, &=statements )
-      type_Routine.add( m )
+      type_Routine.add_global_method( m )
 
     method Statements.store
       local mod = Program.current_module
@@ -41,7 +49,7 @@ augment
 
     method ToTypeMethod.store( type_context:Type )
       local m = Method( t, "to_"+to_type, parameters, to_type, statements )
-      type_context.add( m )
+      type_context.add_method( m )
 
     method Uses.store
       Program.current_module.use_module( t, id_filepath.replacing("/","::") )

@@ -50,7 +50,7 @@ augment
       return callback()
 
     method CreateDefaultObject.execute->Variant
-      return Object( of_type )
+      return VM.create_object( of_type )
 
     method CreateDefaultString.execute->Variant
       return String()
@@ -65,6 +65,11 @@ augment
       local result : Variant
       result.type = of_type.variant_type
       return result
+
+    method CreateObject.execute->Variant
+      local obj = VM.create_object( of_type, &no_init )
+      VM.call_method( obj, m_init, args )
+      return obj
 
     method Else.execute->Variant
       return statements.execute
@@ -136,6 +141,14 @@ augment
 
     method ReadNativeSingleton.execute->Variant
       return fn_get_singleton()
+
+    method ReadSingleton.execute->Variant
+      if (of_type.singleton_value) return of_type.singleton_value
+      local instance = Object( of_type )
+      of_type.singleton_value = instance
+      if (of_type.m_init_object) VM.call_method( instance, of_type.m_init_object )
+      if (of_type.m_init)        VM.call_method( instance, of_type.m_init )
+      return instance
 
     method Statements.execute->Variant
       local result = undefined

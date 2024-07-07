@@ -2436,6 +2436,8 @@ class Property : Cmd
     name          : String
     initial_value : Cmd
     type          : Type
+    attributes    : Attributes
+    type_context  : Type
 
   METHODS
     method init( t, name, initial_value, type )
@@ -2445,15 +2447,17 @@ class Property : Cmd
       name = existing.name
       if (existing.initial_value) initial_value = existing.initial_value.cloned
       if (existing.type) type = existing.type.cloned
+      if (existing.attributes) attributes = existing.attributes.cloned
+      type_context = existing.type_context
 
     method description->String
-      return "Property($,$,$)" (%name,%initial_value,%type)
+      return "Property($,$,$,$)" (%name,%initial_value,%type,%attributes)
 
 endClass
 
 class PropertyDeclarations : Cmd
   PROPERTIES
-    list : Cmd
+    list         : PropertyList
     type         : Type
     attributes   : Attributes
     doc          : String
@@ -3871,7 +3875,6 @@ class Class : Cmd
 
   METHODS
     method init( t, name, constructor_properties, base_types, attributes, doc, members )
-      #module_context = Program.current_module
 
     method init( existing:Class )
       prior.init( existing )
@@ -4750,4 +4753,35 @@ class AttributeNoInclude : Cmd
   METHODS
     method description->String
       return "AttributeNoInclude"
+endClass
+
+class PropertyList : CmdList
+  METHODS
+    method description->String
+      return "PropertyList" + list_description
+
+    method get( index:Int )->Property
+      return @list[index]->(as Property)
+endClass
+
+class ReadSingleton : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:ReadSingleton )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "ReadSingleton($)" (%of_type)
+
+endClass
+
+class AttributeNative : Cmd
+  METHODS
+    method description->String
+      return "AttributeNative"
 endClass

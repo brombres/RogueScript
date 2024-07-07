@@ -18,5 +18,6 @@ $include RogueScript/Procedure
 $include RogueScript/Program
 $include RogueScript/Resolver
 $include RogueScript/Scanner
+$include RogueScript/ScopeStack
 $include RogueScript/Type
 $include RogueScript/VM

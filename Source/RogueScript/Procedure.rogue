@@ -33,6 +33,9 @@ class Procedure : ControlStructure
       cmd_call = existing.cmd_call
       doc = existing.doc
 
+    method description->String
+      return signature
+
     method organize
       if (parameters)
         max_args = parameters.count
@@ -56,7 +59,6 @@ class Procedure : ControlStructure
       endIf
 
       return_type = type_context.module_context.validate_type( return_type )
-
 
     method signature->String
       if (_signature) return _signature

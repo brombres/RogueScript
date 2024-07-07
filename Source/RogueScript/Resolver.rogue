@@ -133,15 +133,12 @@ endAugment
 
 class Resolver : Visitor [singleton]
   PROPERTIES
-    scope_stack : ControlStructure[]
+    scope_stack = ScopeStack()
 
   METHODS
     method resolve_program
-      use new_scope_stack_frame = WorkList<<ControlStructure>>
-        temporarily scope_stack = new_scope_stack_frame
-          visit_program( Program )
-        endTemporarily
-      endUse
+      scope_stack.clear_stack
+      visit_program( Program )
 
     method visit_module( mod:Module ) [override]
       temporarily Program.current_module = mod
@@ -149,21 +146,20 @@ class Resolver : Visitor [singleton]
       endTemporarily
 
     method resolve_type( type:Type )
-      use new_scope_stack_frame = WorkList<<ControlStructure>>
-        temporarily scope_stack = new_scope_stack_frame
-          temporarily Program.current_module = type.module_context
-            visit_type( type )
-          endTemporarily
+      use scope_stack
+        temporarily Program.current_module = type.module_context
+          visit_type( type )
+
+          type.m_init_object = type.methods["init_object()"]
+          type.m_init        = type.methods["init()"]
         endTemporarily
       endUse
 
     method resolve( procedure:Procedure )
-      use new_scope_stack_frame = WorkList<<ControlStructure>>
-        temporarily scope_stack = new_scope_stack_frame
-          local type_context = procedure.type_context
-          temporarily Program.current_module=type_context.module_context, this_type=type_context
-            visit( procedure )
-          endTemporarily
+      use scope_stack
+        local type_context = procedure.type_context
+        temporarily Program.current_module=type_context.module_context, this_type=type_context
+          visit( procedure )
         endTemporarily
       endUse
 
@@ -239,14 +235,13 @@ class Resolver : Visitor [singleton]
           return visit( Construct(cmd.t,type,cmd.args) )
 
         elseIf (type.attributes.is_singleton)
-          if (type.attributes.is_native_type)
+          if (type.attributes.is_native)
             if (not type.native_get_singleton)
               throw cmd.t.error( "$ is a write-only singleton."(type.scoped_name) )
             endIf
             return visit( ReadNativeSingleton(cmd.t,type) )
           else
-            trace
-            throw cmd.t.error( "TODO: RogueScript Singleton" )
+            return visit( ReadSingleton(cmd.t,type) )
           endIf
         else
           return TypeContext( cmd.t, type )
@@ -481,7 +476,7 @@ class Resolver : Visitor [singleton]
         local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor, &suppress_error )
 
         if (m)
-          resolve_args( t, m, args )
+          args = resolve_args( t, m, args )
           if (is_constructor)
             if (m.attributes.is_global)
               return visit( CallGlobalMethod(t, m, args) )
@@ -508,13 +503,14 @@ class Resolver : Visitor [singleton]
         select_call_candidate( t, type_context, context, name, args, &=is_constructor )
       endUse
 
-    method resolve_args( t:Token, m:Procedure, args:Args )
+    method resolve_args( t:Token, m:Procedure, args:Args )->Args
       ensure<<args>>( t )
       while (args.count < m.max_args)
         local default_arg = m.parameters[args.count].initial_value
         assert default_arg
         args.add( visit(default_arg.cloned) )
       endWhile
+      return args
 
     method select_call_candidate( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
         &is_constructor, &suppress_error )->Procedure

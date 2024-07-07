@@ -7,7 +7,17 @@ class Organizer : Visitor [singleton]
     method organize_program
       (forEach in Program.types).collect_base_types
       (forEach in Program.types).validate_type_hierarchy
+
       visit_program( Program )
+
+      (forEach in Program.types).inherit_properties
+      (forEach in Program.types).visiting = false
+
+      (forEach in Program.types).inherit_methods
+      (forEach in Program.types).visiting = false
+
+      (forEach in Program.types).validate_properties
+
 
     method organize( procedure:Procedure )
       local type_context = procedure.type_context

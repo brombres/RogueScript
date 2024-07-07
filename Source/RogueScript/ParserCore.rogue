@@ -866,6 +866,13 @@ class ParserCore [abstract]
           return 0
         endTemporarily
       endIf
+      if (_next_t.type == TokenType.KEYWORD_NATIVE)
+        temporarily _cur_t = _on_t
+          if (not disable_output) _push( AttributeNative(_cur_t), 0 )
+          _cur_t = _previous_cur_t
+          return 0
+        endTemporarily
+      endIf
       if (_next_t.content and _next_t.content == "override")
         temporarily _cur_t = _on_t
           if (not disable_output) _push( AttributeOverride(_cur_t), 0 )
@@ -894,7 +901,7 @@ class ParserCore [abstract]
           return 0
         endTemporarily
       endIf
-      _throw_syntax_error("Illegal procedure attribute. Expected one or more of [abstract append essential insert override preferred propagated replace].")
+      _throw_syntax_error("Illegal procedure attribute. Expected one or more of [abstract append essential insert native override preferred propagated replace].")
       _cur_t = _previous_cur_t
       return 0
 
@@ -1899,6 +1906,8 @@ class ParserCore [abstract]
           else
             if (not disable_output) _push( null, 0 )
           endIf
+          parse_doc_comment
+
           if (not disable_output) _push( Category(_cur_t,_string_arg(-4),_node_arg(-3)->(as Args),_node_arg(-2),_string_arg(-1)), 4 )
           _cur_t = _previous_cur_t
           return 0
@@ -2423,10 +2432,12 @@ class ParserCore [abstract]
         r_property_declaration
       endWhile
       if (disable_output)     _discard_list
-      else                    _push_list( CmdList(_list_t) )
+      else                    _push_list( PropertyList(_list_t) )
       r_optional_type
       r_global_property_attributes
-      if (not disable_output) _push( GlobalPropertyDeclarations(_cur_t,_node_arg(-4),_node_arg(-3)->(as Type),_node_arg(-2)->(as Attributes),_string_arg(-1)), 4 )
+      parse_doc_comment
+
+      if (not disable_output) _push( GlobalPropertyDeclarations(_cur_t,_node_arg(-4)->(as PropertyList),_node_arg(-3)->(as Type),_node_arg(-2)->(as Attributes),_string_arg(-1)), 4 )
       _cur_t = _previous_cur_t
       return 0
 
@@ -2440,10 +2451,12 @@ class ParserCore [abstract]
         r_property_declaration
       endWhile
       if (disable_output)     _discard_list
-      else                    _push_list( CmdList(_list_t) )
+      else                    _push_list( PropertyList(_list_t) )
       r_optional_type
       r_property_attributes
-      if (not disable_output) _push( PropertyDeclarations(_cur_t,_node_arg(-4),_node_arg(-3)->(as Type),_node_arg(-2)->(as Attributes),_string_arg(-1)), 4 )
+      parse_doc_comment
+
+      if (not disable_output) _push( PropertyDeclarations(_cur_t,_node_arg(-4)->(as PropertyList),_node_arg(-3)->(as Type),_node_arg(-2)->(as Attributes),_string_arg(-1)), 4 )
       _cur_t = _previous_cur_t
       return 0
 
@@ -5504,6 +5517,7 @@ class ParserCore [abstract]
       if (not disable_output) _push( ReadLocalInt(_cur_t,_node_arg(-1)->(as Local)), 1 )
       if (not disable_output) _push( ReadLocalObject(_cur_t,_node_arg(-1)->(as Local)), 1 )
       if (not disable_output) _push( ReadNativeSingleton(_cur_t,_node_arg(-1)->(as Type)), 1 )
+      if (not disable_output) _push( ReadSingleton(_cur_t,_node_arg(-1)->(as Type)), 1 )
       if (not disable_output) _push( ReturnResult(_cur_t,_node_arg(-1)), 1 )
       if (not disable_output) _push( SubtractInt(_cur_t,_node_arg(-2),_node_arg(-1)), 2 )
       if (not disable_output) _push( SubtractReal(_cur_t,_node_arg(-2),_node_arg(-1)), 2 )

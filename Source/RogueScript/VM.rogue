@@ -47,6 +47,27 @@ class VM [singleton]
     method logical( index:Int )->Int
       return stack[fp+index]?
 
+    method call_method( context:Variant, m:Procedure, args=null:Args )->Variant
+      local old_stack_count = stack.count
+      stack.add( context )
+
+      if (args and args.count) stack.add( (forEach in args).execute )
+
+      local result = m.execute
+      stack.discard_from( old_stack_count )
+      return result
+
+    method create_object( of_type:Type, &no_init )->Variant
+      local obj = Variant( Object(of_type) )
+      if (of_type.m_init_object) call_method( obj, of_type.m_init_object )
+      if (not no_init and of_type.m_init) call_method( obj, of_type.m_init )
+      return obj
+
+    method create_object( of_type:Type, m_init:Procedure, args:Args )->Variant
+      local obj = Variant( Object(of_type) )
+      call_method( obj, m_init, args )
+      return obj
+
     method parameter( index:Int )->Variant
       # First parameter is index 1.
       return stack[fp+index]

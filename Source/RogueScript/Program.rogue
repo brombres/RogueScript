@@ -62,7 +62,7 @@ class Program [singleton]
             endIf
             type.base_class = base_class
           endIf
-          type.attributes.is_native_type = true
+          type.attributes.is_native = true
           type.native_instance_of   = entry.value.instance_of
           type.native_get_singleton = entry.value.get_singleton
           type.native_set_singleton = entry.value.set_singleton
@@ -85,7 +85,7 @@ class Program [singleton]
           endIf
           m.return_type = type
           m.statements.add( entry.value.cloned )
-          type.add( m )
+          type.add_global_method( m )
         endForEach
 
         forEach (entry in VM.native_global_methods.entries)
@@ -103,7 +103,7 @@ class Program [singleton]
           endIf
           m.return_type = sig.return_type
           m.statements.add( entry.value.cloned )
-          type.add( m )
+          type.add_global_method( m )
         endForEach
 
         forEach (entry in VM.native_methods.entries)
@@ -121,7 +121,7 @@ class Program [singleton]
           endIf
           m.return_type = sig.return_type
           m.statements.add( entry.value.cloned )
-          type.add( m )
+          type.add_method( m )
         endForEach
 
         forEach (elements in pending_elements)

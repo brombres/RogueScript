@@ -299,15 +299,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.of_type)
       return result
 
-    method on_visit_children( cmd:GlobalPropertyDeclarations )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.list)
-      if (result?) return result
-      result = visit(cmd.type)
-      if (result?) return result
-      result = visit(cmd.attributes)
-      return result
-
     method on_visit_children( cmd:IfConditionalContext )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.conditional_context)
@@ -514,15 +505,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.initial_value)
       if (result?) return result
       result = visit(cmd.type)
-      return result
-
-    method on_visit_children( cmd:PropertyDeclarations )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.list)
-      if (result?) return result
-      result = visit(cmd.type)
-      if (result?) return result
-      result = visit(cmd.attributes)
       return result
 
     method on_visit_children( cmd:ResolvedOpAndAssignLocal )->$ReturnType
@@ -1112,8 +1094,6 @@ class InspectionVisitor<<$ReturnType>>
       local result : $ReturnType
       result = visit(cmd.context)
       if (result?) return result
-      result = visit(cmd.info)
-      if (result?) return result
       result = visit(cmd.args)
       return result
 
@@ -1127,8 +1107,6 @@ class InspectionVisitor<<$ReturnType>>
     method on_visit_children( cmd:CreateObject )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.of_type)
-      if (result?) return result
-      result = visit(cmd.m_init)
       if (result?) return result
       result = visit(cmd.args)
       return result
@@ -1218,6 +1196,29 @@ class InspectionVisitor<<$ReturnType>>
     method on_visit_children( cmd:Uses )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.attributes)
+      return result
+
+    method on_visit_children( cmd:GlobalPropertyDeclarations )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.list)
+      if (result?) return result
+      result = visit(cmd.type)
+      if (result?) return result
+      result = visit(cmd.attributes)
+      return result
+
+    method on_visit_children( cmd:PropertyDeclarations )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.list)
+      if (result?) return result
+      result = visit(cmd.type)
+      if (result?) return result
+      result = visit(cmd.attributes)
+      return result
+
+    method on_visit_children( cmd:ReadSingleton )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.of_type)
       return result
 
 endClass
