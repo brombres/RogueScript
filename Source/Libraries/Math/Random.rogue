@@ -17,11 +17,11 @@ class Random [singleton]
     state  : Int64  # The current state used to produce the next psuedo-random number.
     stream : Int64  # A PCG32-specific modifier that essentially acts as an additional seed.
 
-    #{
   METHODS
     method init
       reset( Rogue::System.time_ms )
 
+    #{
     method init( seed:Int64, stream=0x14057b7e_f767814f:Int64 )
       # Constructs a Random generator with the specified seed and optional stream parameter.
       # 'stream' defaults to 0x14057b7e_f767814f. If you pass an explicit value, note that
@@ -41,8 +41,10 @@ class Random [singleton]
       # Returns a duplicate Random generator. Given identical calls, it will produce
       # identical results to this Random generator.
       return Random( this )
+    }#
 
-    method reset( seed, stream=0x14057b7e_f767814f:Int64 )
+    method reset( seed:Int64, stream=0x14057b7e_f767814f:Int64 )
+      this.seed = seed
       # Resets the Random generator ot use the specified seed and optional stream parameter.
       # 'stream' defaults to 0x14057b7e_f767814f. If you pass an explicit value, note that
       # the canonical PCG algorithm performs 'stream = (stream :<<: 1) | 1' but this
@@ -56,6 +58,7 @@ class Random [singleton]
       this.state += seed
       next32
 
+#{
     method byte->Byte
       # Returns a random byte between 0 and 255.
       return next32->Byte

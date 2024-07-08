@@ -243,10 +243,7 @@ class Resolver : Visitor [singleton]
           return visit( Construct(cmd.t,type,cmd.args) )
 
         elseIf (type.attributes.is_singleton)
-          if (type.attributes.is_native)
-            if (not type.native_get_singleton)
-              throw cmd.t.error( "$ is a write-only singleton."(type.scoped_name) )
-            endIf
+          if (type.native_get_singleton)
             return visit( ReadNativeSingleton(cmd.t,type) )
           else
             return visit( ReadSingleton(cmd.t,type) )
@@ -401,24 +398,10 @@ class Resolver : Visitor [singleton]
       endTemporarily
       return proc
 
-    method on_visit( cmd:ReadLocal )->Cmd
-      which (cmd.info.type)
-        case Program.type_Int: return visit( ReadLocalInt(cmd.t,cmd.info) )
-        others
-          if (cmd.info.type.attributes.is_object)
-            return ReadLocalObject( cmd.t, cmd.info )
-          endIf
-          trace
-          throw cmd.t.error( "[INTERNAL] Unhandled type $ in ReadLocal."(cmd.info.type) )
-      endWhich
-
-    method on_visit( cmd:ReadLocalInt )->Cmd
-      return cmd
-
-    method on_visit( cmd:ReadProperty )->Cmd
-      which (cmd.info.type.variant_type)
+    method on_validate( cmd:ReadProperty )->Cmd
+      which (cmd.context.require_type.variant_type)
         case Variant.TYPE_OBJECT: return visit( ReadObjectProperty(cmd.t, cmd.context, cmd.info) )
-        others: trace "TODO"
+        others: trace "TODO: Read property of non-object context"
       endWhich
       return cmd
 

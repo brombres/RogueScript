@@ -89,7 +89,7 @@ class Attributes : CmdList
       return false
 
     method description->String
-      return "Attributes" + list_description
+      return "Attributes($)"(flags) + list_description
 
     method is_reference->Logical
       return (flags & (Attribute.OBJECT | Attribute.ASPECT))?

@@ -201,4 +201,11 @@ augment
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
+
+    method WriteThisPropertyValue.execute->Variant
+      if local obj = VM.context.object->(as Object)
+        obj.properties[info.name] = value
+      else
+        throw t.error( "Null context assigning property '$'."(info.name) )
+      endIf
 endAugment

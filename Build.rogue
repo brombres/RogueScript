@@ -58,7 +58,7 @@ routine rogo_build
   # Recompiles Rogue -> C -> Exe if needed. 'rogo rebuild' forces a build.
   localize exe_file
 
-  if (File("Source/VM/RogueScript.froley").is_newer_than(exe_file))
+  if (File("Source/RogueScript/RogueScript.froley").is_newer_than(exe_file))
     rogo_froley
   endIf
 

@@ -45,6 +45,22 @@ class Module
         Program.types[type.scoped_name] = type
       endIf
 
+      if (this is Program.default_module)
+        if (type.attributes.is_primitive)
+          which (type_name)
+            case "Byte":      type.variant_type = Variant.TYPE_BYTE
+            case "Character": type.variant_type = Variant.TYPE_CHARACTER
+            case "Int":       type.variant_type = Variant.TYPE_INT
+            case "Int32":     type.variant_type = Variant.TYPE_INT32
+            case "Int64":     type.variant_type = Variant.TYPE_INT64
+            case "Real":      type.variant_type = Variant.TYPE_REAL
+            case "Real32":    type.variant_type = Variant.TYPE_REAL32
+            case "Real64":    type.variant_type = Variant.TYPE_REAL64
+            case "Logical":   type.variant_type = Variant.TYPE_LOGICAL
+          endWhich
+        endIf
+      endIf
+
       return type
 
     method define_type( t:Token, type_name:String, attribute_flags:Int )->Type

@@ -1,7 +1,0 @@
-module RogueScript
-
-class NativeMath [singleton]
-  METHODS
-    method register( vm:VM )
-      #vm.register_method( "Random.int(Int)->Int", () =>
-endClass

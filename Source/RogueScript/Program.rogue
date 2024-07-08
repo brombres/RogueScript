@@ -47,8 +47,12 @@ class Program [singleton]
       endTemporarily
 
     method organize
-      temporarily Program=this, current_module=default_module
-        CollectTypes.visit( forEach in pending_elements )
+      temporarily Program = this
+        forEach (element in pending_elements)
+          temporarily current_module = default_module
+            CollectTypes.visit( element )
+          endTemporarily
+        endForEach
       endTemporarily
 
       temporarily Program=this, current_module=default_module
@@ -66,7 +70,9 @@ class Program [singleton]
           type.native_instance_of   = entry.value.instance_of
           type.native_get_singleton = entry.value.get_singleton
           type.native_set_singleton = entry.value.set_singleton
-          type.attributes.is_singleton = (type.native_get_singleton or type.native_set_singleton)
+          if (type.native_get_singleton or type.native_set_singleton)
+            type.attributes.is_singleton = true
+          endIf
           type.variant_type = entry.value.variant_type
         endForEach
 
@@ -130,6 +136,7 @@ class Program [singleton]
 
         (forEach in modules).organize
 
+        TypeResolver.resolve_types
         Organizer.organize_program
 
         pending_elements.clear
@@ -149,6 +156,6 @@ class Program [singleton]
       type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )
       type_Logical = default_module.define_type( t, "Logical", Attribute.PRIMITIVE )
       type_Real    = default_module.define_type( t, "Real",    Attribute.PRIMITIVE )
-      type_String  = default_module.define_type( t, "String",  Attribute.PRIMITIVE )
+      type_String  = default_module.define_type( t, "String",  Attribute.OBJECT )
 
 endClass

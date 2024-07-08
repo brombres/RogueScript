@@ -3326,8 +3326,6 @@ parser
   create Println(args:Args)
   create ReadGlobalProperty(info:Property)
   create ReadLocal(info:Local)
-  create ReadLocalInt(info:Local):ReadLocal
-  create ReadLocalObject(info:Local):ReadLocal
   create ReadNativeSingleton(of_type:Type)
   create ReadObjectProperty(context,info:Property)
   create ReadProperty(context,info:Property)
@@ -3342,6 +3340,7 @@ parser
   create WriteLocalInt(info:Local,new_value):WriteLocal
   create WriteProperty(context,info:Property,new_value)
   create WriteThisProperty(info:Property,new_value)
+  create WriteThisPropertyValue(info:Property)
 
   create CallDynamicMethod(context,info:Procedure,args:Args):CallProcedure
   create CallGlobalMethod(info:Procedure,args:Args):CallProcedure

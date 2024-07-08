@@ -3246,13 +3246,6 @@ class ReadLocal : Cmd
 
 endClass
 
-class ReadLocalInt : ReadLocal
-  METHODS
-    method description->String
-      return "ReadLocalInt($)" (%info)
-
-endClass
-
 class AddInt : Add
   METHODS
     method description->String
@@ -3732,7 +3725,7 @@ class Access : Cmd
     args : Args
 
   METHODS
-    method init( t, name, args )
+    method init( t, name, args=null )
 
     method init( existing:Access )
       prior.init( existing )
@@ -4411,13 +4404,6 @@ class ReadNativeSingleton : Cmd
       return "ReadNativeSingleton($)"(%of_type)
 endClass
 
-class ReadLocalObject : ReadLocal
-  METHODS
-    method description->String
-      return "ReadLocalObject($)" (%info)
-
-endClass
-
 class DefaultConstructor : Cmd
   PROPERTIES
     of_type : Type
@@ -4749,5 +4735,23 @@ class ReadThisObjectProperty : Cmd
 
     method description->String
       return "ReadThisObjectProperty($)" (%info)
+
+endClass
+
+class WriteThisPropertyValue : Cmd
+  PROPERTIES
+    info  : Property
+    value : Variant
+
+  METHODS
+    method init( t, info, value=undefined )
+
+    method init( existing:WriteThisPropertyValue )
+      prior.init( existing )
+      if (existing.info) info = existing.info.cloned
+      value = existing.value
+
+    method description->String
+      return "WriteThisPropertyValue($,$)" (%info,value)
 
 endClass

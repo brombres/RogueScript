@@ -110,6 +110,9 @@ augment
     method This.type->Type
       return @type
 
+    method Type.type->Type
+      return this
+
     method TypeContext.type->Type
       return @type
 

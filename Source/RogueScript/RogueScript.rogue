@@ -20,4 +20,5 @@ $include RogueScript/Resolver
 $include RogueScript/Scanner
 $include RogueScript/ScopeStack
 $include RogueScript/Type
+$include RogueScript/TypeResolver
 $include RogueScript/VM
