@@ -83,7 +83,7 @@ augment
       endForEach
       return undefined
 
-    method IntToReal.execute->Variant
+    method ConvertIntToReal.execute->Variant
       return operand.execute.integer->Real
 
     method If.execute->Variant

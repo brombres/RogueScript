@@ -1,78 +1,140 @@
 module RogueScript
 
-$localMacro GENERAL_OP_RESOLVE<<$Cmd,$op>>
+$localMacro GENERAL_OP_RESOLVE<<$Cmd,$op,$allow_logical>>
 augment Resolver
   METHODS
     method on_visit( cmd:$Cmd )->Cmd
       local left  = visit( cmd.left )
       local right = visit( cmd.right )
-      local common_type = find_compatible_type( left, right )
+      local common_type = find_common_type( left, right, &promote_logical=not $allow_logical )
 
       left = convert_to( left, common_type )
       right = convert_to( right, common_type )
 
-      if (common_type is Program.type_Real)
+      if (common_type is Program.type_Real64)
+        return validate( $id($Cmd,Real64)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Real)
         return validate( $id($Cmd,Real)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Real32)
+        return validate( $id($Cmd,Real32)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int64)
+        return validate( $id($Cmd,Int64)(cmd.t,left,right) )
       elseIf (common_type is Program.type_Int)
         return validate( $id($Cmd,Int)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int32)
+        return validate( $id($Cmd,Int32)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Character)
+        return validate( $id($Cmd,Character)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Byte)
+        return validate( $id($Cmd,Byte)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Logical)
+        return validate( $id($Cmd,Logical)(cmd.t,left,right) )
       endIf
 
       throw cmd.t.error( $string("[INTERNAL] Unhandled operation: $ ",$op," $")(common_type,common_type) )
 endAugment
 $endLocalMacro
 
-
 $localMacro GENERAL_OP_EXECUTE<<$Cmd,$op>>
 augment
   METHODS
-    method $id($Cmd,Int).type->Type
-      return Program.type_Int
+    method $id($Cmd,Real64).type->Type:    return Program.type_Real64
+    method $id($Cmd,Real).type->Type:      return Program.type_Real
+    method $id($Cmd,Real32).type->Type:    return Program.type_Real32
+    method $id($Cmd,Int64).type->Type:     return Program.type_Int64
+    method $id($Cmd,Int).type->Type:       return Program.type_Int
+    method $id($Cmd,Int32).type->Type:     return Program.type_Int32
+    method $id($Cmd,Character).type->Type: return Program.type_Character
+    method $id($Cmd,Byte).type->Type:      return Program.type_Byte
 
-    method $id($Cmd,Int).execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.integer $op right_value.integer )
-
-    method $id($Cmd,Real).type->Type
-      return Program.type_Real
-
-    method $id($Cmd,Real).execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.real $op right_value.real )
+    method $id($Cmd,Real64).execute->Variant:    return left.execute.real64 $op right.execute.real64
+    method $id($Cmd,Real).execute->Variant:      return left.execute.real $op right.execute.real
+    method $id($Cmd,Real32).execute->Variant:    return left.execute.real32 $op right.execute.real32
+    method $id($Cmd,Int64).execute->Variant:     return left.execute.int64 $op right.execute.int64
+    method $id($Cmd,Int).execute->Variant:       return left.execute.integer $op right.execute.integer
+    method $id($Cmd,Int32).execute->Variant:     return left.execute.int32 $op right.execute.int32
+    method $id($Cmd,Character).execute->Variant: return left.execute.character $op right.execute.character
+    method $id($Cmd,Byte).execute->Variant:      return left.execute.byte $op right.execute.byte
 endAugment
 $endLocalMacro
 
-
-$localMacro MATH_OP<<$Cmd,$op>>
-
-GENERAL_OP_RESOLVE<< $Cmd, $op >>
-GENERAL_OP_EXECUTE<< $Cmd, $op >>
-
+$localMacro BITWISE_OP_RESOLVE<<$Cmd,$op>>
 augment Resolver
   METHODS
-    method on_validate( cmd:$id($Cmd,Int) )->Cmd
-      if local left_literal = cmd.left->(as LiteralInt)
-        if local right_literal = cmd.right->(as LiteralInt)
-          return LiteralInt( cmd.t, left_literal.value $op right_literal.value )
-        endIf
-      endIf
-      return cmd
+    method on_visit( cmd:$Cmd )->Cmd
+      local left  = visit( cmd.left )
+      local right = visit( cmd.right )
+      local common_type = find_common_type( left, right, &bitwise )
 
-    method on_validate( cmd:$id($Cmd,Real) )->Cmd
-      if local left_literal = cmd.left->(as LiteralReal)
-        if local right_literal = cmd.right->(as LiteralReal)
-          return LiteralReal( cmd.t, left_literal.value $op right_literal.value )
+      left = convert_to( left, common_type )
+      right = convert_to( right, common_type )
+
+      if (common_type is Program.type_Int64)
+        return validate( $id($Cmd,Int64)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int)
+        return validate( $id($Cmd,Int)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Int32)
+        return validate( $id($Cmd,Int32)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Character)
+        return validate( $id($Cmd,Character)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Byte)
+        return validate( $id($Cmd,Byte)(cmd.t,left,right) )
+      endIf
+
+      throw cmd.t.error( $string("[INTERNAL] Unhandled operation: $ ",$op," $")(common_type,common_type) )
+endAugment
+$endLocalMacro
+
+$localMacro BITWISE_OP_EXECUTE<<$Cmd,$op>>
+augment
+  METHODS
+    method $id($Cmd,Int64).type->Type:     return Program.type_Int64
+    method $id($Cmd,Int).type->Type:       return Program.type_Int
+    method $id($Cmd,Int32).type->Type:     return Program.type_Int32
+    method $id($Cmd,Character).type->Type: return Program.type_Character
+    method $id($Cmd,Byte).type->Type:      return Program.type_Byte
+
+    method $id($Cmd,Real64).execute->Variant:    return left.execute.real64 $op right.execute.real64
+    method $id($Cmd,Real).execute->Variant:      return left.execute.real $op right.execute.real
+    method $id($Cmd,Real32).execute->Variant:    return left.execute.real32 $op right.execute.real32
+    method $id($Cmd,Int64).execute->Variant:     return left.execute.int64 $op right.execute.int64
+    method $id($Cmd,Int).execute->Variant:       return left.execute.integer $op right.execute.integer
+    method $id($Cmd,Int32).execute->Variant:     return left.execute.int32 $op right.execute.int32
+    method $id($Cmd,Character).execute->Variant: return left.execute.character $op right.execute.character
+    method $id($Cmd,Byte).execute->Variant:      return left.execute.byte $op right.execute.byte
+endAugment
+$endLocalMacro
+
+$localMacro VALIDATE_BINARY_OP<<$Cmd,$op,$Type>>
+augment Resolver
+  METHODS
+    method on_validate( cmd:$id($Cmd,$Type) )->Cmd
+      if local left_literal = cmd.left->(as $id(Literal,$Type))
+        if local right_literal = cmd.right->(as $id(Literal,$Type))
+          return $id(Literal,$Type)( cmd.t, left_literal.value $op right_literal.value )
         endIf
       endIf
       return cmd
 endAugment
+$endLocalMacro
+
+$localMacro MATH_OP<<$Cmd,$op>>
+GENERAL_OP_RESOLVE<< $Cmd, $op, false >>
+GENERAL_OP_EXECUTE<< $Cmd, $op >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Real64 >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Real   >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Real32 >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Int64 >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Int   >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Int32 >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Character >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
 $endLocalMacro
 
 
 $localMacro LOGICAL_OP<<$Cmd,$op>>
 
-GENERAL_OP_RESOLVE<< $Cmd, $op >>
+GENERAL_OP_RESOLVE<< $Cmd, $op, true >>
 
 augment $id($Cmd,Int)
   METHODS
@@ -97,6 +159,27 @@ augment $id($Cmd,Real)
 endAugment
 $endLocalMacro
 
+$localMacro VALIDATE_CONVERT_OP<<$FromType,$ToType>>
+augment Resolver
+  METHODS
+    method on_validate( cmd:$id(Convert,$FromType,To,$ToType) )->Cmd
+      if local literal = cmd.operand->(as $id(Literal,$FromType))
+        return $id(Literal,$ToType)( cmd.t, literal.value->$ToType )
+      endIf
+      return cmd
+endAugment
+$endLocalMacro
+
+$localMacro BITWISE_OP<<$Cmd,$op>>
+BITWISE_OP_RESOLVE<< $Cmd, $op >>
+BITWISE_OP_EXECUTE<< $Cmd, $op >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Int64 >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Int   >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Int32 >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Character >>
+VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
+$endLocalMacro
+
 MATH_OP<< Add,      + >>
 MATH_OP<< Subtract, - >>
 MATH_OP<< Multiply, * >>
@@ -104,12 +187,92 @@ MATH_OP<< Divide,   / >>
 MATH_OP<< Mod,      % >>
 MATH_OP<< Power,    ^ >>
 
+BITWISE_OP<< BitwiseAnd, & >>
+BITWISE_OP<< BitwiseOr,  | >>
+BITWISE_OP<< BitwiseXor, ~ >>
+BITWISE_OP<< BitShiftLeft,   :<<: >>
+BITWISE_OP<< BitShiftRight,  :>>: >>
+BITWISE_OP<< BitShiftRightX, :>>>: >>
+
 LOGICAL_OP<< CompareEQ, == >>
 LOGICAL_OP<< CompareNE, != >>
 LOGICAL_OP<< CompareLT, <  >>
 LOGICAL_OP<< CompareLE, <= >>
 LOGICAL_OP<< CompareGT, >  >>
 LOGICAL_OP<< CompareGE, >= >>
+
+VALIDATE_CONVERT_OP<<Real,Real64>>
+VALIDATE_CONVERT_OP<<Real32,Real64>>
+VALIDATE_CONVERT_OP<<Int64,Real64>>
+VALIDATE_CONVERT_OP<<Int,Real64>>
+VALIDATE_CONVERT_OP<<Int32,Real64>>
+VALIDATE_CONVERT_OP<<Character,Real64>>
+VALIDATE_CONVERT_OP<<Byte,Real64>>
+VALIDATE_CONVERT_OP<<Logical,Real64>>
+VALIDATE_CONVERT_OP<<Real64,Real>>
+VALIDATE_CONVERT_OP<<Real32,Real>>
+VALIDATE_CONVERT_OP<<Int64,Real>>
+VALIDATE_CONVERT_OP<<Int,Real>>
+VALIDATE_CONVERT_OP<<Int32,Real>>
+VALIDATE_CONVERT_OP<<Character,Real>>
+VALIDATE_CONVERT_OP<<Byte,Real>>
+VALIDATE_CONVERT_OP<<Logical,Real>>
+VALIDATE_CONVERT_OP<<Real64,Real32>>
+VALIDATE_CONVERT_OP<<Real,Real32>>
+VALIDATE_CONVERT_OP<<Int64,Real32>>
+VALIDATE_CONVERT_OP<<Int,Real32>>
+VALIDATE_CONVERT_OP<<Int32,Real32>>
+VALIDATE_CONVERT_OP<<Character,Real32>>
+VALIDATE_CONVERT_OP<<Byte,Real32>>
+VALIDATE_CONVERT_OP<<Logical,Real32>>
+VALIDATE_CONVERT_OP<<Real64,Int64>>
+VALIDATE_CONVERT_OP<<Real,Int64>>
+VALIDATE_CONVERT_OP<<Real32,Int64>>
+VALIDATE_CONVERT_OP<<Int,Int64>>
+VALIDATE_CONVERT_OP<<Int32,Int64>>
+VALIDATE_CONVERT_OP<<Character,Int64>>
+VALIDATE_CONVERT_OP<<Byte,Int64>>
+VALIDATE_CONVERT_OP<<Logical,Int64>>
+VALIDATE_CONVERT_OP<<Real64,Int>>
+VALIDATE_CONVERT_OP<<Real,Int>>
+VALIDATE_CONVERT_OP<<Real32,Int>>
+VALIDATE_CONVERT_OP<<Int64,Int>>
+VALIDATE_CONVERT_OP<<Int32,Int>>
+VALIDATE_CONVERT_OP<<Character,Int>>
+VALIDATE_CONVERT_OP<<Byte,Int>>
+VALIDATE_CONVERT_OP<<Logical,Int>>
+VALIDATE_CONVERT_OP<<Real64,Int32>>
+VALIDATE_CONVERT_OP<<Real,Int32>>
+VALIDATE_CONVERT_OP<<Real32,Int32>>
+VALIDATE_CONVERT_OP<<Int64,Int32>>
+VALIDATE_CONVERT_OP<<Int,Int32>>
+VALIDATE_CONVERT_OP<<Character,Int32>>
+VALIDATE_CONVERT_OP<<Byte,Int32>>
+VALIDATE_CONVERT_OP<<Logical,Int32>>
+VALIDATE_CONVERT_OP<<Real64,Character>>
+VALIDATE_CONVERT_OP<<Real,Character>>
+VALIDATE_CONVERT_OP<<Real32,Character>>
+VALIDATE_CONVERT_OP<<Int64,Character>>
+VALIDATE_CONVERT_OP<<Int,Character>>
+VALIDATE_CONVERT_OP<<Int32,Character>>
+VALIDATE_CONVERT_OP<<Byte,Character>>
+VALIDATE_CONVERT_OP<<Logical,Character>>
+VALIDATE_CONVERT_OP<<Real64,Byte>>
+VALIDATE_CONVERT_OP<<Real,Byte>>
+VALIDATE_CONVERT_OP<<Real32,Byte>>
+VALIDATE_CONVERT_OP<<Int64,Byte>>
+VALIDATE_CONVERT_OP<<Int,Byte>>
+VALIDATE_CONVERT_OP<<Int32,Byte>>
+VALIDATE_CONVERT_OP<<Character,Byte>>
+VALIDATE_CONVERT_OP<<Logical,Byte>>
+VALIDATE_CONVERT_OP<<Real64,Logical>>
+VALIDATE_CONVERT_OP<<Real,Logical>>
+VALIDATE_CONVERT_OP<<Real32,Logical>>
+VALIDATE_CONVERT_OP<<Int64,Logical>>
+VALIDATE_CONVERT_OP<<Int,Logical>>
+VALIDATE_CONVERT_OP<<Int32,Logical>>
+VALIDATE_CONVERT_OP<<Character,Logical>>
+VALIDATE_CONVERT_OP<<Byte,Logical>>
 
 augment
   METHODS
@@ -189,26 +352,140 @@ class Resolver : Visitor [singleton]
     method convert_to( cmd:Cmd, to_type:Type )->Cmd
       local cmd_type = cmd.require_type
 
-      which (cmd_type)
-        case to_type
+      which (to_type)
+        case cmd_type
           return cmd
+        case Program.type_Real64
+          which (cmd_type)
+            case Program.type_Real:      return validate( ConvertRealToReal64(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToReal64(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToReal64(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToReal64(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToReal64(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToReal64(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToReal64(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToReal64(cmd.t,cmd) )
+          endWhich
+        case Program.type_Real
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToReal(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToReal(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToReal(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToReal(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToReal(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToReal(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToReal(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToReal(cmd.t,cmd) )
+          endWhich
+        case Program.type_Real32
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToReal32(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToReal32(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToReal32(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToReal32(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToReal32(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToReal32(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToReal32(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToReal32(cmd.t,cmd) )
+          endWhich
+        case Program.type_Int64
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToInt64(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToInt64(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToInt64(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToInt64(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToInt64(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToInt64(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToInt64(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToInt64(cmd.t,cmd) )
+          endWhich
         case Program.type_Int
-          which (to_type)
-            case Program.type_Real
-              return validate( IntToReal(cmd.t,cmd) )
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToInt(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToInt(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToInt(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToInt(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToInt(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToInt(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToInt(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToInt(cmd.t,cmd) )
+          endWhich
+        case Program.type_Int32
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToInt32(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToInt32(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToInt32(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToInt32(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToInt32(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToInt32(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToInt32(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToInt32(cmd.t,cmd) )
+          endWhich
+        case Program.type_Character
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToCharacter(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToCharacter(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToCharacter(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToCharacter(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToCharacter(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToCharacter(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToCharacter(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToCharacter(cmd.t,cmd) )
+          endWhich
+        case Program.type_Byte
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToByte(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToByte(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToByte(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToByte(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToByte(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToByte(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToByte(cmd.t,cmd) )
+            case Program.type_Logical:   return validate( ConvertLogicalToByte(cmd.t,cmd) )
+          endWhich
+        case Program.type_Logical
+          which (cmd_type)
+            case Program.type_Real64:    return validate( ConvertReal64ToLogical(cmd.t,cmd) )
+            case Program.type_Real:      return validate( ConvertRealToLogical(cmd.t,cmd) )
+            case Program.type_Real32:    return validate( ConvertReal32ToLogical(cmd.t,cmd) )
+            case Program.type_Int64:     return validate( ConvertInt64ToLogical(cmd.t,cmd) )
+            case Program.type_Int:       return validate( ConvertIntToLogical(cmd.t,cmd) )
+            case Program.type_Int32:     return validate( ConvertInt32ToLogical(cmd.t,cmd) )
+            case Program.type_Character: return validate( ConvertCharacterToLogical(cmd.t,cmd) )
+            case Program.type_Byte:      return validate( ConvertByteToLogical(cmd.t,cmd) )
           endWhich
       endWhich
 
       throw cmd.t.error( "Cannot convert type $ to type $."(cmd_type,to_type) )
 
-    method find_compatible_type( left:Cmd, right:Cmd )->Type
+    method find_common_type( left:Cmd, right:Cmd, &bitwise, &promote_logical )->Type
       local left_type = left.require_type
       local right_type = right.require_type
-      if (left_type is right_type) return left_type
+      if (left_type is right_type)
+        if ((bitwise or promote_logical) and left_type is Program.type_Logical) return Program.type_Int
+        return left_type
+      endIf
 
       if (left_type is Program.type_String or right_type is Program.type_String) return Program.type_String
-      if (left_type is Program.type_Real or right_type is Program.type_Real) return Program.type_Real
-      if (left_type is Program.type_Int or right_type is Program.type_Int) return Program.type_Int
+
+      if (left_type.attributes.is_primitive and right_type.attributes.is_primitive)
+        if (bitwise)
+          if (left_type is Program.type_Real64 or right_type is Program.type_Real64) return Program.type_Int64
+          if (left_type is Program.type_Real   or right_type is Program.type_Real)   return Program.type_Int
+          if (left_type is Program.type_Real32 or right_type is Program.type_Real32) return Program.type_Int32
+        else
+          if (left_type is Program.type_Real64 or right_type is Program.type_Real64) return Program.type_Real64
+          if (left_type is Program.type_Real   or right_type is Program.type_Real)   return Program.type_Real
+          if (left_type is Program.type_Real32 or right_type is Program.type_Real32) return Program.type_Real32
+        endIf
+        if (left_type is Program.type_Int64  or right_type is Program.type_Int64)  return Program.type_Int64
+        if (left_type is Program.type_Int    or right_type is Program.type_Int)    return Program.type_Int
+        if (left_type is Program.type_Int32  or right_type is Program.type_Int32)  return Program.type_Int32
+        if (left_type is Program.type_Character or right_type is Program.type_Character)
+          return Program.type_Character
+        endIf
+        return Program.type_Byte  # must be a mix of Byte and Logical
+      endIf
 
       throw left.t.error( "Types $ and $ are incompatible."(left_type,right_type) )
 
@@ -275,6 +552,8 @@ class Resolver : Visitor [singleton]
       return cmd.target.resolve_assignment( cmd.t, cmd.new_value, this )
 
     method on_validate( cmd:Binary )->Cmd
+      #local left = cmd.left.require_value
+      #local right = cmd.right.require_value
       cmd.left.require_type
       cmd.right.require_type
       return cmd
@@ -327,7 +606,7 @@ class Resolver : Visitor [singleton]
         return visit( Else(cmd.t,cmd.statements) )
       endIf
 
-    method on_validate( cmd:IntToReal )->Cmd
+    method on_validate( cmd:ConvertIntToReal )->Cmd
       if local literal_int = cmd.operand->(as LiteralInt)
         return LiteralReal( cmd.operand.t, literal_int.value )
       else
@@ -635,6 +914,18 @@ augment
 
       throw this.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(name) )
 
+    method ContextAccess.resolve_assignment( t:Token, new_value:Cmd, resolver:Resolver )->Cmd
+      context = resolver.visit( context )
+      local context_type = context.require_type
+
+      if local p = context_type.properties[name]
+        return resolver.visit( WriteProperty(t, context, p, new_value) )
+      elseIf local p = context_type.global_properties[name]
+        return resolver.visit( WriteGlobalProperty(t, p, new_value) )
+      endIf
+
+      throw this.t.error( ''No such property '$' exists in type '$'.''(name,context_type.name) )
+
     method Cmd.resolve_context_access( access:ContextAccess, resolver:Resolver )->Cmd
       local resolved = resolver.visit( this )
       local resolved_type = resolved.require_type
@@ -647,8 +938,8 @@ augment
       throw t.error( "TODO: resolve_foreach_in($)"(type_name) )
 
     method CreateRangeUpTo.resolve_foreach_in( cmd_foreach_in:ForEachIn, resolver:Resolver )->Cmd
-      local type = resolver.find_compatible_type( start, limit )
-      if (step_size) type = resolver.find_compatible_type( type, step_size )
+      local type = resolver.find_common_type( start, limit )
+      if (step_size) type = resolver.find_common_type( type, step_size )
 
       local v = Local( cmd_foreach_in.element_name.t, cmd_foreach_in.element_name->String, type )
 

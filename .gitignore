@@ -2,8 +2,8 @@
 Local.settings
 BuildLocal.rogue
 /Build
-.*.swo
-.*.swp
+*.swo
+*.swp
 *.o
 .DS_Store
 *~

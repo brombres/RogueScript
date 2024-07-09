@@ -47,7 +47,7 @@ augment
     method GlobalPropertyDeclarations.type->Type
       return @type
 
-    method IntToReal.type->Type
+    method ConvertIntToReal.type->Type
       return Program.type_Real
 
     method LiteralInt.type->Type

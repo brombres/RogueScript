@@ -3275,10 +3275,10 @@ class LiteralReal : LiteralPrimitive
 endClass
 
 
-class IntToReal : Unary
+class ConvertIntToReal : Unary
   METHODS
     method description->String
-      return "IntToReal($)" (%operand)
+      return "ConvertIntToReal($)" (%operand)
 
 endClass
 
@@ -4753,5 +4753,1404 @@ class WriteThisPropertyValue : Cmd
 
     method description->String
       return "WriteThisPropertyValue($,$)" (%info,value)
+
+endClass
+
+class ConvertByteToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertByteToCharacter($)" (%operand)
+
+endClass
+
+class ConvertByteToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertByteToInt($)" (%operand)
+
+endClass
+
+class ConvertByteToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertByteToInt32($)" (%operand)
+
+endClass
+
+class ConvertByteToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertByteToInt64($)" (%operand)
+
+endClass
+
+class ConvertByteToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertByteToReal($)" (%operand)
+
+endClass
+
+class ConvertByteToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertByteToReal32($)" (%operand)
+
+endClass
+
+class ConvertByteToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertByteToReal64($)" (%operand)
+
+endClass
+
+class ConvertCharacterToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertCharacterToByte($)" (%operand)
+
+endClass
+
+class ConvertCharacterToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertCharacterToInt($)" (%operand)
+
+endClass
+
+class ConvertCharacterToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertCharacterToInt32($)" (%operand)
+
+endClass
+
+class ConvertCharacterToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertCharacterToInt64($)" (%operand)
+
+endClass
+
+class ConvertCharacterToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertCharacterToLogical($)" (%operand)
+
+endClass
+
+class ConvertCharacterToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertCharacterToReal($)" (%operand)
+
+endClass
+
+class ConvertCharacterToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertCharacterToReal32($)" (%operand)
+
+endClass
+
+class ConvertCharacterToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertCharacterToReal64($)" (%operand)
+
+endClass
+
+class ConvertInt32ToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertInt32ToByte($)" (%operand)
+
+endClass
+
+class ConvertInt32ToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertInt32ToCharacter($)" (%operand)
+
+endClass
+
+class ConvertInt32ToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertInt32ToInt($)" (%operand)
+
+endClass
+
+class ConvertInt32ToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertInt32ToInt64($)" (%operand)
+
+endClass
+
+class ConvertInt32ToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertInt32ToLogical($)" (%operand)
+
+endClass
+
+class ConvertInt32ToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertInt32ToReal($)" (%operand)
+
+endClass
+
+class ConvertInt32ToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertInt32ToReal32($)" (%operand)
+
+endClass
+
+class ConvertInt32ToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertInt32ToReal64($)" (%operand)
+
+endClass
+
+class ConvertInt64ToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertInt64ToByte($)" (%operand)
+
+endClass
+
+class ConvertInt64ToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertInt64ToCharacter($)" (%operand)
+
+endClass
+
+class ConvertInt64ToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertInt64ToInt($)" (%operand)
+
+endClass
+
+class ConvertInt64ToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertInt64ToInt32($)" (%operand)
+
+endClass
+
+class ConvertInt64ToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertInt64ToLogical($)" (%operand)
+
+endClass
+
+class ConvertInt64ToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertInt64ToReal($)" (%operand)
+
+endClass
+
+class ConvertInt64ToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertInt64ToReal32($)" (%operand)
+
+endClass
+
+class ConvertInt64ToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertInt64ToReal64($)" (%operand)
+
+endClass
+
+class ConvertIntToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertIntToByte($)" (%operand)
+
+endClass
+
+class ConvertIntToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertIntToCharacter($)" (%operand)
+
+endClass
+
+class ConvertIntToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertIntToInt32($)" (%operand)
+
+endClass
+
+class ConvertIntToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertIntToInt64($)" (%operand)
+
+endClass
+
+class ConvertIntToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertIntToLogical($)" (%operand)
+
+endClass
+
+class ConvertIntToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertIntToReal32($)" (%operand)
+
+endClass
+
+class ConvertIntToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertIntToReal64($)" (%operand)
+
+endClass
+
+class ConvertByteToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertByteToLogical($)" (%operand)
+
+endClass
+
+class ConvertLogicalToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertLogicalToByte($)" (%operand)
+
+endClass
+
+class ConvertLogicalToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertLogicalToCharacter($)" (%operand)
+
+endClass
+
+class ConvertLogicalToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertLogicalToInt($)" (%operand)
+
+endClass
+
+class ConvertLogicalToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertLogicalToInt32($)" (%operand)
+
+endClass
+
+class ConvertLogicalToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertLogicalToInt64($)" (%operand)
+
+endClass
+
+class ConvertLogicalToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertLogicalToReal($)" (%operand)
+
+endClass
+
+class ConvertLogicalToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertLogicalToReal32($)" (%operand)
+
+endClass
+
+class ConvertLogicalToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertLogicalToReal64($)" (%operand)
+
+endClass
+
+class ConvertReal32ToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertReal32ToByte($)" (%operand)
+
+endClass
+
+class ConvertReal32ToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertReal32ToCharacter($)" (%operand)
+
+endClass
+
+class ConvertReal32ToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertReal32ToInt($)" (%operand)
+
+endClass
+
+class ConvertReal32ToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertReal32ToInt32($)" (%operand)
+
+endClass
+
+class ConvertReal32ToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertReal32ToInt64($)" (%operand)
+
+endClass
+
+class ConvertReal32ToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertReal32ToLogical($)" (%operand)
+
+endClass
+
+class ConvertReal32ToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertReal32ToReal($)" (%operand)
+
+endClass
+
+class ConvertReal32ToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertReal32ToReal64($)" (%operand)
+
+endClass
+
+class ConvertReal64ToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertReal64ToByte($)" (%operand)
+
+endClass
+
+class ConvertReal64ToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertReal64ToCharacter($)" (%operand)
+
+endClass
+
+class ConvertReal64ToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertReal64ToInt($)" (%operand)
+
+endClass
+
+class ConvertReal64ToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertReal64ToInt32($)" (%operand)
+
+endClass
+
+class ConvertReal64ToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertReal64ToInt64($)" (%operand)
+
+endClass
+
+class ConvertReal64ToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertReal64ToLogical($)" (%operand)
+
+endClass
+
+class ConvertReal64ToReal : ConvertToReal
+  METHODS
+    method description->String
+      return "ConvertReal64ToReal($)" (%operand)
+
+endClass
+
+class ConvertReal64ToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertReal64ToReal32($)" (%operand)
+
+endClass
+
+class ConvertRealToByte : ConvertToByte
+  METHODS
+    method description->String
+      return "ConvertRealToByte($)" (%operand)
+
+endClass
+
+class ConvertRealToCharacter : ConvertToCharacter
+  METHODS
+    method description->String
+      return "ConvertRealToCharacter($)" (%operand)
+
+endClass
+
+class ConvertRealToInt : ConvertToInt
+  METHODS
+    method description->String
+      return "ConvertRealToInt($)" (%operand)
+
+endClass
+
+class ConvertRealToInt32 : ConvertToInt32
+  METHODS
+    method description->String
+      return "ConvertRealToInt32($)" (%operand)
+
+endClass
+
+class ConvertRealToInt64 : ConvertToInt64
+  METHODS
+    method description->String
+      return "ConvertRealToInt64($)" (%operand)
+
+endClass
+
+class ConvertRealToLogical : ConvertToLogical
+  METHODS
+    method description->String
+      return "ConvertRealToLogical($)" (%operand)
+
+endClass
+
+class ConvertRealToReal32 : ConvertToReal32
+  METHODS
+    method description->String
+      return "ConvertRealToReal32($)" (%operand)
+
+endClass
+
+class ConvertRealToReal64 : ConvertToReal64
+  METHODS
+    method description->String
+      return "ConvertRealToReal64($)" (%operand)
+
+endClass
+
+class LiteralByte : Cmd
+  PROPERTIES
+    value : Byte
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralByte )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralByte($)" (%value)
+
+    method to->Int:       return value
+    method to->String:    return value
+
+endClass
+
+class LiteralInt32 : Cmd
+  PROPERTIES
+    value : Int32
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralInt32 )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralInt32($)" (%value)
+
+    method to->Int:       return value
+    method to->String:    return value
+
+endClass
+
+class LiteralInt64 : Cmd
+  PROPERTIES
+    value : Int64
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralInt64 )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralInt64($)" (%value)
+
+    method to->Int:       return value
+    method to->String:    return value
+
+endClass
+
+class LiteralReal32 : Cmd
+  PROPERTIES
+    value : Real32
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralReal32 )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralReal32($)" (%value)
+
+    method to->Int:    return value
+    method to->Real:   return value
+    method to->String: return value
+
+endClass
+
+class LiteralReal64 : Cmd
+  PROPERTIES
+    value : Real64
+
+  METHODS
+    method init( t, value )
+
+    method init( existing:LiteralReal64 )
+      prior.init( existing )
+      value = existing.value
+
+    method description->String
+      return "LiteralReal64($)" (%value)
+
+    method to->Int:    return value
+    method to->Real:   return value
+    method to->String: return value
+
+endClass
+
+class AddByte : Add
+  METHODS
+    method description->String
+      return "AddByte($,$)" (%left,%right)
+
+endClass
+
+class AddCharacter : Add
+  METHODS
+    method description->String
+      return "AddCharacter($,$)" (%left,%right)
+
+endClass
+
+class AddInt32 : Add
+  METHODS
+    method description->String
+      return "AddInt32($,$)" (%left,%right)
+
+endClass
+
+class AddInt64 : Add
+  METHODS
+    method description->String
+      return "AddInt64($,$)" (%left,%right)
+
+endClass
+
+class AddLogical : Add
+  METHODS
+    method description->String
+      return "AddLogical($,$)" (%left,%right)
+
+endClass
+
+class AddReal32 : Add
+  METHODS
+    method description->String
+      return "AddReal32($,$)" (%left,%right)
+
+endClass
+
+class AddReal64 : Add
+  METHODS
+    method description->String
+      return "AddReal64($,$)" (%left,%right)
+
+endClass
+
+class DivideByte : Divide
+  METHODS
+    method description->String
+      return "DivideByte($,$)" (%left,%right)
+
+endClass
+
+class DivideCharacter : Divide
+  METHODS
+    method description->String
+      return "DivideCharacter($,$)" (%left,%right)
+
+endClass
+
+class DivideInt32 : Divide
+  METHODS
+    method description->String
+      return "DivideInt32($,$)" (%left,%right)
+
+endClass
+
+class DivideInt64 : Divide
+  METHODS
+    method description->String
+      return "DivideInt64($,$)" (%left,%right)
+
+endClass
+
+class DivideLogical : Divide
+  METHODS
+    method description->String
+      return "DivideLogical($,$)" (%left,%right)
+
+endClass
+
+class DivideReal32 : Divide
+  METHODS
+    method description->String
+      return "DivideReal32($,$)" (%left,%right)
+
+endClass
+
+class DivideReal64 : Divide
+  METHODS
+    method description->String
+      return "DivideReal64($,$)" (%left,%right)
+
+endClass
+
+class ModByte : Mod
+  METHODS
+    method description->String
+      return "ModByte($,$)" (%left,%right)
+
+endClass
+
+class ModCharacter : Mod
+  METHODS
+    method description->String
+      return "ModCharacter($,$)" (%left,%right)
+
+endClass
+
+class ModInt32 : Mod
+  METHODS
+    method description->String
+      return "ModInt32($,$)" (%left,%right)
+
+endClass
+
+class ModInt64 : Mod
+  METHODS
+    method description->String
+      return "ModInt64($,$)" (%left,%right)
+
+endClass
+
+class ModLogical : Mod
+  METHODS
+    method description->String
+      return "ModLogical($,$)" (%left,%right)
+
+endClass
+
+class ModReal32 : Mod
+  METHODS
+    method description->String
+      return "ModReal32($,$)" (%left,%right)
+
+endClass
+
+class ModReal64 : Mod
+  METHODS
+    method description->String
+      return "ModReal64($,$)" (%left,%right)
+
+endClass
+
+class MultiplyByte : Multiply
+  METHODS
+    method description->String
+      return "MultiplyByte($,$)" (%left,%right)
+
+endClass
+
+class MultiplyCharacter : Multiply
+  METHODS
+    method description->String
+      return "MultiplyCharacter($,$)" (%left,%right)
+
+endClass
+
+class MultiplyInt32 : Multiply
+  METHODS
+    method description->String
+      return "MultiplyInt32($,$)" (%left,%right)
+
+endClass
+
+class MultiplyInt64 : Multiply
+  METHODS
+    method description->String
+      return "MultiplyInt64($,$)" (%left,%right)
+
+endClass
+
+class MultiplyLogical : Multiply
+  METHODS
+    method description->String
+      return "MultiplyLogical($,$)" (%left,%right)
+
+endClass
+
+class MultiplyReal32 : Multiply
+  METHODS
+    method description->String
+      return "MultiplyReal32($,$)" (%left,%right)
+
+endClass
+
+class MultiplyReal64 : Multiply
+  METHODS
+    method description->String
+      return "MultiplyReal64($,$)" (%left,%right)
+
+endClass
+
+class SubtractByte : Subtract
+  METHODS
+    method description->String
+      return "SubtractByte($,$)" (%left,%right)
+
+endClass
+
+class SubtractCharacter : Subtract
+  METHODS
+    method description->String
+      return "SubtractCharacter($,$)" (%left,%right)
+
+endClass
+
+class SubtractInt32 : Subtract
+  METHODS
+    method description->String
+      return "SubtractInt32($,$)" (%left,%right)
+
+endClass
+
+class SubtractInt64 : Subtract
+  METHODS
+    method description->String
+      return "SubtractInt64($,$)" (%left,%right)
+
+endClass
+
+class SubtractLogical : Subtract
+  METHODS
+    method description->String
+      return "SubtractLogical($,$)" (%left,%right)
+
+endClass
+
+class SubtractReal32 : Subtract
+  METHODS
+    method description->String
+      return "SubtractReal32($,$)" (%left,%right)
+
+endClass
+
+class SubtractReal64 : Subtract
+  METHODS
+    method description->String
+      return "SubtractReal64($,$)" (%left,%right)
+
+endClass
+
+class PowerByte : Power
+  METHODS
+    method description->String
+      return "PowerByte($,$)" (%left,%right)
+
+endClass
+
+class PowerCharacter : Power
+  METHODS
+    method description->String
+      return "PowerCharacter($,$)" (%left,%right)
+
+endClass
+
+class PowerInt32 : Power
+  METHODS
+    method description->String
+      return "PowerInt32($,$)" (%left,%right)
+
+endClass
+
+class PowerInt64 : Power
+  METHODS
+    method description->String
+      return "PowerInt64($,$)" (%left,%right)
+
+endClass
+
+class PowerLogical : Power
+  METHODS
+    method description->String
+      return "PowerLogical($,$)" (%left,%right)
+
+endClass
+
+class PowerReal32 : Power
+  METHODS
+    method description->String
+      return "PowerReal32($,$)" (%left,%right)
+
+endClass
+
+class PowerReal64 : Power
+  METHODS
+    method description->String
+      return "PowerReal64($,$)" (%left,%right)
+
+endClass
+
+class BitShiftLeftByte : BitShiftLeft
+  METHODS
+    method description->String
+      return "BitShiftLeftByte($,$)" (%left,%right)
+
+endClass
+
+class BitShiftLeftCharacter : BitShiftLeft
+  METHODS
+    method description->String
+      return "BitShiftLeftCharacter($,$)" (%left,%right)
+
+endClass
+
+class BitShiftLeftInt : BitShiftLeft
+  METHODS
+    method description->String
+      return "BitShiftLeftInt($,$)" (%left,%right)
+
+endClass
+
+class BitShiftLeftInt32 : BitShiftLeft
+  METHODS
+    method description->String
+      return "BitShiftLeftInt32($,$)" (%left,%right)
+
+endClass
+
+class BitShiftLeftInt64 : BitShiftLeft
+  METHODS
+    method description->String
+      return "BitShiftLeftInt64($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightByte : BitShiftRight
+  METHODS
+    method description->String
+      return "BitShiftRightByte($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightCharacter : BitShiftRight
+  METHODS
+    method description->String
+      return "BitShiftRightCharacter($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightInt : BitShiftRight
+  METHODS
+    method description->String
+      return "BitShiftRightInt($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightInt32 : BitShiftRight
+  METHODS
+    method description->String
+      return "BitShiftRightInt32($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightInt64 : BitShiftRight
+  METHODS
+    method description->String
+      return "BitShiftRightInt64($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightXByte : BitShiftRightX
+  METHODS
+    method description->String
+      return "BitShiftRightXByte($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightXCharacter : BitShiftRightX
+  METHODS
+    method description->String
+      return "BitShiftRightXCharacter($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightXInt : BitShiftRightX
+  METHODS
+    method description->String
+      return "BitShiftRightXInt($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightXInt32 : BitShiftRightX
+  METHODS
+    method description->String
+      return "BitShiftRightXInt32($,$)" (%left,%right)
+
+endClass
+
+class BitShiftRightXInt64 : BitShiftRightX
+  METHODS
+    method description->String
+      return "BitShiftRightXInt64($,$)" (%left,%right)
+
+endClass
+
+class BitwiseAndByte : BitwiseAnd
+  METHODS
+    method description->String
+      return "BitwiseAndByte($,$)" (%left,%right)
+
+endClass
+
+class BitwiseAndCharacter : BitwiseAnd
+  METHODS
+    method description->String
+      return "BitwiseAndCharacter($,$)" (%left,%right)
+
+endClass
+
+class BitwiseAndInt : BitwiseAnd
+  METHODS
+    method description->String
+      return "BitwiseAndInt($,$)" (%left,%right)
+
+endClass
+
+class BitwiseAndInt32 : BitwiseAnd
+  METHODS
+    method description->String
+      return "BitwiseAndInt32($,$)" (%left,%right)
+
+endClass
+
+class BitwiseAndInt64 : BitwiseAnd
+  METHODS
+    method description->String
+      return "BitwiseAndInt64($,$)" (%left,%right)
+
+endClass
+
+class BitwiseAndLogical : BitwiseAnd
+  METHODS
+    method description->String
+      return "BitwiseAndLogical($,$)" (%left,%right)
+
+endClass
+
+class BitwiseOrByte : BitwiseOr
+  METHODS
+    method description->String
+      return "BitwiseOrByte($,$)" (%left,%right)
+
+endClass
+
+class BitwiseOrCharacter : BitwiseOr
+  METHODS
+    method description->String
+      return "BitwiseOrCharacter($,$)" (%left,%right)
+
+endClass
+
+class BitwiseOrInt : BitwiseOr
+  METHODS
+    method description->String
+      return "BitwiseOrInt($,$)" (%left,%right)
+
+endClass
+
+class BitwiseOrInt32 : BitwiseOr
+  METHODS
+    method description->String
+      return "BitwiseOrInt32($,$)" (%left,%right)
+
+endClass
+
+class BitwiseOrInt64 : BitwiseOr
+  METHODS
+    method description->String
+      return "BitwiseOrInt64($,$)" (%left,%right)
+
+endClass
+
+class BitwiseXorByte : BitwiseXor
+  METHODS
+    method description->String
+      return "BitwiseXorByte($,$)" (%left,%right)
+
+endClass
+
+class BitwiseXorCharacter : BitwiseXor
+  METHODS
+    method description->String
+      return "BitwiseXorCharacter($,$)" (%left,%right)
+
+endClass
+
+class BitwiseXorInt : BitwiseXor
+  METHODS
+    method description->String
+      return "BitwiseXorInt($,$)" (%left,%right)
+
+endClass
+
+class BitwiseXorInt32 : BitwiseXor
+  METHODS
+    method description->String
+      return "BitwiseXorInt32($,$)" (%left,%right)
+
+endClass
+
+class BitwiseXorInt64 : BitwiseXor
+  METHODS
+    method description->String
+      return "BitwiseXorInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareEQByte : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQByte($,$)" (%left,%right)
+
+endClass
+
+class CompareEQCharacter : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQCharacter($,$)" (%left,%right)
+
+endClass
+
+class CompareEQInt32 : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQInt32($,$)" (%left,%right)
+
+endClass
+
+class CompareEQInt64 : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareEQLogical : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQLogical($,$)" (%left,%right)
+
+endClass
+
+class CompareEQReal32 : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQReal32($,$)" (%left,%right)
+
+endClass
+
+class CompareEQReal64 : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQReal64($,$)" (%left,%right)
+
+endClass
+
+class CompareGEByte : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEByte($,$)" (%left,%right)
+
+endClass
+
+class CompareGECharacter : CompareGE
+  METHODS
+    method description->String
+      return "CompareGECharacter($,$)" (%left,%right)
+
+endClass
+
+class CompareGEInt32 : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEInt32($,$)" (%left,%right)
+
+endClass
+
+class CompareGEInt64 : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareGELogical : CompareGE
+  METHODS
+    method description->String
+      return "CompareGELogical($,$)" (%left,%right)
+
+endClass
+
+class CompareGEReal32 : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEReal32($,$)" (%left,%right)
+
+endClass
+
+class CompareGEReal64 : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEReal64($,$)" (%left,%right)
+
+endClass
+
+class CompareGTByte : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTByte($,$)" (%left,%right)
+
+endClass
+
+class CompareGTCharacter : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTCharacter($,$)" (%left,%right)
+
+endClass
+
+class CompareGTInt32 : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTInt32($,$)" (%left,%right)
+
+endClass
+
+class CompareGTInt64 : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareGTLogical : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTLogical($,$)" (%left,%right)
+
+endClass
+
+class CompareGTReal32 : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTReal32($,$)" (%left,%right)
+
+endClass
+
+class CompareGTReal64 : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTReal64($,$)" (%left,%right)
+
+endClass
+
+class CompareLEByte : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEByte($,$)" (%left,%right)
+
+endClass
+
+class CompareLECharacter : CompareLE
+  METHODS
+    method description->String
+      return "CompareLECharacter($,$)" (%left,%right)
+
+endClass
+
+class CompareLEInt32 : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEInt32($,$)" (%left,%right)
+
+endClass
+
+class CompareLEInt64 : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareLELogical : CompareLE
+  METHODS
+    method description->String
+      return "CompareLELogical($,$)" (%left,%right)
+
+endClass
+
+class CompareLEReal32 : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEReal32($,$)" (%left,%right)
+
+endClass
+
+class CompareLEReal64 : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEReal64($,$)" (%left,%right)
+
+endClass
+
+class CompareLTByte : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTByte($,$)" (%left,%right)
+
+endClass
+
+class CompareLTCharacter : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTCharacter($,$)" (%left,%right)
+
+endClass
+
+class CompareLTInt32 : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTInt32($,$)" (%left,%right)
+
+endClass
+
+class CompareLTInt64 : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareLTLogical : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTLogical($,$)" (%left,%right)
+
+endClass
+
+class CompareLTReal32 : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTReal32($,$)" (%left,%right)
+
+endClass
+
+class CompareLTReal64 : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTReal64($,$)" (%left,%right)
+
+endClass
+
+class CompareNEByte : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEByte($,$)" (%left,%right)
+
+endClass
+
+class CompareNECharacter : CompareNE
+  METHODS
+    method description->String
+      return "CompareNECharacter($,$)" (%left,%right)
+
+endClass
+
+class CompareNEInt32 : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEInt32($,$)" (%left,%right)
+
+endClass
+
+class CompareNEInt64 : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEInt64($,$)" (%left,%right)
+
+endClass
+
+class CompareNELogical : CompareNE
+  METHODS
+    method description->String
+      return "CompareNELogical($,$)" (%left,%right)
+
+endClass
+
+class CompareNEReal32 : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEReal32($,$)" (%left,%right)
+
+endClass
+
+class CompareNEReal64 : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEReal64($,$)" (%left,%right)
 
 endClass

@@ -8,9 +8,15 @@ class Program [singleton]
     modules        = [String:Module]
     types          = [String:Type]  # All types, fully qualified e.g. RogueScript::Int
 
+    type_Byte      : Type
+    type_Character : Type
     type_Int       : Type
+    type_Int32     : Type
+    type_Int64     : Type
     type_Logical   : Type
     type_Real      : Type
+    type_Real32    : Type
+    type_Real64    : Type
     type_String    : Type
 
     pending_elements = ProgramElements[]
@@ -153,9 +159,15 @@ class Program [singleton]
       default_module = Module( t, "Rogue" )
       current_module = default_module
 
-      type_Int     = default_module.define_type( t, "Int",     Attribute.PRIMITIVE )
-      type_Logical = default_module.define_type( t, "Logical", Attribute.PRIMITIVE )
-      type_Real    = default_module.define_type( t, "Real",    Attribute.PRIMITIVE )
-      type_String  = default_module.define_type( t, "String",  Attribute.OBJECT )
+      type_Byte      = default_module.define_type( t, "Byte",      Attribute.PRIMITIVE )
+      type_Character = default_module.define_type( t, "Character", Attribute.PRIMITIVE )
+      type_Int       = default_module.define_type( t, "Int",       Attribute.PRIMITIVE )
+      type_Int32     = default_module.define_type( t, "Int32",     Attribute.PRIMITIVE )
+      type_Int64     = default_module.define_type( t, "Int64",     Attribute.PRIMITIVE )
+      type_Logical   = default_module.define_type( t, "Logical",   Attribute.PRIMITIVE )
+      type_Real      = default_module.define_type( t, "Real",      Attribute.PRIMITIVE )
+      type_Real32    = default_module.define_type( t, "Real32",    Attribute.PRIMITIVE )
+      type_Real64    = default_module.define_type( t, "Real64",    Attribute.PRIMITIVE )
+      type_String    = default_module.define_type( t, "String",    Attribute.OBJECT )
 
 endClass

@@ -3291,34 +3291,262 @@ parser
 
 
 - additional_node_types
-  create AddInt(left,right):Add
   create AddReal(left,right):Add
-  create DivideInt(left,right):Divide
+  create AddReal32(left,right):Add
+  create AddReal64(left,right):Add
+  create AddInt(left,right):Add
+  create AddInt32(left,right):Add
+  create AddInt64(left,right):Add
+  create AddCharacter(left,right):Add
+  create AddByte(left,right):Add
+  create AddLogical(left,right):Add
+
+  create SubtractReal(left,right):Subtract
+  create SubtractReal32(left,right):Subtract
+  create SubtractReal64(left,right):Subtract
+  create SubtractInt(left,right):Subtract
+  create SubtractInt32(left,right):Subtract
+  create SubtractInt64(left,right):Subtract
+  create SubtractCharacter(left,right):Subtract
+  create SubtractByte(left,right):Subtract
+  create SubtractLogical(left,right):Subtract
+
+  create MultiplyReal(left,right):Multiply
+  create MultiplyReal32(left,right):Multiply
+  create MultiplyReal64(left,right):Multiply
+  create MultiplyInt(left,right):Multiply
+  create MultiplyInt32(left,right):Multiply
+  create MultiplyInt64(left,right):Multiply
+  create MultiplyCharacter(left,right):Multiply
+  create MultiplyByte(left,right):Multiply
+  create MultiplyLogical(left,right):Multiply
+
   create DivideReal(left,right):Divide
+  create DivideReal32(left,right):Divide
+  create DivideReal64(left,right):Divide
+  create DivideInt(left,right):Divide
+  create DivideInt32(left,right):Divide
+  create DivideInt64(left,right):Divide
+  create DivideCharacter(left,right):Divide
+  create DivideByte(left,right):Divide
+  create DivideLogical(left,right):Divide
+
+  create ModReal(left,right):Mod
+  create ModReal32(left,right):Mod
+  create ModReal64(left,right):Mod
+  create ModInt(left,right):Mod
+  create ModInt32(left,right):Mod
+  create ModInt64(left,right):Mod
+  create ModCharacter(left,right):Mod
+  create ModByte(left,right):Mod
+  create ModLogical(left,right):Mod
+
+  create PowerReal(left,right):Power
+  create PowerReal32(left,right):Power
+  create PowerReal64(left,right):Power
+  create PowerInt(left,right):Power
+  create PowerInt32(left,right):Power
+  create PowerInt64(left,right):Power
+  create PowerCharacter(left,right):Power
+  create PowerByte(left,right):Power
+  create PowerLogical(left,right):Power
+
+  create BitwiseAndInt(left,right):BitwiseAnd
+  create BitwiseAndInt32(left,right):BitwiseAnd
+  create BitwiseAndInt64(left,right):BitwiseAnd
+  create BitwiseAndCharacter(left,right):BitwiseAnd
+  create BitwiseAndByte(left,right):BitwiseAnd
+  create BitwiseAndLogical(left,right):BitwiseAnd
+
+  create BitwiseOrInt(left,right):BitwiseOr
+  create BitwiseOrInt32(left,right):BitwiseOr
+  create BitwiseOrInt64(left,right):BitwiseOr
+  create BitwiseOrCharacter(left,right):BitwiseOr
+  create BitwiseOrByte(left,right):BitwiseOr
+
+  create BitwiseXorInt(left,right):BitwiseXor
+  create BitwiseXorInt32(left,right):BitwiseXor
+  create BitwiseXorInt64(left,right):BitwiseXor
+  create BitwiseXorCharacter(left,right):BitwiseXor
+  create BitwiseXorByte(left,right):BitwiseXor
+
+  create BitShiftLeftInt(left,right):BitShiftLeft
+  create BitShiftLeftInt32(left,right):BitShiftLeft
+  create BitShiftLeftInt64(left,right):BitShiftLeft
+  create BitShiftLeftCharacter(left,right):BitShiftLeft
+  create BitShiftLeftByte(left,right):BitShiftLeft
+
+  create BitShiftRightInt(left,right):BitShiftRight
+  create BitShiftRightInt32(left,right):BitShiftRight
+  create BitShiftRightInt64(left,right):BitShiftRight
+  create BitShiftRightCharacter(left,right):BitShiftRight
+  create BitShiftRightByte(left,right):BitShiftRight
+
+  create BitShiftRightXInt(left,right):BitShiftRightX
+  create BitShiftRightXInt32(left,right):BitShiftRightX
+  create BitShiftRightXInt64(left,right):BitShiftRightX
+  create BitShiftRightXCharacter(left,right):BitShiftRightX
+  create BitShiftRightXByte(left,right):BitShiftRightX
+
   create ControlStructure(statements:Statements)
   create Construct(type:Type,args:Args)
-  create CompareEQInt(left,right):CompareEQ
-  create CompareNEInt(left,right):CompareNE
-  create CompareLTInt(left,right):CompareLT
-  create CompareLEInt(left,right):CompareLE
-  create CompareGTInt(left,right):CompareGT
-  create CompareGEInt(left,right):CompareGE
+
+  create CompareEQReal64(left,right):CompareEQ
+  create CompareNEReal64(left,right):CompareNE
+  create CompareLTReal64(left,right):CompareLT
+  create CompareLEReal64(left,right):CompareLE
+  create CompareGTReal64(left,right):CompareGT
+  create CompareGEReal64(left,right):CompareGE
+
   create CompareEQReal(left,right):CompareEQ
   create CompareNEReal(left,right):CompareNE
   create CompareLTReal(left,right):CompareLT
   create CompareLEReal(left,right):CompareLE
   create CompareGTReal(left,right):CompareGT
   create CompareGEReal(left,right):CompareGE
+
+  create CompareEQReal32(left,right):CompareEQ
+  create CompareNEReal32(left,right):CompareNE
+  create CompareLTReal32(left,right):CompareLT
+  create CompareLEReal32(left,right):CompareLE
+  create CompareGTReal32(left,right):CompareGT
+  create CompareGEReal32(left,right):CompareGE
+
+  create CompareEQInt64(left,right):CompareEQ
+  create CompareNEInt64(left,right):CompareNE
+  create CompareLTInt64(left,right):CompareLT
+  create CompareLEInt64(left,right):CompareLE
+  create CompareGTInt64(left,right):CompareGT
+  create CompareGEInt64(left,right):CompareGE
+
+  create CompareEQInt(left,right):CompareEQ
+  create CompareNEInt(left,right):CompareNE
+  create CompareLTInt(left,right):CompareLT
+  create CompareLEInt(left,right):CompareLE
+  create CompareGTInt(left,right):CompareGT
+  create CompareGEInt(left,right):CompareGE
+
+  create CompareEQInt32(left,right):CompareEQ
+  create CompareNEInt32(left,right):CompareNE
+  create CompareLTInt32(left,right):CompareLT
+  create CompareLEInt32(left,right):CompareLE
+  create CompareGTInt32(left,right):CompareGT
+  create CompareGEInt32(left,right):CompareGE
+
+  create CompareEQCharacter(left,right):CompareEQ
+  create CompareNECharacter(left,right):CompareNE
+  create CompareLTCharacter(left,right):CompareLT
+  create CompareLECharacter(left,right):CompareLE
+  create CompareGTCharacter(left,right):CompareGT
+  create CompareGECharacter(left,right):CompareGE
+
+  create CompareEQByte(left,right):CompareEQ
+  create CompareNEByte(left,right):CompareNE
+  create CompareLTByte(left,right):CompareLT
+  create CompareLEByte(left,right):CompareLE
+  create CompareGTByte(left,right):CompareGT
+  create CompareGEByte(left,right):CompareGE
+
+  create CompareEQLogical(left,right):CompareEQ
+  create CompareNELogical(left,right):CompareNE
+  create CompareLTLogical(left,right):CompareLT
+  create CompareLELogical(left,right):CompareLE
+  create CompareGTLogical(left,right):CompareGT
+  create CompareGELogical(left,right):CompareGE
+
   create Else(statements:Statements)
   create ForEachElementInRangeUpToInt(element_info:Local,start,limit,statements:Statements):ControlStructure
   #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
-  create IntToReal(operand):Unary
+
+  create ConvertRealToReal64(operand):ConvertToReal64
+  create ConvertReal32ToReal64(operand):ConvertToReal64
+  create ConvertInt64ToReal64(operand):ConvertToReal64
+  create ConvertIntToReal64(operand):ConvertToReal64
+  create ConvertInt32ToReal64(operand):ConvertToReal64
+  create ConvertCharacterToReal64(operand):ConvertToReal64
+  create ConvertByteToReal64(operand):ConvertToReal64
+  create ConvertLogicalToReal64(operand):ConvertToReal64
+
+  create ConvertReal64ToReal(operand):ConvertToReal
+  create ConvertReal32ToReal(operand):ConvertToReal
+  create ConvertInt64ToReal(operand):ConvertToReal
+  create ConvertIntToReal(operand):ConvertToReal
+  create ConvertInt32ToReal(operand):ConvertToReal
+  create ConvertCharacterToReal(operand):ConvertToReal
+  create ConvertByteToReal(operand):ConvertToReal
+  create ConvertLogicalToReal(operand):ConvertToReal
+
+  create ConvertReal64ToReal32(operand):ConvertToReal32
+  create ConvertRealToReal32(operand):ConvertToReal32
+  create ConvertInt64ToReal32(operand):ConvertToReal32
+  create ConvertIntToReal32(operand):ConvertToReal32
+  create ConvertInt32ToReal32(operand):ConvertToReal32
+  create ConvertCharacterToReal32(operand):ConvertToReal32
+  create ConvertByteToReal32(operand):ConvertToReal32
+  create ConvertLogicalToReal32(operand):ConvertToReal32
+
+  create ConvertReal64ToInt64(operand):ConvertToInt64
+  create ConvertRealToInt64(operand):ConvertToInt64
+  create ConvertReal32ToInt64(operand):ConvertToInt64
+  create ConvertIntToInt64(operand):ConvertToInt64
+  create ConvertInt32ToInt64(operand):ConvertToInt64
+  create ConvertCharacterToInt64(operand):ConvertToInt64
+  create ConvertByteToInt64(operand):ConvertToInt64
+  create ConvertLogicalToInt64(operand):ConvertToInt64
+
+  create ConvertReal64ToInt(operand):ConvertToInt
+  create ConvertRealToInt(operand):ConvertToInt
+  create ConvertReal32ToInt(operand):ConvertToInt
+  create ConvertInt64ToInt(operand):ConvertToInt
+  create ConvertInt32ToInt(operand):ConvertToInt
+  create ConvertCharacterToInt(operand):ConvertToInt
+  create ConvertByteToInt(operand):ConvertToInt
+  create ConvertLogicalToInt(operand):ConvertToInt
+
+  create ConvertReal64ToInt32(operand):ConvertToInt32
+  create ConvertRealToInt32(operand):ConvertToInt32
+  create ConvertReal32ToInt32(operand):ConvertToInt32
+  create ConvertInt64ToInt32(operand):ConvertToInt32
+  create ConvertIntToInt32(operand):ConvertToInt32
+  create ConvertCharacterToInt32(operand):ConvertToInt32
+  create ConvertByteToInt32(operand):ConvertToInt32
+  create ConvertLogicalToInt32(operand):ConvertToInt32
+
+  create ConvertReal64ToCharacter(operand):ConvertToCharacter
+  create ConvertRealToCharacter(operand):ConvertToCharacter
+  create ConvertReal32ToCharacter(operand):ConvertToCharacter
+  create ConvertInt64ToCharacter(operand):ConvertToCharacter
+  create ConvertIntToCharacter(operand):ConvertToCharacter
+  create ConvertInt32ToCharacter(operand):ConvertToCharacter
+  create ConvertByteToCharacter(operand):ConvertToCharacter
+  create ConvertLogicalToCharacter(operand):ConvertToCharacter
+
+  create ConvertReal64ToByte(operand):ConvertToByte
+  create ConvertRealToByte(operand):ConvertToByte
+  create ConvertReal32ToByte(operand):ConvertToByte
+  create ConvertInt64ToByte(operand):ConvertToByte
+  create ConvertIntToByte(operand):ConvertToByte
+  create ConvertInt32ToByte(operand):ConvertToByte
+  create ConvertCharacterToByte(operand):ConvertToByte
+  create ConvertLogicalToByte(operand):ConvertToByte
+
+  create ConvertReal64ToLogical(operand):ConvertToLogical
+  create ConvertRealToLogical(operand):ConvertToLogical
+  create ConvertReal32ToLogical(operand):ConvertToLogical
+  create ConvertInt64ToLogical(operand):ConvertToLogical
+  create ConvertIntToLogical(operand):ConvertToLogical
+  create ConvertInt32ToLogical(operand):ConvertToLogical
+  create ConvertCharacterToLogical(operand):ConvertToLogical
+  create ConvertByteToLogical(operand):ConvertToLogical
+
+  create LiteralReal64(value:Real)
+  create LiteralReal32(value:Real)
+  create LiteralInt64(value:Integer)
+  create LiteralInt32(value:Integer)
+  create LiteralByte(value:Integer)
+
   create LogicalBinary(left,right):Binary
   create LogicalUnary(operand):Unary
-  create ModInt(left,right):Mod
-  create ModReal(left,right):Mod
-  create MultiplyInt(left,right):Multiply
-  create MultiplyReal(left,right):Multiply
   create NativeProcedureSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type)
   create PowerInt(left,right):Power
   create PowerReal(left,right):Power
@@ -3333,8 +3561,6 @@ parser
   create ReadThisObjectProperty(info:Property)
   create ReadThisProperty(info:Property)
   create ReturnResult(result)
-  create SubtractInt(left,right):Subtract
-  create SubtractReal(left,right):Subtract
   create WriteGlobalProperty(info:Property,new_value)
   create WriteLocal(info:Local,new_value)
   create WriteLocalInt(info:Local,new_value):WriteLocal
