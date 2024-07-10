@@ -3545,6 +3545,9 @@ parser
   create LiteralInt32(value:Integer)
   create LiteralByte(value:Integer)
 
+  create OpAndAssign(target,operand)
+  #create AddAndAssignThisProperty(target,operand)
+
   create LogicalBinary(left,right):Binary
   create LogicalUnary(operand):Unary
   create NativeProcedureSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type)
@@ -3618,7 +3621,6 @@ parser
   create LiteralNullOptional(optional_type:Type):Literal
   create LocalDeclaration(info:Local)
   create Logicalized(operand):Unary
-  create OpAndAssign(target,operand)
   create PreDecrementLocal(info:Local)  # Internal use
   create Procedure(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc=`null`,statements:Statements):ControlStructure
   create PushStackTraceCutoff

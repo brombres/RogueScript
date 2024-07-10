@@ -95,7 +95,19 @@ augment
         return false
       endIf
 
+    method LiteralByte.execute->Variant
+      return value
+
+    method LiteralCharacter.execute->Variant
+      return value
+
     method LiteralInt.execute->Variant
+      return value
+
+    method LiteralInt32.execute->Variant
+      return value
+
+    method LiteralInt64.execute->Variant
       return value
 
     method LiteralLogical.execute->Variant
@@ -105,6 +117,12 @@ augment
       return pi
 
     method LiteralReal.execute->Variant
+      return value
+
+    method LiteralReal32.execute->Variant
+      return value
+
+    method LiteralReal64.execute->Variant
       return value
 
     method LiteralString.execute->Variant

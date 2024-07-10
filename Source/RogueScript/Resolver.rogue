@@ -782,6 +782,7 @@ class Resolver : Visitor [singleton]
           elseIf (m.attributes.is_global)
             return visit( CallGlobalMethod(t, m, args) )
           else
+            if (not context) context = This( t ).[ type = type_context ]
             return visit( CallMethod(t, context, m, args) )
           endIf
         endIf
