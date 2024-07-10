@@ -276,43 +276,6 @@ class LiteralPrimitive : Literal
       return "LiteralPrimitive"
 endClass
 
-class AddAndAssignGlobalProperty : ResolvedOpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignGlobalProperty($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignLocal : ResolvedOpAndAssignLocal
-  METHODS
-    method description->String
-      return "AddAndAssignLocal($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignProperty : ResolvedOpAndAssignProperty
-  PROPERTIES
-    context : Cmd
-
-  METHODS
-    method init( t, context, info, operand )
-
-    method init( existing:AddAndAssignProperty )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-
-    method description->String
-      return "AddAndAssignProperty($,$,$)" (%context,%info,%operand)
-
-endClass
-
-class AddAndAssignThisProperty : ResolvedOpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignThisProperty($,$)" (%info,%operand)
-
-endClass
-
 class As : Cmd
   PROPERTIES
     operand : Cmd
@@ -434,21 +397,21 @@ class BitShiftLeft : Binary
 
 endClass
 
-class BitShiftLeftAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class BitShiftLeftAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitShiftLeftAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class BitShiftLeftAndAssignLocal : ResolvedOpAndAssignLocal
+class BitShiftLeftAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "BitShiftLeftAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class BitShiftLeftAndAssignProperty : ResolvedOpAndAssignProperty
+class BitShiftLeftAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -464,7 +427,7 @@ class BitShiftLeftAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class BitShiftLeftAndAssignThisProperty : ResolvedOpAndAssignProperty
+class BitShiftLeftAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitShiftLeftAndAssignThisProperty($,$)" (%info,%operand)
@@ -485,21 +448,21 @@ class BitShiftRightX : Binary
 
 endClass
 
-class BitShiftRightXAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class BitShiftRightXAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitShiftRightXAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class BitShiftRightXAndAssignLocal : ResolvedOpAndAssignLocal
+class BitShiftRightXAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "BitShiftRightXAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class BitShiftRightXAndAssignProperty : ResolvedOpAndAssignProperty
+class BitShiftRightXAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -515,7 +478,7 @@ class BitShiftRightXAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class BitShiftRightXAndAssignThisProperty : ResolvedOpAndAssignProperty
+class BitShiftRightXAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitShiftRightXAndAssignThisProperty($,$)" (%info,%operand)
@@ -529,21 +492,21 @@ class BitwiseAnd : Binary
 
 endClass
 
-class BitwiseAndAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class BitwiseAndAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitwiseAndAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class BitwiseAndAndAssignLocal : ResolvedOpAndAssignLocal
+class BitwiseAndAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "BitwiseAndAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class BitwiseAndAndAssignProperty : ResolvedOpAndAssignProperty
+class BitwiseAndAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -559,7 +522,7 @@ class BitwiseAndAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class BitwiseAndAndAssignThisProperty : ResolvedOpAndAssignProperty
+class BitwiseAndAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitwiseAndAndAssignThisProperty($,$)" (%info,%operand)
@@ -580,21 +543,21 @@ class BitwiseOr : Binary
 
 endClass
 
-class BitwiseOrAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class BitwiseOrAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitwiseOrAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class BitwiseOrAndAssignLocal : ResolvedOpAndAssignLocal
+class BitwiseOrAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "BitwiseOrAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class BitwiseOrAndAssignProperty : ResolvedOpAndAssignProperty
+class BitwiseOrAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -610,7 +573,7 @@ class BitwiseOrAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class BitwiseOrAndAssignThisProperty : ResolvedOpAndAssignProperty
+class BitwiseOrAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitwiseOrAndAssignThisProperty($,$)" (%info,%operand)
@@ -624,21 +587,21 @@ class BitwiseXor : Binary
 
 endClass
 
-class BitwiseXorAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class BitwiseXorAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitwiseXorAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class BitwiseXorAndAssignLocal : ResolvedOpAndAssignLocal
+class BitwiseXorAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "BitwiseXorAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class BitwiseXorAndAssignProperty : ResolvedOpAndAssignProperty
+class BitwiseXorAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -654,7 +617,7 @@ class BitwiseXorAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class BitwiseXorAndAssignThisProperty : ResolvedOpAndAssignProperty
+class BitwiseXorAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "BitwiseXorAndAssignThisProperty($,$)" (%info,%operand)
@@ -735,22 +698,6 @@ class Catches : CmdList
   METHODS
     method description->String
       return "Catches" + list_description
-endClass
-
-class CleanupBlock : ControlStructure
-  PROPERTIES
-    cleanup : Cmd
-
-  METHODS
-    method init( t, statements, cleanup )
-
-    method init( existing:CleanupBlock )
-      prior.init( existing )
-      if (existing.cleanup) cleanup = existing.cleanup.cloned
-
-    method description->String
-      return "CleanupBlock($,$)" (%statements,%cleanup)
-
 endClass
 
 class CommandExists : Cmd
@@ -1183,21 +1130,21 @@ class DirectAccess : Cmd
 
 endClass
 
-class DivideAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class DivideAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "DivideAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class DivideAndAssignLocal : ResolvedOpAndAssignLocal
+class DivideAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "DivideAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class DivideAndAssignProperty : ResolvedOpAndAssignProperty
+class DivideAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -1213,7 +1160,7 @@ class DivideAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class DivideAndAssignThisProperty : ResolvedOpAndAssignProperty
+class DivideAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "DivideAndAssignThisProperty($,$)" (%info,%operand)
@@ -2066,21 +2013,21 @@ class ModuleQualifiedID : Cmd
 
 endClass
 
-class MultiplyAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class MultiplyAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "MultiplyAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class MultiplyAndAssignLocal : ResolvedOpAndAssignLocal
+class MultiplyAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "MultiplyAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class MultiplyAndAssignProperty : ResolvedOpAndAssignProperty
+class MultiplyAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -2096,7 +2043,7 @@ class MultiplyAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class MultiplyAndAssignThisProperty : ResolvedOpAndAssignProperty
+class MultiplyAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "MultiplyAndAssignThisProperty($,$)" (%info,%operand)
@@ -2385,7 +2332,7 @@ class PushStackTraceCutoff : Cmd
       return "PushStackTraceCutoff"
 endClass
 
-class ResolvedOpAndAssignLocal : Cmd
+class OpAndAssignLocal : Cmd
   PROPERTIES
     info    : Local
     operand : Cmd
@@ -2393,17 +2340,17 @@ class ResolvedOpAndAssignLocal : Cmd
   METHODS
     method init( t, info, operand )
 
-    method init( existing:ResolvedOpAndAssignLocal )
+    method init( existing:OpAndAssignLocal )
       prior.init( existing )
       if (existing.info) info = existing.info.cloned
       if (existing.operand) operand = existing.operand.cloned
 
     method description->String
-      return "ResolvedOpAndAssignLocal($,$)" (%info,%operand)
+      return "OpAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class ResolvedOpAndAssignProperty : Cmd
+class OpAndAssignProperty : Cmd
   PROPERTIES
     info    : Property
     operand : Cmd
@@ -2411,13 +2358,13 @@ class ResolvedOpAndAssignProperty : Cmd
   METHODS
     method init( t, info, operand )
 
-    method init( existing:ResolvedOpAndAssignProperty )
+    method init( existing:OpAndAssignProperty )
       prior.init( existing )
       if (existing.info) info = existing.info.cloned
       if (existing.operand) operand = existing.operand.cloned
 
     method description->String
-      return "ResolvedOpAndAssignProperty($,$)" (%info,%operand)
+      return "OpAndAssignProperty($,$)" (%info,%operand)
 
 endClass
 
@@ -2461,21 +2408,21 @@ class Stepper : Cmd
 
 endClass
 
-class SubtractAndAssignGlobalProperty : ResolvedOpAndAssignProperty
+class SubtractAndAssignGlobalProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "SubtractAndAssignGlobalProperty($,$)" (%info,%operand)
 
 endClass
 
-class SubtractAndAssignLocal : ResolvedOpAndAssignLocal
+class SubtractAndAssignLocal : OpAndAssignLocal
   METHODS
     method description->String
       return "SubtractAndAssignLocal($,$)" (%info,%operand)
 
 endClass
 
-class SubtractAndAssignProperty : ResolvedOpAndAssignProperty
+class SubtractAndAssignProperty : OpAndAssignProperty
   PROPERTIES
     context : Cmd
 
@@ -2491,7 +2438,7 @@ class SubtractAndAssignProperty : ResolvedOpAndAssignProperty
 
 endClass
 
-class SubtractAndAssignThisProperty : ResolvedOpAndAssignProperty
+class SubtractAndAssignThisProperty : OpAndAssignProperty
   METHODS
     method description->String
       return "SubtractAndAssignThisProperty($,$)" (%info,%operand)
@@ -3737,48 +3684,10 @@ class Access : Cmd
 
 endClass
 
-class CallDynamicMethod : CallProcedure
-  PROPERTIES
-    context : Cmd
-
-  METHODS
-    method init( t, context, info, args )
-
-    method init( existing:CallDynamicMethod )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-
-    method description->String
-      return "CallDynamicMethod($,$)" (%context,%args)
-
-endClass
-
 class CallGlobalMethod : CallProcedure
   METHODS
     method description->String
       return "CallGlobalMethod($)" (%args)
-
-endClass
-
-class CallMethodPointer : Cmd
-  PROPERTIES
-    pointer     : Cmd
-    param_types : TypeList
-    args        : Args
-    return_type : Type
-
-  METHODS
-    method init( t, pointer, param_types, args, return_type )
-
-    method init( existing:CallMethodPointer )
-      prior.init( existing )
-      if (existing.pointer) pointer = existing.pointer.cloned
-      if (existing.param_types) param_types = existing.param_types.cloned
-      if (existing.args) args = existing.args.cloned
-      if (existing.return_type) return_type = existing.return_type.cloned
-
-    method description->String
-      return "CallMethodPointer($,$,$,$)" (%pointer,%param_types,%args,%return_type)
 
 endClass
 
@@ -3814,59 +3723,6 @@ class CallProcedure : Cmd
 
     method description->String
       return "CallProcedure($)" (%args)
-
-endClass
-
-class CallStaticMethod : CallProcedure
-  PROPERTIES
-    context : Cmd
-
-  METHODS
-    method init( t, context, info, args )
-
-    method init( existing:CallStaticMethod )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-
-    method description->String
-      return "CallStaticMethod($,$)" (%context,%args)
-
-endClass
-
-class CallThisDynamicMethod : CallProcedure
-  METHODS
-    method description->String
-      return "CallThisDynamicMethod($)" (%args)
-
-endClass
-
-class CallThisStaticMethod : CallProcedure
-  METHODS
-    method description->String
-      return "CallThisStaticMethod($)" (%args)
-
-endClass
-
-class CallThisVirtualMethod : CallProcedure
-  METHODS
-    method description->String
-      return "CallThisVirtualMethod($)" (%args)
-
-endClass
-
-class CallVirtualMethod : CallProcedure
-  PROPERTIES
-    context : Cmd
-
-  METHODS
-    method init( t, context, info, args )
-
-    method init( existing:CallVirtualMethod )
-      prior.init( existing )
-      if (existing.context) context = existing.context.cloned
-
-    method description->String
-      return "CallVirtualMethod($,$)" (%context,%args)
 
 endClass
 
@@ -4140,6 +3996,12 @@ class CallMethod : CallProcedure
 
 endClass
 
+class CallThisMethod : CallProcedure
+  METHODS
+    method description->String
+      return "CallThisMethod($,$)" (%info,%args)
+
+endClass
 
 class GlobalMethod : Procedure
   METHODS
@@ -6152,5 +6014,169 @@ class CompareNEReal64 : CompareNE
   METHODS
     method description->String
       return "CompareNEReal64($,$)" (%left,%right)
+
+endClass
+
+
+class AddAndAssignGlobalProperty : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalProperty($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignLocal : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "AddAndAssignLocal($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignProperty : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignProperty )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignProperty($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignThisProperty : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisProperty($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyInt64 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyInt64($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyByte : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyByte($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyCharacter : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyCharacter($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyInt : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyInt($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyInt32 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyInt32($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyInt64 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyInt64($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyLogical : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyLogical($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyReal : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyReal($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyReal32 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyReal32($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyReal64 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignPropertyReal64($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyByte : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyByte($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyCharacter : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyCharacter($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyInt : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyInt($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyInt32 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyInt32($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyLogical : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyLogical($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyReal : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyReal($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyReal32 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyReal32($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyReal64 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyReal64($,$)" (%info,%operand)
 
 endClass

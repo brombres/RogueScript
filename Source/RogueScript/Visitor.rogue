@@ -330,11 +330,11 @@ class Visitor
       cmd.initial_value = visit(cmd.initial_value)
       cmd.type = visit(cmd.type)->(as Type)
 
-    method on_visit_children( cmd:ResolvedOpAndAssignLocal )
+    method on_visit_children( cmd:OpAndAssignLocal )
       cmd.info = visit(cmd.info)->(as Local)
       cmd.operand = visit(cmd.operand)
 
-    method on_visit_children( cmd:ResolvedOpAndAssignProperty )
+    method on_visit_children( cmd:OpAndAssignProperty )
       cmd.info = visit(cmd.info)->(as Property)
       cmd.operand = visit(cmd.operand)
 
@@ -544,10 +544,6 @@ class Visitor
       cmd.resources = visit(cmd.resources)->(as UsedResources)
       cmd.statements = visit(cmd.statements)->(as Statements)
 
-    method on_visit_children( cmd:CleanupBlock )
-      cmd.statements = visit(cmd.statements)->(as Statements)
-      cmd.cleanup = visit(cmd.cleanup)
-
     method on_visit_children( cmd:ForEachElementInRangeUpToInt )
       cmd.element_info = visit(cmd.element_info)->(as Local)
       cmd.start = visit(cmd.start)
@@ -573,28 +569,10 @@ class Visitor
     method on_visit_children( cmd:Access )
       cmd.args = visit(cmd.args)->(as Args)
 
-    method on_visit_children( cmd:CallDynamicMethod )
-      cmd.context = visit(cmd.context)
-      cmd.args = visit(cmd.args)->(as Args)
-
-    method on_visit_children( cmd:CallMethodPointer )
-      cmd.pointer = visit(cmd.pointer)
-      cmd.param_types = visit(cmd.param_types)->(as TypeList)
-      cmd.args = visit(cmd.args)->(as Args)
-      cmd.return_type = visit(cmd.return_type)->(as Type)
-
     method on_visit_children( cmd:CallPriorMethod )
       cmd.args = visit(cmd.args)->(as Args)
 
     method on_visit_children( cmd:CallProcedure )
-      cmd.args = visit(cmd.args)->(as Args)
-
-    method on_visit_children( cmd:CallStaticMethod )
-      cmd.context = visit(cmd.context)
-      cmd.args = visit(cmd.args)->(as Args)
-
-    method on_visit_children( cmd:CallVirtualMethod )
-      cmd.context = visit(cmd.context)
       cmd.args = visit(cmd.args)->(as Args)
 
     method on_visit_children( cmd:Category )

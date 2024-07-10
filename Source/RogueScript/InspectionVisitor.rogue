@@ -475,14 +475,14 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.type)
       return result
 
-    method on_visit_children( cmd:ResolvedOpAndAssignLocal )->$ReturnType
+    method on_visit_children( cmd:OpAndAssignLocal )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.info)
       if (result?) return result
       result = visit(cmd.operand)
       return result
 
-    method on_visit_children( cmd:ResolvedOpAndAssignProperty )->$ReturnType
+    method on_visit_children( cmd:OpAndAssignProperty )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.info)
       if (result?) return result
@@ -835,13 +835,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.statements)
       return result
 
-    method on_visit_children( cmd:CleanupBlock )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.statements)
-      if (result?) return result
-      result = visit(cmd.cleanup)
-      return result
-
     method on_visit_children( cmd:ForEachElementInRangeUpToInt )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.element_info)
@@ -887,24 +880,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.args)
       return result
 
-    method on_visit_children( cmd:CallDynamicMethod )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.context)
-      if (result?) return result
-      result = visit(cmd.args)
-      return result
-
-    method on_visit_children( cmd:CallMethodPointer )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.pointer)
-      if (result?) return result
-      result = visit(cmd.param_types)
-      if (result?) return result
-      result = visit(cmd.args)
-      if (result?) return result
-      result = visit(cmd.return_type)
-      return result
-
     method on_visit_children( cmd:CallPriorMethod )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.args)
@@ -912,20 +887,6 @@ class InspectionVisitor<<$ReturnType>>
 
     method on_visit_children( cmd:CallProcedure )->$ReturnType
       local result : $ReturnType
-      result = visit(cmd.args)
-      return result
-
-    method on_visit_children( cmd:CallStaticMethod )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.context)
-      if (result?) return result
-      result = visit(cmd.args)
-      return result
-
-    method on_visit_children( cmd:CallVirtualMethod )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.context)
-      if (result?) return result
       result = visit(cmd.args)
       return result
 
@@ -1215,3 +1176,4 @@ class InspectionVisitor<<$ReturnType>>
       return result
 
 endClass
+

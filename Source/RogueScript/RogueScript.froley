@@ -3546,7 +3546,64 @@ parser
   create LiteralByte(value:Integer)
 
   create OpAndAssign(target,operand)
-  #create AddAndAssignThisProperty(target,operand)
+  create OpAndAssignLocal(info:Local,operand)
+  create OpAndAssignProperty(info:Property,operand)
+  create AddAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyByte(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create SubtractAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+
 
   create LogicalBinary(left,right):Binary
   create LogicalUnary(operand):Unary
@@ -3571,18 +3628,12 @@ parser
   create WriteThisProperty(info:Property,new_value)
   create WriteThisPropertyValue(info:Property)
 
-  create CallDynamicMethod(context,info:Procedure,args:Args):CallProcedure
-  create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
-  create CallMethod(context,info:Procedure,args:Args):CallProcedure
-  create CallMethodPointer(pointer,param_types:TypeList,args:Args,return_type:Type)
-  create CallNativeMethod
   create CallProcedure(info:Procedure,args:Args)
-  create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure
-  create CallThisDynamicMethod(info:Procedure,args:Args):CallProcedure
-  create CallThisStaticMethod(info:Procedure,args:Args):CallProcedure
-  create CallVirtualMethod(context,info:Procedure,args:Args):CallProcedure
-  create CallThisVirtualMethod(info:Procedure,args:Args):CallProcedure
-  create CleanupBlock(statements:Statements,cleanup):ControlStructure
+  create CallMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallThisMethod(info:Procedure,args:Args):CallProcedure
+  create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
+  create CallNativeMethod
+
   create Compare(left,right):Binary
   create Conditional(condition,statements:Statements):ControlStructure
   create Convert(operand)
@@ -3632,45 +3683,6 @@ parser
   create TypeContext(type:Type)
   create TypeIndex(of_type:Type)
   create WideningCast(operand,to_type:Type)
-
-  create ResolvedOpAndAssignLocal(info:Local,operand)
-  create ResolvedOpAndAssignProperty(info:Property,operand)
-  create AddAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create AddAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create AddAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create AddAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create SubtractAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create SubtractAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create SubtractAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create SubtractAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create MultiplyAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create MultiplyAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create MultiplyAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create MultiplyAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create DivideAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create DivideAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create DivideAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create DivideAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseAndAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseAndAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create BitwiseAndAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseAndAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseOrAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseOrAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create BitwiseOrAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseOrAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseXorAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseXorAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create BitwiseXorAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create BitwiseXorAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitShiftLeftAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitShiftLeftAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create BitShiftLeftAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create BitShiftLeftAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitShiftRightXAndAssignGlobalProperty(info:Property,operand):ResolvedOpAndAssignProperty
-  create BitShiftRightXAndAssignLocal(info:Local,operand):ResolvedOpAndAssignLocal
-  create BitShiftRightXAndAssignProperty(context,info:Property,operand):ResolvedOpAndAssignProperty
-  create BitShiftRightXAndAssignThisProperty(info:Property,operand):ResolvedOpAndAssignProperty
 
   create DecrementGlobalProperty(info:Property)
   create DecrementLocal(info:Local)

@@ -180,6 +180,69 @@ VALIDATE_BINARY_OP<< $Cmd, $op, Character >>
 VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
 $endLocalMacro
 
+$localMacro OP_AND_ASSIGN_EXE<<$Cmd,$op,$OpType,$variant_property>>
+    method $id($Cmd,AndAssignThisProperty,$OpType).execute->Variant
+      local operand = this.operand.execute
+      local context = VM.context.object->(as Object)
+      local entry = context.properties.find( info.name )
+      entry.value.$variant_property $op operand.$variant_property
+      return undefined
+$endLocalMacro
+
+$localMacro OP_AND_ASSIGN<<$Cmd,$op>>
+augment
+  METHODS
+    method Resolver.on_visit( cmd:$id($Cmd,AndAssign) )->Cmd
+      return cmd.target.$id(resolve_,$lowercase($Cmd),_and_assign)( cmd.t, cmd.operand, this )
+
+    method Resolver.on_validate( cmd:$id($Cmd,AndAssignThisProperty) )->Cmd
+      which (cmd.info.type)
+        case Program.type_Byte: return $id($Cmd,AndAssignThisPropertyByte)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Character: return $id($Cmd,AndAssignThisPropertyCharacter)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int: return $id($Cmd,AndAssignThisPropertyInt)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int32: return $id($Cmd,AndAssignThisPropertyInt32)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int64: return $id($Cmd,AndAssignThisPropertyInt64)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Logical: return $id($Cmd,AndAssignThisPropertyLogical)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Real: return $id($Cmd,AndAssignThisPropertyReal)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Real32: return $id($Cmd,AndAssignThisPropertyReal32)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Real64: return $id($Cmd,AndAssignThisPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+      endWhich
+      return cmd
+
+    method Cmd.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
+      throw this.t.error( "Invalid operation target." )
+
+    #method Access.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
+
+    method ContextAccess.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
+      context = resolver.visit( context )
+      local context_type = context.require_type
+
+      if local p = context_type.properties[name]
+        if (context instanceOf This) return resolver.visit( $id($Cmd,AndAssignThisProperty)(t, p, operand) )
+        else                         return resolver.visit( $id($Cmd,AndAssignProperty)(t, context, p, operand) )
+      elseIf local p = context_type.global_properties[name]
+        trace "TODO"
+        #return resolver.visit( WriteGlobalProperty(t, p, operand) )
+      endIf
+
+      throw this.t.error( ''No such property '$' exists in type '$'.''(name,context_type.name) )
+
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Byte,      byte >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Character, character >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int,       integer >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int32,     int32 >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Logical,   logical >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Real,      real >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Real32,    real32 >>
+      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
+
+endAugment
+$endLocalMacro
+
+OP_AND_ASSIGN<< Add, += >>
+
 MATH_OP<< Add,      + >>
 MATH_OP<< Subtract, - >>
 MATH_OP<< Multiply, * >>
@@ -649,6 +712,10 @@ class Resolver : Visitor [singleton]
       endIf
       return cmd
 
+    method on_visit( cmd:OpAndAssignProperty )->Cmd
+      cmd.operand = convert_to( visit(cmd.operand), cmd.info.type )
+      return validate( cmd )
+
     method on_visit( proc:Procedure )->Cmd
       temporarily this_procedure = proc
         scope_stack.add( proc )
@@ -782,8 +849,11 @@ class Resolver : Visitor [singleton]
           elseIf (m.attributes.is_global)
             return visit( CallGlobalMethod(t, m, args) )
           else
-            if (not context) context = This( t ).[ type = type_context ]
-            return visit( CallMethod(t, context, m, args) )
+            if (not context or context instanceOf This)
+              return visit( CallThisMethod(t, m, args) )
+            else
+              return visit( CallMethod(t, context, m, args) )
+            endIf
           endIf
         endIf
 
@@ -796,7 +866,8 @@ class Resolver : Visitor [singleton]
           # PROPERTIES
           if (context)
             if local p = type_context.properties[name]
-              return visit( ReadProperty(t,context,p) )
+              if (context instanceOf This) return visit( ReadThisProperty(t,p) )
+              else                         return visit( ReadProperty(t,context,p) )
             endIf
           endIf
 
@@ -920,7 +991,8 @@ augment
       local context_type = context.require_type
 
       if local p = context_type.properties[name]
-        return resolver.visit( WriteProperty(t, context, p, new_value) )
+        if (context instanceOf This) return resolver.visit( WriteThisProperty(t, p, new_value) )
+        else                         return resolver.visit( WriteProperty(t, context, p, new_value) )
       elseIf local p = context_type.global_properties[name]
         return resolver.visit( WriteGlobalProperty(t, p, new_value) )
       endIf

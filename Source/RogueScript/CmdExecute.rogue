@@ -46,6 +46,18 @@ augment
       VM.stack.discard_from( old_stack_count )
       return result
 
+    method CallThisMethod.execute->Variant
+      local context = VM.context
+
+      local old_stack_count = VM.stack.count
+      VM.stack.add( context )
+
+      if (args and args.count) VM.stack.add( (forEach in args).execute )
+
+      local result = info.execute
+      VM.stack.discard_from( old_stack_count )
+      return result
+
     method CallNativeMethod.execute->Variant
       return callback()
 
