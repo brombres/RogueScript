@@ -19,6 +19,8 @@ class Organizer : Visitor [singleton]
       (forEach in Program.types).inherit_methods
       (forEach in Program.types).visiting = false
 
+      (forEach in Program.types).create_class_initializer
+
     method organize( procedure:Procedure )
       local type_context = procedure.type_context
       temporarily Program.current_module=type_context.module_context, this_type=type_context

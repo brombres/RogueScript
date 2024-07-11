@@ -181,6 +181,22 @@ VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
 $endLocalMacro
 
 $localMacro OP_AND_ASSIGN_EXE<<$Cmd,$op,$OpType,$variant_property>>
+    method $id($Cmd,AndAssignGlobalProperty,$OpType).execute->Variant
+      local operand = this.operand.execute
+      local entry = info.type_context.global_property_values.find( info.name )
+      entry.value.$variant_property $op operand.$variant_property
+      return undefined
+
+    method $id($Cmd,AndAssignProperty,$OpType).execute->Variant
+      local operand = this.operand.execute
+      if local context = this.context.execute.object->(as Object)
+        local entry = context.properties.find( info.name )
+        entry.value.$variant_property $op operand.$variant_property
+      else
+        throw t.error( "Null context." )
+      endIf
+      return undefined
+
     method $id($Cmd,AndAssignThisProperty,$OpType).execute->Variant
       local operand = this.operand.execute
       local context = VM.context.object->(as Object)
@@ -194,6 +210,43 @@ augment
   METHODS
     method Resolver.on_visit( cmd:$id($Cmd,AndAssign) )->Cmd
       return cmd.target.$id(resolve_,$lowercase($Cmd),_and_assign)( cmd.t, cmd.operand, this )
+
+    method Resolver.on_validate( cmd:$id($Cmd,AndAssignGlobalProperty) )->Cmd
+      which (cmd.info.type)
+        case Program.type_Byte: return $id($Cmd,AndAssignGlobalPropertyByte)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Character: return $id($Cmd,AndAssignGlobalPropertyCharacter)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int: return $id($Cmd,AndAssignGlobalPropertyInt)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int32: return $id($Cmd,AndAssignGlobalPropertyInt32)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int64: return $id($Cmd,AndAssignGlobalPropertyInt64)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Logical: return $id($Cmd,AndAssignGlobalPropertyLogical)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Real: return $id($Cmd,AndAssignGlobalPropertyReal)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Real32: return $id($Cmd,AndAssignGlobalPropertyReal32)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Real64: return $id($Cmd,AndAssignGlobalPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+      endWhich
+      return cmd
+
+    method Resolver.on_validate( cmd:$id($Cmd,AndAssignProperty) )->Cmd
+      which (cmd.info.type)
+        case Program.type_Byte
+          return $id($Cmd,AndAssignPropertyByte)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Character
+          return $id($Cmd,AndAssignPropertyCharacter)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Int
+          return $id($Cmd,AndAssignPropertyInt)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Int32
+          return $id($Cmd,AndAssignPropertyInt32)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Int64
+          return $id($Cmd,AndAssignPropertyInt64)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Logical
+          return $id($Cmd,AndAssignPropertyLogical)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Real
+          return $id($Cmd,AndAssignPropertyReal)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Real32
+          return $id($Cmd,AndAssignPropertyReal32)( cmd.t, cmd.context, cmd.info, cmd.operand )
+        case Program.type_Real64
+          return $id($Cmd,AndAssignPropertyReal64)( cmd.t, cmd.context, cmd.info, cmd.operand )
+      endWhich
+      return cmd
 
     method Resolver.on_validate( cmd:$id($Cmd,AndAssignThisProperty) )->Cmd
       which (cmd.info.type)
@@ -222,8 +275,7 @@ augment
         if (context instanceOf This) return resolver.visit( $id($Cmd,AndAssignThisProperty)(t, p, operand) )
         else                         return resolver.visit( $id($Cmd,AndAssignProperty)(t, context, p, operand) )
       elseIf local p = context_type.global_properties[name]
-        trace "TODO"
-        #return resolver.visit( WriteGlobalProperty(t, p, operand) )
+        return resolver.visit( $id($Cmd,AndAssignGlobalProperty)(t, p, operand) )
       endIf
 
       throw this.t.error( ''No such property '$' exists in type '$'.''(name,context_type.name) )

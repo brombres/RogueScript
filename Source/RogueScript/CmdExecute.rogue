@@ -172,6 +172,9 @@ augment
     method ReadNativeSingleton.execute->Variant
       return fn_get_singleton()
 
+    method ReadGlobalProperty.execute->Variant
+      return info.type_context.global_property_values[ info.name ]
+
     method ReadObjectProperty.execute->Variant
       if local obj = this.context.execute.object->(as RogueScript::Object)
         return obj.properties[info.name]
@@ -212,6 +215,9 @@ augment
         result = statements.execute
       endWhile
       return result
+
+    method WriteGlobalProperty.execute->Variant
+      info.type_context.global_property_values[info.name] = new_value.execute
 
     method WriteLocal.execute->Variant
       local new_value = new_value.execute

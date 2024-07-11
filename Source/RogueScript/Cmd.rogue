@@ -1343,7 +1343,7 @@ endClass
 
 class GlobalPropertyDeclarations : Cmd
   PROPERTIES
-    list : Cmd
+    list         : PropertyList
     type         : Type
     attributes   : Attributes
     doc          : String
@@ -6062,69 +6062,6 @@ class AddAndAssignThisPropertyInt64 : OpAndAssignProperty
 
 endClass
 
-class AddAndAssignPropertyByte : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyByte($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyCharacter : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyCharacter($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyInt : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyInt($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyInt32 : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyInt32($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyInt64 : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyInt64($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyLogical : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyLogical($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyReal : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyReal($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyReal32 : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyReal32($,$)" (%info,%operand)
-
-endClass
-
-class AddAndAssignPropertyReal64 : OpAndAssignProperty
-  METHODS
-    method description->String
-      return "AddAndAssignPropertyReal64($,$)" (%info,%operand)
-
-endClass
-
 class AddAndAssignThisPropertyByte : OpAndAssignProperty
   METHODS
     method description->String
@@ -6178,5 +6115,212 @@ class AddAndAssignThisPropertyReal64 : OpAndAssignProperty
   METHODS
     method description->String
       return "AddAndAssignThisPropertyReal64($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyByte : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyByte )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyByte($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyCharacter : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyCharacter )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyCharacter($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyInt : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyInt )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyInt($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyInt32 : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyInt32 )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyInt32($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyInt64 : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyInt64 )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyInt64($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyLogical : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyLogical )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyLogical($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyReal : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyReal )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyReal($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyReal32 : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyReal32 )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyReal32($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyReal64 : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyReal64 )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyReal64($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyByte : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyByte($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyCharacter : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyCharacter($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyInt : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyInt($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyInt32 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyInt32($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyInt64 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyInt64($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyLogical : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyLogical($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyReal : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyReal($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyReal32 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyReal32($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignGlobalPropertyReal64 : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyReal64($,$)" (%info,%operand)
 
 endClass

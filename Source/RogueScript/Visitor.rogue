@@ -88,11 +88,6 @@ class Visitor
     method on_visit_children( cmd:Unary )
       cmd.operand = visit(cmd.operand)
 
-    method on_visit_children( cmd:AddAndAssignProperty )
-      cmd.context = visit(cmd.context)
-      cmd.info = visit(cmd.info)->(as Property)
-      cmd.operand = visit(cmd.operand)
-
     method on_visit_children( cmd:As )
       cmd.operand = visit(cmd.operand)
       cmd.as_type = visit(cmd.as_type)->(as Type)
@@ -739,5 +734,55 @@ class Visitor
 
     method on_visit_children( cmd:WriteThisPropertyValue )
       cmd.info = visit(cmd.info)->(as Property)
+
+    method on_visit_children( cmd:AddAndAssignProperty )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyByte )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyCharacter )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyInt )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyInt32 )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyInt64 )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyLogical )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyReal )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyReal32 )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:AddAndAssignPropertyReal64 )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
 
 endClass

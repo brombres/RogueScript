@@ -47,9 +47,14 @@ class Program [singleton]
 
     method launch
       temporarily Program = this
-        forEach (mod in modules)
-          mod.launch
+        forEach (type in types)
+          if (type.m_init_class)
+            VM.stack.add( Variant() )
+            Program.execute( type.m_init_class )
+          endIf
         endForEach
+
+        (forEach in modules).launch
       endTemporarily
 
     method organize

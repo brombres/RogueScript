@@ -17,6 +17,14 @@ augment
     method GlobalMethod.store( type_context:Type )
       type_context.add_global_method( this )
 
+    method GlobalPropertyDeclarations.store( type_context:Type )
+      localize type
+      forEach (p in list)
+        if (not p.type) p.type = type
+        p.attributes = attributes.cloned
+        type_context.add_global_property( p )
+      endForEach
+
     method Include.store
       noAction
 

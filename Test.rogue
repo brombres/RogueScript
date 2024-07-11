@@ -1,1 +1,11 @@
 println Random.next32
+
+class Test
+  GLOBAL PROPERTIES
+    x = 5
+endClass
+
+println Test.x
+Test.x += 1
+println Test.x
+

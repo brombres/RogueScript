@@ -3548,18 +3548,28 @@ parser
   create OpAndAssign(target,operand)
   create OpAndAssignLocal(info:Local,operand)
   create OpAndAssignProperty(info:Property,operand)
+
   create AddAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
   create AddAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create AddAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyByte(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyCharacter(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyInt(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyInt32(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyInt64(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyLogical(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyReal(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyReal32(info:Property,operand):OpAndAssignProperty
-  create AddAndAssignPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyLogical(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
