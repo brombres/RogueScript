@@ -1256,5 +1256,860 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.operand)
       return result
 
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftLeftAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitShiftRightXAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyLogical )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignProperty )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyByte )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyCharacter )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyInt )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyInt32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyInt64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyReal )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyReal32 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyReal64 )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseAndAndAssignPropertyLogical )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseOrAndAssignPropertyLogical )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:BitwiseXorAndAssignPropertyLogical )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
 endClass
 

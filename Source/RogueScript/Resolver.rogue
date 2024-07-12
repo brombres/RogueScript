@@ -181,10 +181,20 @@ VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
 $endLocalMacro
 
 $localMacro OP_AND_ASSIGN_EXE<<$Cmd,$op,$OpType,$variant_property>>
+augment
+  METHODS
     method $id($Cmd,AndAssignGlobalProperty,$OpType).execute->Variant
       local operand = this.operand.execute
       local entry = info.type_context.global_property_values.find( info.name )
       entry.value.$variant_property $op operand.$variant_property
+      return undefined
+
+    method $id($Cmd,AndAssignLocal,$OpType).execute->Variant
+      local operand = this.operand.execute
+      local index = VM.fp + info.index
+      local value = VM.stack[index]
+      value $op operand.$variant_property
+      VM.stack[index] = value
       return undefined
 
     method $id($Cmd,AndAssignProperty,$OpType).execute->Variant
@@ -203,29 +213,74 @@ $localMacro OP_AND_ASSIGN_EXE<<$Cmd,$op,$OpType,$variant_property>>
       local entry = context.properties.find( info.name )
       entry.value.$variant_property $op operand.$variant_property
       return undefined
+endAugment
 $endLocalMacro
 
-$localMacro OP_AND_ASSIGN<<$Cmd,$op>>
+$localMacro OP_AND_ASSIGN<<$Cmd,$op,$require_integers,$allow_logical>>
 augment
   METHODS
     method Resolver.on_visit( cmd:$id($Cmd,AndAssign) )->Cmd
       return cmd.target.$id(resolve_,$lowercase($Cmd),_and_assign)( cmd.t, cmd.operand, this )
 
-    method Resolver.on_validate( cmd:$id($Cmd,AndAssignGlobalProperty) )->Cmd
+    method Resolver.on_visit( cmd:$id($Cmd,AndAssignGlobalProperty) )->Cmd
+      cmd.operand = convert_to( visit(cmd.operand), cmd.info.type )
       which (cmd.info.type)
         case Program.type_Byte: return $id($Cmd,AndAssignGlobalPropertyByte)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Character: return $id($Cmd,AndAssignGlobalPropertyCharacter)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Int: return $id($Cmd,AndAssignGlobalPropertyInt)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Int32: return $id($Cmd,AndAssignGlobalPropertyInt32)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Int64: return $id($Cmd,AndAssignGlobalPropertyInt64)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Logical: return $id($Cmd,AndAssignGlobalPropertyLogical)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Real: return $id($Cmd,AndAssignGlobalPropertyReal)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Real32: return $id($Cmd,AndAssignGlobalPropertyReal32)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Real64: return $id($Cmd,AndAssignGlobalPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Logical
+          if ($allow_logical)
+            return $id($Cmd,AndAssignGlobalPropertyLogical)( cmd.t, cmd.info, cmd.operand )
+          else
+            throw cmd.t.error( "Illegal operation." )
+          endIf
+        others
+          if ($require_integers)
+            throw cmd.t.error( "Illegal operation." )
+          else
+            which (cmd.info.type)
+              case Program.type_Real
+                return $id($Cmd,AndAssignGlobalPropertyReal)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_Real32
+                return $id($Cmd,AndAssignGlobalPropertyReal32)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_Real64
+                return $id($Cmd,AndAssignGlobalPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+            endWhich
+          endIf
       endWhich
       return cmd
 
-    method Resolver.on_validate( cmd:$id($Cmd,AndAssignProperty) )->Cmd
+    method Resolver.on_visit( cmd:$id($Cmd,AndAssignLocal) )->Cmd
+      cmd.operand = convert_to( visit(cmd.operand), cmd.info.type )
+      which (cmd.info.type)
+        case Program.type_Byte: return $id($Cmd,AndAssignLocalByte)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Character: return $id($Cmd,AndAssignLocalCharacter)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int: return $id($Cmd,AndAssignLocalInt)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int32: return $id($Cmd,AndAssignLocalInt32)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Int64: return $id($Cmd,AndAssignLocalInt64)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Logical
+          if ($allow_logical)
+            return $id($Cmd,AndAssignLocalLogical)( cmd.t, cmd.info, cmd.operand )
+          else
+            throw cmd.t.error( "Illegal operation - unsupported on type $."(cmd.info.type) )
+          endIf
+        others
+          if ($require_integers)
+            throw cmd.t.error( "Illegal operation - unsupported on type $."(cmd.info.type) )
+          else
+            which (cmd.info.type)
+              case Program.type_Real: return $id($Cmd,AndAssignLocalReal)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_Real32: return $id($Cmd,AndAssignLocalReal32)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_Real64: return $id($Cmd,AndAssignLocalReal64)( cmd.t, cmd.info, cmd.operand )
+            endWhich
+          endIf
+      endWhich
+      return cmd
+
+    method Resolver.on_visit( cmd:$id($Cmd,AndAssignProperty) )->Cmd
+      cmd.operand = convert_to( visit(cmd.operand), cmd.info.type )
       which (cmd.info.type)
         case Program.type_Byte
           return $id($Cmd,AndAssignPropertyByte)( cmd.t, cmd.context, cmd.info, cmd.operand )
@@ -238,34 +293,76 @@ augment
         case Program.type_Int64
           return $id($Cmd,AndAssignPropertyInt64)( cmd.t, cmd.context, cmd.info, cmd.operand )
         case Program.type_Logical
-          return $id($Cmd,AndAssignPropertyLogical)( cmd.t, cmd.context, cmd.info, cmd.operand )
-        case Program.type_Real
-          return $id($Cmd,AndAssignPropertyReal)( cmd.t, cmd.context, cmd.info, cmd.operand )
-        case Program.type_Real32
-          return $id($Cmd,AndAssignPropertyReal32)( cmd.t, cmd.context, cmd.info, cmd.operand )
-        case Program.type_Real64
-          return $id($Cmd,AndAssignPropertyReal64)( cmd.t, cmd.context, cmd.info, cmd.operand )
+          if ($allow_logical)
+            return $id($Cmd,AndAssignPropertyLogical)( cmd.t, cmd.context, cmd.info, cmd.operand )
+          else
+            throw cmd.t.error( "Illegal operation - unsupported on type $."(cmd.info.type) )
+          endIf
+        others
+          if ($require_integers)
+            throw cmd.t.error( "Illegal operation - unsupported on type $."(cmd.info.type) )
+          else
+            which (cmd.info.type)
+              case Program.type_Real
+                return $id($Cmd,AndAssignPropertyReal)( cmd.t, cmd.context, cmd.info, cmd.operand )
+              case Program.type_Real32
+                return $id($Cmd,AndAssignPropertyReal32)( cmd.t, cmd.context, cmd.info, cmd.operand )
+              case Program.type_Real64
+                return $id($Cmd,AndAssignPropertyReal64)( cmd.t, cmd.context, cmd.info, cmd.operand )
+            endWhich
+          endIf
       endWhich
       return cmd
 
-    method Resolver.on_validate( cmd:$id($Cmd,AndAssignThisProperty) )->Cmd
+    method Resolver.on_visit( cmd:$id($Cmd,AndAssignThisProperty) )->Cmd
+      cmd.operand = convert_to( visit(cmd.operand), cmd.info.type )
       which (cmd.info.type)
         case Program.type_Byte: return $id($Cmd,AndAssignThisPropertyByte)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Character: return $id($Cmd,AndAssignThisPropertyCharacter)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Int: return $id($Cmd,AndAssignThisPropertyInt)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Int32: return $id($Cmd,AndAssignThisPropertyInt32)( cmd.t, cmd.info, cmd.operand )
         case Program.type_Int64: return $id($Cmd,AndAssignThisPropertyInt64)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Logical: return $id($Cmd,AndAssignThisPropertyLogical)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Real: return $id($Cmd,AndAssignThisPropertyReal)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Real32: return $id($Cmd,AndAssignThisPropertyReal32)( cmd.t, cmd.info, cmd.operand )
-        case Program.type_Real64: return $id($Cmd,AndAssignThisPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+        case Program.type_Logical
+          if ($allow_logical)
+            return $id($Cmd,AndAssignThisPropertyLogical)( cmd.t, cmd.info, cmd.operand )
+          else
+            throw cmd.t.error( "Illegal operation - unsupported on type $."(cmd.info.type) )
+          endIf
+        others
+          if ($require_integers)
+            throw cmd.t.error( "Illegal operation - unsupported on type $."(cmd.info.type) )
+          else
+            which (cmd.info.type)
+              case Program.type_Real
+                return $id($Cmd,AndAssignThisPropertyReal)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_Real32
+                return $id($Cmd,AndAssignThisPropertyReal32)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_Real64
+                return $id($Cmd,AndAssignThisPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+            endWhich
+          endIf
       endWhich
       return cmd
 
     method Cmd.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
       throw this.t.error( "Invalid operation target." )
 
-    #method Access.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
+    method Access.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
+      if (args)
+        throw this.t.error( "Invalid operation target." )
+      endIf
+
+      if local v = resolver.find_local( name )
+        return resolver.visit( $id($Cmd,AndAssignLocal)(t, v, operand) )
+      endIf
+
+      if local p = resolver.this_type.properties[name]
+        return resolver.visit( $id($Cmd,AndAssignThisProperty)(t, p, operand) )
+      elseIf local p = resolver.this_type.global_properties[name]
+        return resolver.visit( $id($Cmd,AndAssignGlobalProperty)(t, p, operand) )
+      endIf
+
+      throw this.t.error( "Invalid operation target." )
 
     method ContextAccess.$id(resolve_,$lowercase($Cmd),_and_assign)( t:Token, operand:Cmd, resolver:Resolver )->Cmd
       context = resolver.visit( context )
@@ -279,21 +376,65 @@ augment
       endIf
 
       throw this.t.error( ''No such property '$' exists in type '$'.''(name,context_type.name) )
-
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Byte,      byte >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Character, character >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int,       integer >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int32,     int32 >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Logical,   logical >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Real,      real >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Real32,    real32 >>
-      OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
-
 endAugment
 $endLocalMacro
 
-OP_AND_ASSIGN<< Add, += >>
+$localMacro OP_AND_ASSIGN_GENERAL<<$Cmd,$op>>
+OP_AND_ASSIGN<<$Cmd,$op,false,true>>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Byte,      byte >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Character, character >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int,       integer >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int32,     int32 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Logical,   logical >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Real,      real >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Real32,    real32 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Real64,    real64 >>
+$endLocalMacro
+
+$localMacro OP_AND_ASSIGN_NUMERICAL<<$Cmd,$op>>
+OP_AND_ASSIGN<<$Cmd,$op,false,false>>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Byte,      byte >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Character, character >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int,       integer >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int32,     int32 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Real,      real >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Real32,    real32 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Real64,    real64 >>
+$endLocalMacro
+
+$localMacro OP_AND_ASSIGN_BITWISE<<$Cmd,$op>>
+OP_AND_ASSIGN<<$Cmd,$op,true,true>>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Byte,      byte >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Character, character >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int,       integer >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int32,     int32 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Logical,   logical >>
+$endLocalMacro
+
+$localMacro OP_AND_ASSIGN_BIT_SHIFT<<$Cmd,$op>>
+OP_AND_ASSIGN<<$Cmd,$op,true,false>>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Byte,      byte >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Character, character >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int,       integer >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int32,     int32 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
+$endLocalMacro
+
+OP_AND_ASSIGN_GENERAL<<   Add,            += >>
+OP_AND_ASSIGN_NUMERICAL<< Subtract,       -= >>
+OP_AND_ASSIGN_GENERAL<<   Multiply,       *= >>
+OP_AND_ASSIGN_NUMERICAL<< Divide,         /= >>
+OP_AND_ASSIGN_NUMERICAL<< Mod,            %= >>
+OP_AND_ASSIGN_NUMERICAL<< Power,          ^= >>
+OP_AND_ASSIGN_BITWISE<<   BitwiseAnd,     &= >>
+OP_AND_ASSIGN_BITWISE<<   BitwiseOr,      |= >>
+OP_AND_ASSIGN_BITWISE<<   BitwiseXor,     ~= >>
+OP_AND_ASSIGN_BIT_SHIFT<< BitShiftLeft,   :<<:=  >>
+OP_AND_ASSIGN_BIT_SHIFT<< BitShiftRight,  :>>:=  >>
+OP_AND_ASSIGN_BIT_SHIFT<< BitShiftRightX, :>>>:= >>
 
 MATH_OP<< Add,      + >>
 MATH_OP<< Subtract, - >>
@@ -763,10 +904,6 @@ class Resolver : Visitor [singleton]
         return LiteralLogical( literal.t, not literal.value )
       endIf
       return cmd
-
-    method on_visit( cmd:OpAndAssignProperty )->Cmd
-      cmd.operand = convert_to( visit(cmd.operand), cmd.info.type )
-      return validate( cmd )
 
     method on_visit( proc:Procedure )->Cmd
       temporarily this_procedure = proc

@@ -218,15 +218,17 @@ augment
 
     method WriteGlobalProperty.execute->Variant
       info.type_context.global_property_values[info.name] = new_value.execute
+      return undefined
 
     method WriteLocal.execute->Variant
       local new_value = new_value.execute
       VM.stack[ VM.fp+info.index ] = new_value
-      return new_value
+      return undefined
 
     method WriteProperty.execute->Variant
       if local obj = this.context.execute.object->(as RogueScript::Object)
         obj.properties[info.name] = new_value.execute
+        return undefined
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
@@ -234,6 +236,7 @@ augment
     method WriteThisProperty.execute->Variant
       if local obj = VM.context.object->(as Object)
         obj.properties[info.name] = new_value.execute
+        return undefined
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
@@ -241,6 +244,7 @@ augment
     method WriteThisPropertyValue.execute->Variant
       if local obj = VM.context.object->(as Object)
         obj.properties[info.name] = value
+        return undefined
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
