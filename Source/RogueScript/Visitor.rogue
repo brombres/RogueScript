@@ -1260,4 +1260,34 @@ class Visitor
       cmd.info = visit(cmd.info)->(as Property)
       cmd.operand = visit(cmd.operand)
 
+    method on_visit_children( cmd:AddAndAssignPropertyXY )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:DivideAndAssignPropertyXY )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:ModAndAssignPropertyXY )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyXY )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:PowerAndAssignPropertyXY )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyXY )
+      cmd.context = visit(cmd.context)
+      cmd.info = visit(cmd.info)->(as Property)
+      cmd.operand = visit(cmd.operand)
+
 endClass

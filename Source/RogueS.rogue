@@ -28,6 +28,11 @@ class RogueS
         NativeLibraries.register( vm )
         vm.include( "Source/Libraries" )
 
+        vm.load(
+          File("Internal Configuration"),
+          @|uses Geometry
+        )
+
         forEach (arg in command//args)
           vm.include( File(arg->String) )
         endForEach

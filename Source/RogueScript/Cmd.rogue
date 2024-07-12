@@ -9904,3 +9904,309 @@ class BitwiseXorAndAssignThisPropertyLogical : OpAndAssignProperty
       return "BitwiseXorAndAssignThisPropertyLogical($,$)" (%info,%operand)
 
 endClass
+
+class AddAndAssignGlobalPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignGlobalPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignLocalXY : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "AddAndAssignLocalXY($,$)" (%info,%operand)
+
+endClass
+
+class AddAndAssignPropertyXY : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:AddAndAssignPropertyXY )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "AddAndAssignPropertyXY($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class AddAndAssignThisPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "AddAndAssignThisPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class DivideAndAssignGlobalPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "DivideAndAssignGlobalPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class DivideAndAssignLocalXY : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "DivideAndAssignLocalXY($,$)" (%info,%operand)
+
+endClass
+
+class DivideAndAssignPropertyXY : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:DivideAndAssignPropertyXY )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "DivideAndAssignPropertyXY($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class DivideAndAssignThisPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "DivideAndAssignThisPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class ModAndAssignGlobalPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "ModAndAssignGlobalPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class ModAndAssignLocalXY : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "ModAndAssignLocalXY($,$)" (%info,%operand)
+
+endClass
+
+class ModAndAssignPropertyXY : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:ModAndAssignPropertyXY )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "ModAndAssignPropertyXY($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class ModAndAssignThisPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "ModAndAssignThisPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class MultiplyAndAssignGlobalPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "MultiplyAndAssignGlobalPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class MultiplyAndAssignLocalXY : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "MultiplyAndAssignLocalXY($,$)" (%info,%operand)
+
+endClass
+
+class MultiplyAndAssignPropertyXY : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:MultiplyAndAssignPropertyXY )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "MultiplyAndAssignPropertyXY($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class MultiplyAndAssignThisPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "MultiplyAndAssignThisPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class PowerAndAssignGlobalPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "PowerAndAssignGlobalPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class PowerAndAssignLocalXY : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "PowerAndAssignLocalXY($,$)" (%info,%operand)
+
+endClass
+
+class PowerAndAssignPropertyXY : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:PowerAndAssignPropertyXY )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "PowerAndAssignPropertyXY($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class PowerAndAssignThisPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "PowerAndAssignThisPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class SubtractAndAssignGlobalPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "SubtractAndAssignGlobalPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class SubtractAndAssignLocalXY : OpAndAssignLocal
+  METHODS
+    method description->String
+      return "SubtractAndAssignLocalXY($,$)" (%info,%operand)
+
+endClass
+
+class SubtractAndAssignPropertyXY : OpAndAssignProperty
+  PROPERTIES
+    context : Cmd
+
+  METHODS
+    method init( t, context, info, operand )
+
+    method init( existing:SubtractAndAssignPropertyXY )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "SubtractAndAssignPropertyXY($,$,$)" (%context,%info,%operand)
+
+endClass
+
+class SubtractAndAssignThisPropertyXY : OpAndAssignProperty
+  METHODS
+    method description->String
+      return "SubtractAndAssignThisPropertyXY($,$)" (%info,%operand)
+
+endClass
+
+class AddXY : Add
+  METHODS
+    method description->String
+      return "AddXY($,$)" (%left,%right)
+
+endClass
+
+class DivideXY : Divide
+  METHODS
+    method description->String
+      return "DivideXY($,$)" (%left,%right)
+
+endClass
+
+class ModXY : Mod
+  METHODS
+    method description->String
+      return "ModXY($,$)" (%left,%right)
+
+endClass
+
+class MultiplyXY : Multiply
+  METHODS
+    method description->String
+      return "MultiplyXY($,$)" (%left,%right)
+
+endClass
+
+class PowerXY : Power
+  METHODS
+    method description->String
+      return "PowerXY($,$)" (%left,%right)
+
+endClass
+
+class SubtractXY : Subtract
+  METHODS
+    method description->String
+      return "SubtractXY($,$)" (%left,%right)
+
+endClass
+
+class CompareEQXY : CompareEQ
+  METHODS
+    method description->String
+      return "CompareEQXY($,$)" (%left,%right)
+
+endClass
+
+class CompareGEXY : CompareGE
+  METHODS
+    method description->String
+      return "CompareGEXY($,$)" (%left,%right)
+
+endClass
+
+class CompareGTXY : CompareGT
+  METHODS
+    method description->String
+      return "CompareGTXY($,$)" (%left,%right)
+
+endClass
+
+class CompareLEXY : CompareLE
+  METHODS
+    method description->String
+      return "CompareLEXY($,$)" (%left,%right)
+
+endClass
+
+class CompareLTXY : CompareLT
+  METHODS
+    method description->String
+      return "CompareLTXY($,$)" (%left,%right)
+
+endClass
+
+class CompareNEXY : CompareNE
+  METHODS
+    method description->String
+      return "CompareNEXY($,$)" (%left,%right)
+
+endClass

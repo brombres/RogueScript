@@ -3291,6 +3291,7 @@ parser
 
 
 - additional_node_types
+  create AddXY(left,right):Add
   create AddReal(left,right):Add
   create AddReal32(left,right):Add
   create AddReal64(left,right):Add
@@ -3301,6 +3302,7 @@ parser
   create AddByte(left,right):Add
   create AddLogical(left,right):Add
 
+  create SubtractXY(left,right):Subtract
   create SubtractReal(left,right):Subtract
   create SubtractReal32(left,right):Subtract
   create SubtractReal64(left,right):Subtract
@@ -3311,6 +3313,7 @@ parser
   create SubtractByte(left,right):Subtract
   create SubtractLogical(left,right):Subtract
 
+  create MultiplyXY(left,right):Multiply
   create MultiplyReal(left,right):Multiply
   create MultiplyReal32(left,right):Multiply
   create MultiplyReal64(left,right):Multiply
@@ -3321,6 +3324,7 @@ parser
   create MultiplyByte(left,right):Multiply
   create MultiplyLogical(left,right):Multiply
 
+  create DivideXY(left,right):Divide
   create DivideReal(left,right):Divide
   create DivideReal32(left,right):Divide
   create DivideReal64(left,right):Divide
@@ -3331,6 +3335,7 @@ parser
   create DivideByte(left,right):Divide
   create DivideLogical(left,right):Divide
 
+  create ModXY(left,right):Mod
   create ModReal(left,right):Mod
   create ModReal32(left,right):Mod
   create ModReal64(left,right):Mod
@@ -3341,6 +3346,7 @@ parser
   create ModByte(left,right):Mod
   create ModLogical(left,right):Mod
 
+  create PowerXY(left,right):Power
   create PowerReal(left,right):Power
   create PowerReal32(left,right):Power
   create PowerReal64(left,right):Power
@@ -3397,6 +3403,13 @@ parser
   create CompareLEReal64(left,right):CompareLE
   create CompareGTReal64(left,right):CompareGT
   create CompareGEReal64(left,right):CompareGE
+
+  create CompareEQXY(left,right):CompareEQ
+  create CompareNEXY(left,right):CompareNE
+  create CompareLTXY(left,right):CompareLT
+  create CompareLEXY(left,right):CompareLE
+  create CompareGTXY(left,right):CompareGT
+  create CompareGEXY(left,right):CompareGE
 
   create CompareEQReal(left,right):CompareEQ
   create CompareNEReal(left,right):CompareNE
@@ -3559,6 +3572,7 @@ parser
   create AddAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
   create AddAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
   create AddAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
   create AddAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create AddAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
   create AddAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
@@ -3569,6 +3583,7 @@ parser
   create AddAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
   create AddAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
   create AddAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
   create AddAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
   create AddAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
   create AddAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
@@ -3579,6 +3594,7 @@ parser
   create AddAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
   create AddAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
   create AddAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
@@ -3589,6 +3605,7 @@ parser
   create AddAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
   create AddAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
 
   create SubtractAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
@@ -3599,6 +3616,7 @@ parser
   create SubtractAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create SubtractAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
   create SubtractAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
@@ -3608,6 +3626,7 @@ parser
   create SubtractAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
   create SubtractAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
   create SubtractAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
   create SubtractAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
@@ -3617,6 +3636,7 @@ parser
   create SubtractAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
@@ -3626,6 +3646,7 @@ parser
   create SubtractAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
   create SubtractAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
 
   create MultiplyAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
@@ -3637,6 +3658,7 @@ parser
   create MultiplyAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create MultiplyAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
   create MultiplyAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
@@ -3647,6 +3669,7 @@ parser
   create MultiplyAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
   create MultiplyAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
   create MultiplyAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
   create MultiplyAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
@@ -3657,6 +3680,7 @@ parser
   create MultiplyAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
@@ -3667,6 +3691,7 @@ parser
   create MultiplyAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
   create MultiplyAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
 
   create DivideAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
@@ -3677,6 +3702,7 @@ parser
   create DivideAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create DivideAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
   create DivideAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
@@ -3686,6 +3712,7 @@ parser
   create DivideAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
   create DivideAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
   create DivideAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
   create DivideAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
   create DivideAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
   create DivideAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
@@ -3695,6 +3722,7 @@ parser
   create DivideAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
   create DivideAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
   create DivideAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
   create DivideAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
@@ -3704,6 +3732,7 @@ parser
   create DivideAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
   create DivideAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
 
   create ModAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
   create ModAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
@@ -3714,6 +3743,7 @@ parser
   create ModAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
   create ModAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
   create ModAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
   create ModAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create ModAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
   create ModAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
@@ -3723,6 +3753,7 @@ parser
   create ModAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
   create ModAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
   create ModAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
   create ModAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
   create ModAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
   create ModAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
@@ -3732,6 +3763,7 @@ parser
   create ModAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
   create ModAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
   create ModAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
   create ModAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create ModAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create ModAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
@@ -3741,6 +3773,7 @@ parser
   create ModAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
   create ModAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
   create ModAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
 
   create PowerAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
@@ -3751,6 +3784,7 @@ parser
   create PowerAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignLocal(info:Local,operand):OpAndAssignLocal
   create PowerAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
   create PowerAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
@@ -3760,6 +3794,7 @@ parser
   create PowerAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
   create PowerAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
   create PowerAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
   create PowerAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
   create PowerAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
   create PowerAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
@@ -3769,6 +3804,7 @@ parser
   create PowerAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
   create PowerAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
   create PowerAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
   create PowerAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
@@ -3778,6 +3814,7 @@ parser
   create PowerAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
   create PowerAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
 
   create BitwiseAndAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
   create BitwiseAndAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty

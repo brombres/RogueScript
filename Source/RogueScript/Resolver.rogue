@@ -11,7 +11,9 @@ augment Resolver
       left = convert_to( left, common_type )
       right = convert_to( right, common_type )
 
-      if (common_type is Program.type_Real64)
+      if (common_type is Program.type_XY)
+        return validate( $id($Cmd,XY)(cmd.t,left,right) )
+      elseIf (common_type is Program.type_Real64)
         return validate( $id($Cmd,Real64)(cmd.t,left,right) )
       elseIf (common_type is Program.type_Real)
         return validate( $id($Cmd,Real)(cmd.t,left,right) )
@@ -38,6 +40,7 @@ $endLocalMacro
 $localMacro GENERAL_OP_EXECUTE<<$Cmd,$op>>
 augment
   METHODS
+    method $id($Cmd,XY).type->Type:        return Program.type_XY
     method $id($Cmd,Real64).type->Type:    return Program.type_Real64
     method $id($Cmd,Real).type->Type:      return Program.type_Real
     method $id($Cmd,Real32).type->Type:    return Program.type_Real32
@@ -47,6 +50,7 @@ augment
     method $id($Cmd,Character).type->Type: return Program.type_Character
     method $id($Cmd,Byte).type->Type:      return Program.type_Byte
 
+    method $id($Cmd,Byte).execute->Variant:      return left.execute.xy $op right.execute.xy
     method $id($Cmd,Real64).execute->Variant:    return left.execute.real64 $op right.execute.real64
     method $id($Cmd,Real).execute->Variant:      return left.execute.real $op right.execute.real
     method $id($Cmd,Real32).execute->Variant:    return left.execute.real32 $op right.execute.real32
@@ -247,6 +251,8 @@ augment
                 return $id($Cmd,AndAssignGlobalPropertyReal32)( cmd.t, cmd.info, cmd.operand )
               case Program.type_Real64
                 return $id($Cmd,AndAssignGlobalPropertyReal64)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_XY
+                return $id($Cmd,AndAssignGlobalPropertyXY)( cmd.t, cmd.info, cmd.operand )
             endWhich
           endIf
       endWhich
@@ -274,6 +280,7 @@ augment
               case Program.type_Real: return $id($Cmd,AndAssignLocalReal)( cmd.t, cmd.info, cmd.operand )
               case Program.type_Real32: return $id($Cmd,AndAssignLocalReal32)( cmd.t, cmd.info, cmd.operand )
               case Program.type_Real64: return $id($Cmd,AndAssignLocalReal64)( cmd.t, cmd.info, cmd.operand )
+              case Program.type_XY:     return $id($Cmd,AndAssignLocalXY)( cmd.t, cmd.info, cmd.operand )
             endWhich
           endIf
       endWhich
@@ -309,6 +316,8 @@ augment
                 return $id($Cmd,AndAssignPropertyReal32)( cmd.t, cmd.context, cmd.info, cmd.operand )
               case Program.type_Real64
                 return $id($Cmd,AndAssignPropertyReal64)( cmd.t, cmd.context, cmd.info, cmd.operand )
+              case Program.type_XY
+                return $id($Cmd,AndAssignPropertyXY)( cmd.t, cmd.context, cmd.info, cmd.operand )
             endWhich
           endIf
       endWhich
@@ -390,6 +399,7 @@ OP_AND_ASSIGN_EXE<< $Cmd, $op, Logical,   logical >>
 OP_AND_ASSIGN_EXE<< $Cmd, $op, Real,      real >>
 OP_AND_ASSIGN_EXE<< $Cmd, $op, Real32,    real32 >>
 OP_AND_ASSIGN_EXE<< $Cmd, $op, Real64,    real64 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, XY,        xy >>
 $endLocalMacro
 
 $localMacro OP_AND_ASSIGN_NUMERICAL<<$Cmd,$op>>
@@ -402,6 +412,7 @@ OP_AND_ASSIGN_EXE<< $Cmd, $op, Int64,     int64 >>
 OP_AND_ASSIGN_EXE<< $Cmd, $op, Real,      real >>
 OP_AND_ASSIGN_EXE<< $Cmd, $op, Real32,    real32 >>
 OP_AND_ASSIGN_EXE<< $Cmd, $op, Real64,    real64 >>
+OP_AND_ASSIGN_EXE<< $Cmd, $op, XY,        xy >>
 $endLocalMacro
 
 $localMacro OP_AND_ASSIGN_BITWISE<<$Cmd,$op>>
@@ -723,6 +734,7 @@ class Resolver : Visitor [singleton]
       endIf
 
       if (left_type is Program.type_String or right_type is Program.type_String) return Program.type_String
+      if (left_type is Program.type_XY or right_type is Program.type_XY) return Program.type_XY
 
       if (left_type.attributes.is_primitive and right_type.attributes.is_primitive)
         if (bitwise)

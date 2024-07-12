@@ -2111,5 +2111,59 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.operand)
       return result
 
+    method on_visit_children( cmd:AddAndAssignPropertyXY )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:DivideAndAssignPropertyXY )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:ModAndAssignPropertyXY )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:MultiplyAndAssignPropertyXY )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:PowerAndAssignPropertyXY )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
+    method on_visit_children( cmd:SubtractAndAssignPropertyXY )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.operand)
+      return result
+
 endClass
 

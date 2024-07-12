@@ -17,6 +17,7 @@ class Program [singleton]
     type_Real      : Type
     type_Real32    : Type
     type_Real64    : Type
+    type_XY        : Type
     type_String    : Type
 
     pending_elements = ProgramElements[]
@@ -174,5 +175,8 @@ class Program [singleton]
       type_Real32    = default_module.define_type( t, "Real32",    Attribute.PRIMITIVE )
       type_Real64    = default_module.define_type( t, "Real64",    Attribute.PRIMITIVE )
       type_String    = default_module.define_type( t, "String",    Attribute.OBJECT )
+
+      local geometry = get_module( t, "Geometry" )
+      type_XY = geometry.define_type( t, "XY", Attribute.COMPOUND )
 
 endClass

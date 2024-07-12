@@ -136,14 +136,15 @@ class VM [singleton]
         throw RogueScriptError( "File not found: " + file )
       endIf
 
-      local filepath = file.filepath
+      return load( file, String(file), &=suppress_error )
 
+    method load( file:File, source:String, &suppress_error )->Logical
       .begin_staging
 
       try
         temporarily VM = this
-          local elements = Parser( File(filepath) ).parse->(as ProgramElements)
-          new_elements[filepath] = elements
+          local elements = Parser( file, source ).parse->(as ProgramElements)
+          new_elements[file.filepath] = elements
           (forEach in elements).preprocess
         endTemporarily
 

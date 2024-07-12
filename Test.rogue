@@ -1,28 +1,4 @@
-local x = 5.2
-println x
-x += 1
-println x
-x *= 2
-println x
-x /= 3
-println x
-x -= 2
-println x
-x ^= 8
-println x
-x %= 50
-println x
-#{
-}#
-#{
-x :<<:= 1
-println x
-x = 0
-x -= 1
-println x
-x :>>>:= 1
-println x
-x :>>:= 1
-println x
-
-}#
+local pos = XY(3,4)
+println pos
+pos += XY(1,2)
+println pos
