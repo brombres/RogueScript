@@ -1,0 +1,4141 @@
+================================================================================
+# Boss.froley
+================================================================================
+
+--------------------------------------------------------------------------------
+tokens
+--------------------------------------------------------------------------------
+EOL(end of line)             [content]
+CHARACTER      character     [content]
+BINARY_INTEGER integer       [content]
+OCTAL_INTEGER  integer       [content]
+HEX_INTEGER    integer       [content]
+INTEGER        integer       [content]
+REAL_NUMBER    real          [content]
+STRING         string        [content]
+IDENTIFIER     identifier    [content]
+SYMBOL_DOLLAR  $
+PLACEHOLDER($directive or $placeholder)  [content]
+GENERIC_FN_ARG $arg          [content]
+
+----------------------------------------------------------------------
+tokens Keywords
+----------------------------------------------------------------------
+KEYWORD_AND               and
+KEYWORD_ASSERT            assert
+KEYWORD_AUGMENT           augment        [structural]
+KEYWORD_BLOCK             block
+KEYWORD_CASE              case           [structural]
+KEYWORD_CATCH             catch          [structural]
+KEYWORD_CATEGORIES        CATEGORIES     [structural]
+KEYWORD_CLASS             class          [structural]
+KEYWORD_CONTINGENT        contingent
+KEYWORD_DEFINITIONS       DEFINITIONS    [structural]
+KEYWORD_DOWN_TO           downTo
+KEYWORD_ELSE              else           [structural]
+KEYWORD_ELSE_IF           elseIf         [structural]
+KEYWORD_END_AUGMENT       endAugment     [structural]
+KEYWORD_END_BLOCK         endBlock       [structural]
+KEYWORD_END_CLASS         endClass       [structural]
+KEYWORD_END_CONTINGENT    endContingent  [structural]
+KEYWORD_END_ENUM          endEnum        [structural]
+KEYWORD_END_FOR_EACH      endForEach     [structural]
+KEYWORD_END_FUNCTION      endFunction    [structural]
+KEYWORD_END_IF            endIf          [structural]
+KEYWORD_END_LOOP          endLoop        [structural]
+KEYWORD_END_ROUTINE       endRoutine     [structural]
+KEYWORD_END_SUBCLASS      endSubclass    [structural]
+KEYWORD_END_TEMPORARILY   endTemporarily [structural]
+KEYWORD_END_TRY           endTry         [structural]
+KEYWORD_END_USE           endUse         [structural]
+KEYWORD_END_WHICH         endWhich       [structural]
+KEYWORD_END_WHILE         endWhile       [structural]
+KEYWORD_ENUM              enum           [structural]
+KEYWORD_ENSURE            ensure
+KEYWORD_ESCAPE_BLOCK      escapeBlock
+KEYWORD_ESCAPE_CONTINGENT escapeContingent
+KEYWORD_ESCAPE_FOR_EACH   escapeForEach
+KEYWORD_ESCAPE_IF         escapeIf
+KEYWORD_ESCAPE_LOOP       escapeLoop
+KEYWORD_ESCAPE_TRY        escapeTry
+KEYWORD_ESCAPE_WHICH      escapeWhich
+KEYWORD_ESCAPE_WHILE      escapeWhile
+KEYWORD_EXPORT            export
+KEYWORD_FALSE             false
+KEYWORD_FOR_EACH          forEach
+KEYWORD_FUNCTION          function
+KEYWORD_FUNCTION_TYPE     Function
+KEYWORD_GLOBAL_PROPERTIES(GLOBAL PROPERTIES) [structural]
+KEYWORD_GLOBAL_METHODS(GLOBAL METHODS)       [structural]
+KEYWORD_IF                if
+KEYWORD_IMPORT            import
+KEYWORD_INSTANCE_OF       instanceOf
+KEYWORD_IS                is
+KEYWORD_IS_TYPE           isType
+KEYWORD_LOCAL             local
+KEYWORD_LOCALIZE          localize
+KEYWORD_LOOP              loop
+KEYWORD_METHOD            method      [structural]
+KEYWORD_METHODS           METHODS     [structural]
+KEYWORD_MODULE            module      [structural]
+KEYWORD_NATIVE_SECTION    NATIVE      [structural]
+KEYWORD_NATIVE            native
+KEYWORD_NATIVE_HEADER     nativeHeader
+KEYWORD_NATIVE_CODE       nativeCode
+KEYWORD_NATIVE_TYPE       nativeType  [structural]
+KEYWORD_NECESSARY         necessary
+KEYWORD_NEW               new
+KEYWORD_NEXT_ITERATION    nextIteration
+KEYWORD_NO_ACTION         noAction
+KEYWORD_NOT               not
+KEYWORD_NULL              null
+KEYWORD_OR                or
+KEYWORD_OTHERS            others      [structural]
+KEYWORD_PI                pi
+KEYWORD_PRIOR             prior
+KEYWORD_PROPERTIES        PROPERTIES  [structural]
+KEYWORD_RETURN            return
+KEYWORD_ROUTINE           routine     [structural]
+KEYWORD_SATISFIED         satisfied   [structural]
+KEYWORD_STATES            STATES      [structural]
+KEYWORD_SUBCLASS          subclass
+KEYWORD_SUFFICIENT        sufficient
+KEYWORD_SWAP_VALUES       swapValues
+KEYWORD_TEMPORARILY       temporarily
+KEYWORD_THIS              this
+KEYWORD_THIS_TYPE         ThisType
+KEYWORD_THROW             throw
+KEYWORD_TRACE             trace
+KEYWORD_TRUE              true
+KEYWORD_TRY               try
+KEYWORD_UNDEFINED         undefined
+KEYWORD_UNSATISFIED       unsatisfied [structural]
+KEYWORD_USE               use
+KEYWORD_USES              uses        [structural]
+KEYWORD_WHICH             which
+KEYWORD_WHILE             while
+KEYWORD_WITH              with
+KEYWORD_XOR               xor
+
+----------------------------------------------------------------------
+tokens Symbols
+----------------------------------------------------------------------
+META_DEFAULT_VALUE    $defaultValue   [meta]
+META_DEFINE           $define         [meta]
+META_ELSE_IF          $elseIf         [meta structural]
+META_END_IF           $endIf          [meta structural]
+META_END_LOCAL_MACRO  $endLocalMacro  [meta structural]
+META_END_MACRO        $endMacro       [meta structural]
+META_EXISTS           $exists         [meta]
+META_FILE_BYTES       $fileBytes      [meta]
+META_FILE_STRING      $fileString     [meta]
+META_IF               $if             [meta]
+META_INCLUDE          $include        [meta]
+META_INCLUDE_FOLDER   $includeFolder  [meta]
+META_IS_COMPOUND      $isCompound     [meta]
+META_IS_DEFINED       $isDefined      [meta]
+META_IS_ENUM          $isEnum         [meta]
+META_IS_PRIMITIVE     $isPrimitive    [meta]
+META_IS_REFERENCE     $isReference    [meta]
+META_JOIN_IDS         $id             [meta]
+META_JOIN_STRINGS     $string         [meta]
+META_LOCAL_DEFINE     $localDefine    [meta]
+META_LOCAL_MACRO      $localMacro     [meta]
+META_LOWERCASE        $lowercase      [meta]
+META_MACRO            $macro          [meta]
+META_REQUIRE_ROGUE    $requireRogue   [meta]
+META_ROGUE_VERSION    $rogueVersion   [meta]
+META_SOURCE_FILEPATH  $sourceFilepath [meta]
+META_SOURCE_LINE      $sourceLine     [meta]
+META_TARGET           $target         [meta]
+META_THIS_MODULE      $thisModule     [meta]
+META_UPPERCASE        $uppercase      [meta]
+
+SYMBOL_AMPERSAND             &
+SYMBOL_ARROW                 ->
+SYMBOL_ASTERISK              *
+SYMBOL_AT                    @
+SYMBOL_BACKSLASH             \
+SYMBOL_BANG                  !
+SYMBOL_CARET                 ^
+SYMBOL_CLOSE_CURLY           }   [structural]
+SYMBOL_CLOSE_SQUARE          ]   [structural]
+SYMBOL_CLOSE_PAREN           )   [structural]
+SYMBOL_COLON                 :   [structural]
+SYMBOL_COLON_COLON           ::
+SYMBOL_COMMA                 ,   [structural]
+SYMBOL_COMPARE               <>
+SYMBOL_QUESTION_DOT          ?.
+SYMBOL_DOTDOT                ..
+SYMBOL_DOTDOTLT              ..<
+SYMBOL_DOTDOTGT              ..>
+SYMBOL_DOT_OPEN_SQUARE       .[
+SYMBOL_DOUBLE_VERTICAL_BAR   ||  [structural]
+SYMBOL_EMPTY_SQUARE_BRACKETS []
+SYMBOL_VALUE_LIST            @[
+SYMBOL_VALUE_TABLE           @{
+SYMBOL_EQ                    ==
+SYMBOL_EQUALS                =
+SYMBOL_FAT_ARROW             =>
+SYMBOL_GE                    >=
+SYMBOL_GT                    >   [structural]
+SYMBOL_GTGT                  >>  [structural]
+SYMBOL_LE                    <=
+SYMBOL_LEFT_SHIFT            :<<:
+SYMBOL_LEFT_SHIFT_EQUALS     :<<:=
+SYMBOL_LT                    <
+SYMBOL_LTLT                  <<
+SYMBOL_MINUS                 -
+SYMBOL_MINUS_MINUS           --
+SYMBOL_NE                    !=
+SYMBOL_OPEN_CURLY            {
+SYMBOL_OPEN_SQUARE           [
+SYMBOL_OPEN_SQUARE_GT        [>
+SYMBOL_OPEN_PAREN            (
+SYMBOL_PERCENT               %
+SYMBOL_PERIOD                .
+SYMBOL_PLUS                  +
+SYMBOL_PLUS_PLUS             ++
+SYMBOL_QUESTION              ?
+SYMBOL_QUESTION_COLON        ?:
+SYMBOL_RIGHT_SHIFT           :>>:
+SYMBOL_RIGHT_SHIFT_EQUALS    :>>:=
+SYMBOL_RIGHT_SHIFT_X         :>>>:
+SYMBOL_RIGHT_SHIFT_X_EQUALS  :>>>:=
+SYMBOL_SEMICOLON             ;  [structural]
+SYMBOL_SLASH                 /
+SYMBOL_SLASH_SLASH           //
+SYMBOL_BRIEF_TRACE           @trace
+SYMBOL_TILDE                 ~
+SYMBOL_VERTICAL_BAR          |
+
+SYMBOL_PLUS_EQUALS           +=
+SYMBOL_MINUS_EQUALS          -=
+SYMBOL_TIMES_EQUALS          *=
+SYMBOL_DIVIDE_EQUALS         /=
+SYMBOL_MOD_EQUALS            %=
+SYMBOL_POWER_EQUALS          ^=
+SYMBOL_BITWISE_AND_EQUALS    &=
+SYMBOL_BITWISE_OR_EQUALS     |=
+SYMBOL_BITWISE_XOR_EQUALS    ~=
+SYMBOL_SHIFT_LEFT_EQUALS     :<<:=
+SYMBOL_SHIFT_RIGHT_EQUALS    :>>:=
+SYMBOL_SHIFT_RIGHT_X_EQUALS  :>>>:=
+SYMBOL_ACCESS_EQUALS         .=
+
+--------------------------------------------------------------------------------
+scanner
+--------------------------------------------------------------------------------
+- tokenize_another
+  ch = peek
+  if (ch == ' ' or ch == '\r' or ch == '\t') consume [ \r\t]* # whitespace
+
+  markPosition
+  ch = peek
+  if (ch == '#' or (ch == '-' and nextIs("----")) or (ch == '=' and nextIs("====")))
+    scan_comment
+  endIf
+
+  if (not hasAnother)
+    create EOL
+    halt
+  endIf
+
+  if (ch == '.' and consume("..."))
+    while (hasAnother and not consume('\n'))
+      if (not (consume(' ') or consume('\t')))
+        if (nextIs('#')) scan_comment; restart
+        syntaxError "End of line expected."
+      endIf
+    endWhile
+    restart
+  endIf
+
+  if ((ch >= 'a' and ch <= 'z') or (ch >= 'A' and ch <= 'Z') or ch == '_')
+    scan_id_or_keyword
+  endIf
+
+  match input
+    produceAny Symbols
+    case '\n': #{FIXME call mark_beginning_of_line;}# produce EOL
+    case '"':  tokenize_string
+    case "'":  tokenize_character_or_string
+    case "''": tokenize_two_quote_string
+    case "@|": tokenize_verbatim_string
+  endMatch
+
+  if (ch == '$')
+    scan('$')
+    if (scan([_a-zA-Z][_a-zA-Z0-9]*)) produce PLACEHOLDER
+    if (scan([0-9]*)) produce GENERIC_FN_ARG
+    produce SYMBOL_DOLLAR
+  endIf
+
+  scan_number
+
+  syntaxError
+
+- scan_comment
+  if (scan('#'))
+    if (scan('{'))
+      count = 1
+      while (hasAnother)
+        ch = read
+        collect ch
+        if (ch == '\n')
+          saved_buffer = buffer
+          create EOL
+          buffer = saved_buffer
+        elseIf (ch == '#')
+          if (scan('{')) ++count
+        elseIf (ch == '}')
+          if (scan('#'))
+            --count
+            if (count == 0) #{FIXME call process_comment;}# restart
+          endIf
+        endIf
+      endWhile
+      syntaxError "Unterminated multi-line comment."
+    else
+      # Single line comment
+      if scan [^\n]*
+        #FIXME call process_comment
+        consume '\n'
+        #FIXME call mark_beginning_of_line
+        produce EOL
+      endIf
+    endIf
+
+  elseIf (consume({"----"[-]*}) or consume({"===="[=]*}))
+    # HR comments
+    scan [^\n]*
+    #FIXME call process_comment
+    consume '\n'
+    #FIXME call mark_beginning_of_line
+    produce EOL
+
+  else
+    return
+
+  endIf
+
+- scan_id_or_keyword
+  if (not scan([_a-zA-Z][_a-zA-Z0-9]*)) return
+
+  match buffer
+    produceAny Keywords
+    case "GLOBAL"
+      # "GLOBAL PROPERTIES" / "GLOBAL METHODS"
+      if (consume [ ]+)
+        collect ' '
+        if (scan([_a-zA-Z][_a-zA-Z0-9]*))
+          match buffer
+            case "GLOBAL PROPERTIES" -> KEYWORD_GLOBAL_PROPERTIES
+            case "GLOBAL METHODS"    -> KEYWORD_GLOBAL_METHODS
+            others
+              syntaxError "Expected 'GLOBAL PROPERTIES' or 'GLOBAL METHODS'."
+          endMatch
+        endIf
+      endIf
+    others
+      produce IDENTIFIER
+  endMatch
+
+- scan_number
+  if (not nextIs([0-9]) or nextIs([.][0-9])) return
+
+  match input
+    case "0b"
+      base = 2
+      scan_binary_integer
+      scan({[iIlL]})
+      produce BINARY_INTEGER
+    case "0c"
+      base = 8
+      scan_octal_integer
+      scan({[iIlL]})
+      produce OCTAL_INTEGER
+    case "0x"
+      base = 16
+      scan_hex_integer
+      scan({[iIlL]})
+      produce HEX_INTEGER
+    others
+      scan_integer
+      if (nextIs('.'))
+        ch = peek(1)
+        if (ch >= 'a' and ch <= 'z' or ch >= 'A' and ch <= 'Z' or ch == '_' or ch == '.') produce INTEGER
+      endIf
+      if (scan({[iIlL]})) produce INTEGER
+      if (scan({[fFrR]})) produce REAL_NUMBER
+      if (not scan('.')) produce INTEGER
+      scan_integer
+      if (scan({[eE]}))
+        scan [+-]
+        if (not scan([0-9]+)) syntaxError "Integer exponent expected."
+      endIf
+      scan( {[fFrR]} )
+      produce REAL_NUMBER
+  endMatch
+
+- scan_integer
+  while (scan([0-9]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- scan_binary_integer
+  while (scan([01]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- scan_octal_integer
+  while (scan([0-7]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- scan_hex_integer
+  while (scan([0-9A-Fa-f]+))
+    if (not consume([_]+)) return
+  endWhile
+  return
+
+- tokenize_string
+  scan_string
+  produce STRING
+
+- scan_string
+  while (hasAnother and not nextIs('"'))
+    scan_character
+  endWhile
+  mustConsume '"'
+  return
+
+- tokenize_character_or_string
+  if (consume('\'')) produce STRING
+  scan_character
+  if (consume('\'')) produce CHARACTER
+  while (hasAnother and not nextIs('\''))
+    scan_character
+  endWhile
+  mustConsume('\'')
+  produce STRING
+
+- scan_single_quote_string
+  while (hasAnother and not nextIs('\''))
+    scan_character
+  endWhile
+  mustConsume '\''
+  return
+
+- tokenize_two_quote_string
+  scan_two_quote_string
+  produce STRING
+
+- scan_two_quote_string
+  while (hasAnother and not nextIs("''"))
+    scan_character
+  endWhile
+  mustConsume "''"
+  return
+
+- scan_character
+  if (not hasAnother) syntaxError "Unterminated string - unexpected end of file."
+  ch = read
+  if (ch == '\n')
+    syntaxError "Unterminated string - unexpected end of line."
+  endIf
+  if (ch != '\\')
+    collect ch
+    return
+  endIf
+
+  if (consume('b')) collect Character(8); return
+  if (consume('e')) collect Character(27); return
+  if (consume('f')) collect Character(12); return
+  if (consume('n')) collect '\n'; return
+  if (consume('r')) collect '\r'; return
+  if (consume('t')) collect '\t'; return
+  if (consume('v')) collect Character(11); return
+  if (consume('0')) collect Character(0); return
+  if (consume('/')) collect '/'; return
+  if (consume('?')) collect '?'; return
+  if (consume('\''))collect '\''; return
+  if (consume('\\'))collect '\\'; return
+  if (consume('"')) collect '"'; return
+  if (consume('x'))
+    hex2 = 0
+    read_hex2
+    collect Character(hex2)
+    return
+  endIf
+  if (consume('u'))
+    read_hex4
+    collect Character(hex4)
+    return
+  endIf
+  if (consume('['))
+    hex_digit = 0
+    read_hex_digit
+    value = hex_digit
+    digits = 1
+    while (digits < 6 and nextIs([0-9a-fA-F]))
+      read_hex_digit
+      value = value * 16 + hex_digit
+      ++digits
+    endWhile
+    mustConsume ']'
+    collect Character(value)
+    return
+  endIf
+  buffer = ""
+  collect "Invalid escape sequence '\\" ch
+  collect "'. Supported: \\b \\e \\f \\n \\r \\t \\v \\0 \\? \\/ \\' \\\\ \\\" \\xHH \\uHHHH \\[H*]."
+  syntaxError buffer
+
+- read_hex4
+  read_hex2
+  hex4 = hex2 * 256
+  read_hex2
+  hex4 = hex4 + hex2
+  return
+
+- read_hex2
+  read_hex_digit
+  hex2 = hex_digit * 16
+  read_hex_digit
+  hex2 = hex2 + hex_digit
+  return
+
+- read_hex_digit
+  if (not nextIs([0-9a-fA-F])) syntaxError "Hex digit expected (0-9, a-f, or A-F)."
+  ch = read
+  if (ch >= 'a' and ch <= 'f')
+    hex_digit = (ch - Integer('a')) + 10
+  elseIf (ch >= 'A' and ch <= 'F')
+    hex_digit = (ch - Integer('A')) + 10
+  else
+    hex_digit = ch - Integer('0')
+  endIf
+  return
+
+- tokenize_verbatim_string
+  scan_verbatim_string
+  produce STRING
+
+- scan_verbatim_string
+  while (hasAnother)
+    scan [^\n]*
+    savePosition
+      consume '\n'
+      consume [ \t]*
+      if (not consume('|'))
+        restorePosition
+        return
+      else
+        discardPosition
+        collect '\n'
+      endIf
+  endWhile
+
+
+#--------------------------------------------------------------------------------
+#parser
+#--------------------------------------------------------------------------------
+#- elements
+#  beginList
+#    statements
+#  produceList
+#
+#- statements
+#  consume_eols
+#
+#  beginList
+#
+#  while (hasAnother and not nextHasAttribute(structural))
+#    statement
+#    consume_eols
+#  endWhile
+#
+#  produceList Statements
+#
+#- statement
+#  on @"print"   arg_list -> Print(args:Args)
+#  on @"println" arg_list -> Println(args:Args):Print
+#  expression
+#
+#- consume_eols
+#  while (consume(EOL)) noAction
+#
+#- arg_list
+#  beginList
+#    while (hasAnother and not nextIs(EOL) and not nextHasAttribute(structural))
+#      expression
+#    endWhile
+#  produceList Args
+#
+#- expression
+#  assign
+#
+#- assign [rightBinary]
+#  on "=" -> Assign
+#
+#- add_subtract [binary]
+#  on "+" -> Add
+#  on "-" -> Subtract
+#
+#- multiply_divide [binary]
+#  on "*" -> Multiply
+#  on "/" -> Divide
+#
+#- negate [preUnary]
+#  on "-" -> Negate
+#
+#- term
+#  on '(' expression ')': return
+#  on IDENTIFIER  -> Access(name=content)
+#  on REAL_NUMBER -> LiteralReal(value=content:Real)
+#  on STRING      -> LiteralString(value=content)
+#  syntaxError
+#
+#- additional_node_types
+#  create Literal
+#  create LiteralPrimitive:Literal
+
+----------------------------------------------------------------------
+parser
+----------------------------------------------------------------------
+- program_elements
+  beginList
+    while (hasAnother) program_element
+  produceList ProgramElements
+
+- consume_eols
+  while (consume(EOL)) noAction
+
+- must_consume_eols
+  if (not consume(EOL)) syntaxError "End of line expected."
+  while (consume(EOL)) noAction
+
+- consume_eols_and_semicolons
+  while (consume(EOL) or consume(';')) noAction
+
+- program_element
+  consume_eols
+  if (not hasAnother) return
+
+  on "$include"
+    if (nextIs(STRING))
+      string
+      produce Include(filepath:String)
+    elseIf (nextIs(IDENTIFIER))
+      id_filepath
+      produce Include(filepath:String)
+    else
+      syntaxError "Filepath string or ID expected."
+    endIf
+  endOn
+
+  if (nextIs("class"))
+    class
+    return
+  endIf
+
+  if (nextIs("enum"))
+    consume("enum")
+    identifier
+    enum
+    #FIXME call on_parsed_enum  # Pass 1: stores enum template tokens. Pass 2: does nothing.
+
+    return
+  endIf
+
+  on "augment"
+    if (consume(EOL))
+      # Batch Augment
+      ++disable_output
+      is_batch_augment = true
+      class_sections
+      is_batch_augment = false
+      mustConsume "endAugment"
+      --disable_output
+    else
+      # Standard Type Augment
+      ++disable_output
+
+      savePosition  # collect tokens
+      type
+      #FIXME call set_augment_context_name
+      discardPosition
+
+      savePosition  # collect tokens
+      if (nextIs(':')) base_types
+      must_consume_eols
+      class_sections
+      mustConsume "endAugment"
+      #FIXME call on_parsed_augment
+      discardPosition
+
+      --disable_output
+    endIf
+    return
+  endOn
+
+
+  on "module"
+    parse_module_id
+    module_attributes
+    produce SetModuleContext(name:String,attributes:Attributes)
+  endOn
+
+  on "nativeType"
+    # EXAMPLE: nativeType<<"char*">> RogueCString
+    #FIXME call define_native_type
+    return
+  endOn
+
+  if (nextIs("class"))
+    consume("class")
+    identifier
+    class
+    return
+  endIf
+
+  if (nextIs("routine"))
+    consume "routine"
+    procedure_name
+    procedure_parameters
+    procedure_return_type
+    procedure_attributes
+    if (consume(':'))
+      single_line_statements
+    else
+      multi_line_statements
+      mustConsume "endRoutine"
+    endIf
+    produce RoutineDef(
+      name:String, parameters:Parameters, return_type:Type, attributes:Attributes, statements:Statements
+    )
+
+  endIf
+
+  on "uses"
+    id_filepath
+    uses_attributes
+    produce Uses( id_filepath:String, attributes:Attributes )
+  endOn
+
+  if (nextHasAttribute(structural))
+    syntaxError
+  endIf
+
+  multi_line_statements
+
+- id_filepath
+  identifier
+  on '/'
+    create LiteralString(value="/")
+    call join_strings
+    id_filepath
+    call join_strings
+  elseOn '.'
+    create LiteralString(value=".")
+    call join_strings
+    id_filepath
+    call join_strings
+  endOn
+
+- parse_module_id
+  if (nextIs("::"))
+    on "::"
+      if (nextIs(IDENTIFIER))
+        create Identifier(name="Rogue::")
+        identifier
+        call join_identifiers
+      else
+        produce Identifier(name="Rogue")
+      endIf
+    endOn
+  elseIf (nextIs(IDENTIFIER))
+    identifier
+  else
+    produce Identifier(name="Rogue")
+  endIf
+
+  while (consume("::"))
+    create Identifier(name="::")
+    call join_identifiers
+    identifier
+    call join_identifiers
+  endWhile
+
+- subclass
+  if (nextIs("subclass"))
+    consume "subclass"
+    class_sections
+    mustConsume "endSubclass"
+  endIf
+
+- procedure_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        procedure_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- procedure_attribute
+  on @"abstract"   -> AttributeAbstract
+  on @"append"     -> AttributeAppend
+  on @"essential"  -> AttributeEssential
+  on @"insert"     -> AttributeInsert
+  on  "native"     -> AttributeNative
+  on @"override"   -> AttributeOverride
+  on @"preferred"  -> AttributePreferred
+  on @"propagated" -> AttributePropagated
+  on @"replace"    -> AttributeReplace
+  syntaxError "Illegal procedure attribute. Expected one or more of [abstract append essential insert native override preferred propagated replace]."
+
+- procedure_body
+  multi_line_statements
+
+- procedure_name
+  on @"operator"
+    on "?"      -> Identifier(name="operator?":String)
+    on "+"      -> Identifier(name="operator+":String)
+    on "-"      -> Identifier(name="operator-":String)
+    on "*"      -> Identifier(name="operator*":String)
+    on "/"      -> Identifier(name="operator/":String)
+    on "%"      -> Identifier(name="operator%":String)
+    on "^"      -> Identifier(name="operator^":String)
+    on "++"     -> Identifier(name="operator++":String)
+    on "--"     -> Identifier(name="operator--":String)
+    on "&"      -> Identifier(name="operator&":String)
+    on "|"      -> Identifier(name="operator|":String)
+    on "~"      -> Identifier(name="operator~":String)
+    on "!"      -> Identifier(name="operator!":String)
+    on ":<<:"   -> Identifier(name="operator:<<:":String)
+    on ":>>:"   -> Identifier(name="operator:>>:":String)
+    on ":>>>:"  -> Identifier(name="operator:>>>:":String)
+    on "=="     -> Identifier(name="operator==":String)
+    on "<>"     -> Identifier(name="operator<>":String)
+    on "+="     -> Identifier(name="operator+=":String)
+    on "-="     -> Identifier(name="operator-=":String)
+    on "*="     -> Identifier(name="operator*=":String)
+    on "/="     -> Identifier(name="operator/=":String)
+    on "%="     -> Identifier(name="operator%=":String)
+    on "^="     -> Identifier(name="operator^=":String)
+    on "&="     -> Identifier(name="operator&=":String)
+    on "|="     -> Identifier(name="operator|=":String)
+    on "~="     -> Identifier(name="operator~=":String)
+    on ":<<:="  -> Identifier(name="operator:<<:=":String)
+    on ":>>:="  -> Identifier(name="operator:>>:=":String)
+    on ":>>>:=" -> Identifier(name="operator:>>>:=":String)
+
+  elseOnOthers
+    identifier
+  endOn
+
+- procedure_parameters
+  beginList
+    if (not consume('(')) produceList Parameters
+    consume_eols
+    if (consume(')')) produceList Parameters
+    consume_eols
+    procedure_parameter
+    consume_eols
+    while (consume(',')) procedure_parameter; consume_eols
+    mustConsume ')'
+  produceList Parameters
+
+- procedure_parameter
+  consume_eols
+  on '&' identifier optional_parameter_initial_value optional_type -> Local(name:String,initial_value,initial_value_tokens:TokenList,type:Type,attribute="default":String)
+  on '@'
+    identifier
+    optional_parameter_initial_value
+    if (nextIs(':')) syntaxError "Direct @property-set parameter cannot specify a type."
+    createNull # type
+    produce Local(name:String,initial_value,initial_value_tokens:TokenList,type:Type,attribute="direct-auto-store":String)
+  endOn
+  onPeek IDENTIFIER
+    identifier
+    optional_parameter_initial_value
+    optional_type
+    produce Local(name:String,initial_value,initial_value_tokens:TokenList,type:Type)
+  endOn
+  identifier  # error
+
+- optional_initial_value
+  if (consume('=')) consume_eols; expression
+  else              createNull
+
+- optional_parameter_initial_value
+  if (consume('='))
+    consume_eols
+    savePosition
+    expression
+    createTokenListPreservingStack
+  else
+    createNull  # Cmd
+    createNull  # TokenList
+  endIf
+
+- procedure_return_type
+  if (not consume('->')) produceNull
+  type
+
+- procedure_doc_comment_and_statements
+  if consume(EOL)
+    call parse_doc_comment
+    multi_line_statements
+  else
+    single_line_statements
+    call parse_doc_comment
+  endIf
+
+- function_definition
+  on "function"
+    procedure_parameters
+    procedure_return_type
+    onPeek "with"
+      with_values
+    elseOnOthers
+      createNull
+    endOn
+    consume ':'
+    if (consume(EOL))
+      multi_line_statements
+      mustConsume "endFunction"
+    else
+      single_line_statements
+    endIf
+    produce FunctionDefinition(parameters:Parameters,return_type:Type,with_values:WithValues,statements)
+  endOn
+
+- with_values
+  on "with"
+    beginList
+      if (consume('('))
+        with_value
+        while (consume(',')) consume_eols; with_value
+        mustConsume(')')
+      else
+        with_value
+        while (consume(',')) consume_eols; with_value
+      endIf
+    produceList WithValues
+  endOn
+
+- with_value
+  identifier
+  on '='
+    expression
+  elseOnOthers
+    createNull
+  endOn
+  produce WithValue(name:String,value)
+
+- id_or_type
+  scoped_name
+  if (nextIs("<<") or nextIs("[]") or nextIs('?')) remaining_type
+
+- type
+  on '('
+    on "Function"
+      function_param_types
+      function_return_type
+      mustConsume ')'
+      create FunctionType(param_types:TypeList,return_type:Type):Type
+      list_or_optional_type
+      return
+    endOn
+    mustConsume "Function" # generate error
+
+  elseOn "Function"
+    function_param_types
+    function_return_type
+    create FunctionType(param_types:TypeList,return_type:Type):Type
+    list_or_optional_type
+    return
+
+  elseOnOthers
+    #FIXME call set_cur_token
+    scoped_name
+    remaining_type
+
+  endOn
+
+- remaining_type
+  create Type(name:String)
+  list_or_optional_type
+
+- list_or_optional_type
+  while (nextIs("[]") or nextIs('?'))
+    on "[]"
+      create Type(element_type:Type)
+    elseOn '?'
+      create Type(element_type:Type,is_optional_type="true":Logical)
+    endOn
+  endWhile
+
+- function_param_types
+  beginList
+    if (consume('(') and not consume(')'))
+      function_type_parameter
+      while (consume(','))
+        function_type_parameter
+      endWhile
+      mustConsume ')'
+    endIf
+  produceList TypeList
+
+- function_type_parameter
+  if (nextIs(IDENTIFIER))
+    savePosition
+    identifier
+    if (consume(':'))
+      # name:Type parameter - name is discarded
+      discardPosition
+      #FIXME call discard_last  # discard identifier
+      type
+      return
+    endIf
+    restorePosition
+  endIf
+
+  # Type only
+  type
+
+- function_return_type
+  on "->" type: return
+  produceNull
+
+- scoped_name
+  savePosition
+  on "::"
+    create Identifier(name="Rogue":String)
+    identifier
+    create ModuleQualifiedID(context,name:String)
+    discardPosition
+  elseOnOthers
+    restorePosition
+    identifier
+  endOn
+
+  while nextIs("::")
+    on "::"
+      identifier
+      create ModuleQualifiedID(context,name:String)
+    endOn
+  endWhile
+
+- optional_type
+  if (consume(':')) type
+  else              createNull
+
+- identifier
+  on IDENTIFIER  -> Identifier(name=content)
+  if (nextIs(PLACEHOLDER))
+    if (not disable_output)
+      syntaxError "Unrecognized $directive or $placeholder."
+    endIf
+    on PLACEHOLDER -> Identifier(name=content)
+  endIf
+  on "ThisType"
+    produce Identifier(name="ThisType":String)
+  endOn
+  syntaxError "Identifier expected."
+
+- string
+  on STRING
+    create LiteralString(value=content):Literal
+    while (nextIs(STRING))
+      on STRING
+        create LiteralString(value=content):Literal
+        #FIXME call join_strings
+      endOn
+    endWhile
+    return
+  endOn
+  syntaxError "Literal string expected."
+
+- module_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        module_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- module_attribute
+  on @"essential" -> AttributeEssential
+  syntaxError "Illegal module attribute. Expected [essential]."
+
+- class_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        class_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- class_attribute
+  on @"abstract"  -> AttributeAbstract
+  on @"aspect"    -> AttributeAspect
+  on @"compound"  -> AttributeCompound
+  on @"primitive" -> AttributePrimitive
+  on @"singleton" -> AttributeSingleton
+  if (consume @"essential")
+    #FIXME call class_attribute_essential
+    produce AttributeEssential
+  endIf
+  syntaxError "Illegal class attribute. Expected one or more of [abstract aspect compound essential primitive singleton]."
+
+- class
+  on "class"
+    identifier
+    constructor_properties
+    base_types
+    class_attributes
+
+    call parse_doc_comment
+
+    if (consume(';'))
+      createNull
+    else
+      class_sections
+      mustConsume "endClass"
+    endIf
+    produce Class( name:Identifier, constructor_properties:Parameters, base_types:TypeList, attributes:Attributes, doc:String, members )
+  endOn
+
+- enum_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        enum_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- enum_attribute
+  on @"bitflags"  -> AttributeBitflags
+  syntaxError "Illegal enum attribute. Expected [bitflags]."
+
+- enum
+  constructor_properties
+  base_types
+  enum_attributes
+
+  call parse_doc_comment
+
+  if (consume(';'))
+    createNull
+  else
+    enum_sections
+    mustConsume "endEnum"
+  endIf
+  produce Class( name:Identifier, constructor_properties:Parameters, base_types:TypeList, attributes:Attributes, doc:String, members )
+
+- placeholder
+  on PLACEHOLDER -> Placeholder(name=content)
+  syntaxError "'$Placeholder' name expected."
+
+- constructor_properties
+  if (not nextIs('(')) produceNull
+  procedure_parameters
+
+- base_types
+  beginList
+    if (not consume(':')) produceList TypeList
+    type
+    while (hasAnother and (nextIs(',') or nextIs(IDENTIFIER)))
+      if (consume(',')) consume_eols
+      type
+    endWhile
+  produceList TypeList
+
+- class_sections
+  beginList
+  if (not consume(';'))
+    consume_eols
+    while (not nextIs("endClass") and not nextIs("endAugment") and not nextIs("endSubclass"))
+      class_section
+      consume_eols
+    endWhile
+  endIf
+  produceList
+
+- class_section
+  consume_eols
+  on "GLOBAL METHODS"
+    consume_eols
+    while (nextIs("method"))
+      global_method
+      consume_eols
+    endWhile
+    return
+  elseOn "METHODS"
+    consume_eols
+    while (nextIs("method"))
+      method
+      consume_eols
+    endWhile
+    return
+  elseOn "GLOBAL PROPERTIES"
+    consume_eols
+    while (not nextHasAttribute(structural))
+      global_properties
+      consume_eols
+    endWhile
+    return
+  elseOn "PROPERTIES"
+    consume_eols
+    while (not nextHasAttribute(structural))
+      properties
+      consume_eols
+    endWhile
+    return
+  elseOn "NATIVE"
+    consume_eols
+    while (not nextHasAttribute(structural))
+      native_code_blocks
+      consume_eols
+    endWhile
+    return
+  elseOn "DEFINITIONS"
+    consume_eols
+    while (not nextHasAttribute(structural))
+      definition
+      consume_eols
+    endWhile
+    return
+  elseOn "STATES"
+    consume_eols
+    while (nextIs('>'))
+      state
+      consume_eols
+    endWhile
+    return
+  endOn
+  syntaxError
+
+- state
+  on '>'
+    identifier  # state name
+    consume_eols
+    beginList
+      while (nextIs("method"))
+        method
+        consume_eols
+      endWhile
+    createList Methods
+    produce StateDef(name:String,methods:Methods)
+  endOn
+
+- enum_sections
+  beginList
+  if (not consume(';'))
+    categories  # default section is CATEGORIES
+
+    consume_eols
+    while (not nextIs("endEnum"))
+      enum_section
+      consume_eols
+    endWhile
+  endIf
+  produceList
+
+- enum_section
+  on "CATEGORIES"
+    categories
+    return
+  endOn
+  class_section
+
+- categories
+  consume_eols
+  while (nextIs(IDENTIFIER))
+    category
+    while (consume(','))
+      consume_eols
+      category
+    endWhile
+    consume_eols
+  endWhile
+
+- category
+  onPeek IDENTIFIER
+    identifier
+    if (nextIs('(')) args
+    else             createNull
+    on "="
+      expression
+    elseOnOthers
+      createNull
+    endOn
+    call parse_doc_comment
+    produce Category(name:String,args:Args,value,doc:String)
+  endOn
+  identifier  # syntax error
+
+- native_code_blocks
+  consume_eols
+  while (not nextHasAttribute(structural))
+    native_code_block
+    consume_eols
+  endWhile
+
+- native_code_block
+  on "nativeHeader"
+    if (consume('('))
+      on INTEGER
+        create LiteralInteger(content=content:String,base="10":Integer):LiteralPrimitive
+      elseOnOthers
+        syntaxError "Integer ordinal expected."
+      endOn
+      mustConsume ')'
+    else
+      createNull
+    endIf
+    consume_eols
+    on @"File"
+      mustConsume '('
+      string
+      #FIXME call load_filepath_as_string
+      mustConsume ')'
+    elseOnOthers
+      string
+    endOn
+    produce NativeHeader( ordinal:Integer, content:String )
+
+  elseOn "nativeCode"
+    if (consume('('))
+      on INTEGER
+        create LiteralInteger(content=content:String,base="10":Integer):LiteralPrimitive
+      elseOnOthers
+        syntaxError "Integer ordinal expected."
+      endOn
+      mustConsume ')'
+    else
+      createNull
+    endIf
+    consume_eols
+    on @"File"
+      mustConsume '('
+      string
+      #FIXME call load_filepath_as_string
+      mustConsume ')'
+    elseOnOthers
+      string
+    endOn
+    produce NativeCode( ordinal:Integer, content:String )
+
+  endOn
+  syntaxError "Expected 'nativeHeader', or 'nativeCode'."
+
+- definition
+  on IDENTIFIER
+    mustConsume '='
+    expression
+    produce Definition(name=content,value)
+  endOn
+  mustConsume IDENTIFIER  # generate error
+
+
+- forEach_loop
+  # 'forEach' '(' [id [['at' id] 'in'|'of']] ['id' =] expression ['from' expression] ['step' expression] ')' statements
+  # 'forEach'     [id [['at' id] 'in'|'of']] ['id' =] expression ['from' expression] ['step' expression]     statements
+  on "forEach"
+    consume_eols
+
+    if consume('(')
+      consume_eols
+
+      savePosition
+      expression
+      if (nextIs(@"in") or nextIs(@"at"))
+        restorePosition
+        identifier
+        if (consume(@"at")) identifier
+        else                createNull
+        mustConsume @"in"
+        forEach_assignable_expression
+        consume_eols
+        mustConsume(')')
+        forEach_body
+        produce ForEachIn(element_name,index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      elseIf (nextIs(@"of"))
+        restorePosition
+        identifier
+        mustConsume @"of"
+        forEach_assignable_expression
+        consume_eols
+        mustConsume(')')
+        forEach_body
+        produce ForEachOf(index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      else
+        restorePosition
+        forEach_assignable_expression
+        consume_eols
+        mustConsume(')')
+        forEach_body
+        produce ForEachAnonymous(collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      endIf
+    else
+      savePosition
+      expression
+      if (nextIs(@"in") or nextIs(@"at"))
+        restorePosition
+        identifier
+        if (consume(@"at")) identifier
+        else                createNull
+        mustConsume @"in"
+        forEach_assignable_expression
+        forEach_body
+        produce ForEachIn(element_name,index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      elseIf (nextIs(@"of"))
+        restorePosition
+        identifier
+        mustConsume @"of"
+        forEach_assignable_expression
+        forEach_body
+        produce ForEachOf(index_name,
+                          collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      else
+        restorePosition
+        forEach_assignable_expression
+        forEach_body
+        produce ForEachAnonymous(collection_name,collection,starting_index,step_size,statements:Statements):ControlStructure
+      endIf
+    endIf
+  endOn
+
+- forEach_assignable_expression
+  # ['id' =] expression ['from' expression] ['step' expression]
+  if (nextIs(IDENTIFIER)) identifier; mustConsume('=')
+  else                    createNull
+  forEach_collection
+
+- forEach_collection
+  expression
+
+  if (consume(@"from")) expression
+  else                  createNull
+  if (consume(@"step")) expression
+  else                  createNull
+
+- forEach_body
+  if (consume(EOL))
+    multi_line_statements
+    mustConsume "endForEach"
+  else
+    single_line_statements
+  endIf
+
+- inline_forEach
+  # 'forEach' ['in'|'of'] expression ['from' expression] ['step' expression]
+  on "forEach"
+    on @"in"
+      forEach_collection
+      produce InlineForEachIn(collection,starting_index,step_size)
+    endOn
+    on @"of"
+      forEach_collection
+      produce InlineForEachOf(collection,starting_index,step_size)
+    elseOnOthers
+      syntaxError "Expected 'in' or 'of'."
+    endOn
+  endOn
+
+- if_statement
+  on "if"
+    if (consume("local"))
+      # if local v = expression
+      identifier
+      mustConsume "="
+      expression
+      must_consume_eols
+      multi_line_statements
+      if_local_elseifs_or_else
+      mustConsume "endIf"
+      produce IfLocal( name:String, expression, statements, else_if:IfLocal )
+    endIf
+
+    expression
+    consume @"then"  # optional aesthetic syntax
+
+    if (consume(EOL))
+      # Multi-line 'if'
+      scoped_multi_line_statements
+      if_statement_multi_line_elseIf_else
+      mustConsume "endIf"
+    else
+      # Single-line 'if'
+      scoped_single_line_statements
+      if_statement_single_line_elseIf_else
+    endIf
+    produce If(condition,statements:Statements,cmd_else):Conditional
+  endOn
+
+- if_local_elseifs_or_else
+  on "elseIf"
+    mustConsume "local"
+    identifier
+    mustConsume "="
+    expression
+    must_consume_eols
+    scoped_multi_line_statements
+    if_local_elseifs_or_else
+    produce IfLocal( name:String, expression, statements, else_if:IfLocal )
+
+  elseOn "else"
+    must_consume_eols
+    createNull  # name
+    createNull  # expression
+    scoped_multi_line_statements
+    createNull  # else_if
+    produce IfLocal( name:String, expression, statements, else_if:IfLocal )
+
+  elseOnOthers
+    produceNull
+  endOn
+
+- if_statement_multi_line_elseIf_else
+  savePosition
+  on "elseIf"
+    expression
+    consume @"then"  # optional aesthetic syntax
+    if (consume(EOL))
+      # This elseIf is multi-line; good to keep going
+      discardPosition
+      scoped_multi_line_statements
+      if_statement_multi_line_elseIf_else
+      create If(condition,statements:Statements,cmd_else):Conditional
+      produce Statements(element)
+    else
+      # This single-line elseIf is outside the scope of the 'if' we're currently parsing.
+      restorePosition
+      produceNull
+    endIf
+  elseOn "else"
+    if (consume(EOL))
+      # This else is multi-line; good to keep going
+      discardPosition
+      createNull
+      scoped_multi_line_statements
+      createNull
+      create If(condition,statements:Statements,cmd_else):Conditional
+      produce Statements(element)
+    else
+      # This single-line else is outside the scope of the 'if' we're currently parsing.
+      restorePosition
+      produceNull
+    endIf
+  elseOnOthers
+    discardPosition
+    produceNull
+  endOn
+
+- if_statement_single_line_elseIf_else
+  savePosition
+  on "elseIf"
+    expression
+    consume @"then"  # optional aesthetic syntax
+    if (consume(EOL))
+      # This elseIf is multi-line and outside our scope
+      restorePosition
+      produceNull
+    else
+      # This elseIf is single line; keep going
+      discardPosition
+      scoped_single_line_statements
+      if_statement_single_line_elseIf_else
+      create If(condition,statements:Statements,cmd_else):Conditional
+      produce Statements(element)
+    endIf
+  elseOn "else"
+    if (consume(EOL))
+      # This else is multi-line and outside our scope
+      restorePosition
+      produceNull
+    else
+      # This else is single line; keep going
+      discardPosition
+      createNull
+      scoped_single_line_statements
+      createNull
+      create If(condition,statements:Statements,cmd_else):Conditional
+      produce Statements(element)
+    endIf
+  elseOnOthers
+    discardPosition
+    produceNull
+  endOn
+
+- inline_which
+  on "which"
+    consume_eols
+    mustConsume '{'
+    consume_eols
+    beginList
+      inline_which_case
+      consume_eols
+      while (consume("||"))
+        consume_eols
+        inline_which_case
+        consume_eols
+      endWhile
+    createList InlineWhichCases
+    mustConsume '}'
+    produce InlineWhich(cases:InlineWhichCases)
+  endOn
+
+- inline_which_case
+  expression
+  consume_eols
+  if (consume(':')) expression; consume_eols
+  else              createNull
+  produce InlineWhichCase(condition,value)
+
+- method
+  on "method"
+    if consume(@"to")
+      mustConsume '->'
+      type
+      procedure_parameters
+      procedure_attributes
+      consume(':')
+      procedure_doc_comment_and_statements
+      produce ToTypeMethod(to_type:Type,parameters:Parameters,attributes:Attributes,doc:String,statements:Statements)
+    endIf
+
+    procedure_name
+    procedure_parameters
+    procedure_return_type
+    procedure_attributes
+    consume(':')
+    procedure_doc_comment_and_statements
+    produce Method(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,statements:Statements):Procedure
+  endOn
+
+- scoped_single_line_statements
+  single_line_statements
+
+- scoped_multi_line_statements
+  multi_line_statements
+
+- global_method
+  on "method"
+    procedure_name
+    procedure_parameters
+    procedure_return_type
+    procedure_attributes
+    consume(':')
+    procedure_doc_comment_and_statements
+    produce GlobalMethod(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc:String,statements:Statements):Procedure
+  endOn
+
+- global_properties
+  beginList
+    consume_eols
+    property_declaration
+    while (consume(','))
+      consume_eols
+      property_declaration
+    endWhile
+  createList PropertyList
+  optional_type
+  global_property_attributes
+  call parse_doc_comment
+  produce GlobalPropertyDeclarations( list:PropertyList, type:Type, attributes:Attributes, doc:String )
+
+- properties
+  beginList
+    consume_eols
+    property_declaration
+    while (consume(','))
+      consume_eols
+      property_declaration
+    endWhile
+  createList PropertyList
+  optional_type
+  property_attributes
+  call parse_doc_comment
+  produce PropertyDeclarations( list:PropertyList, type:Type, attributes:Attributes, doc:String )
+
+- property_declaration
+  on IDENTIFIER
+    optional_initial_value
+    createNull
+    produce Property( name=content, initial_value, type:Type )
+  elseOn PLACEHOLDER
+    if (not disable_output) syntaxError
+    optional_initial_value
+    createNull
+    produce Property( name=content, initial_value, type:Type )
+  elseOn "native"
+    on "<<"
+      identifier
+      mustConsume ">>"
+      string
+      produce NativeProperty( target:String, expression:String )
+    elseOnOthers
+      string
+      produce NativeProperty( target="C":String, expression:String )
+    endOn
+  endOn
+  mustConsume IDENTIFIER  # throws error
+
+- global_property_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        global_property_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- global_property_attribute
+  syntaxError "Illegal global property attribute."
+
+- property_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        property_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- property_attribute
+  #on @"faux" -> AttributeFaux
+  syntaxError "Illegal property attribute."
+
+- multi_line_statements
+  consume_eols_and_semicolons
+  beginList
+  while (hasAnother and not nextHasAttribute(structural))
+    control_structure
+    consume_eols_and_semicolons
+  endWhile
+  produceList Statements
+
+- single_line_statements
+  on EOL
+    consume_eols
+    if (not nextIs('{'))
+      beginList
+      produceList Statements
+    endIf
+  endOn
+
+  on '{'
+    multi_line_statements
+    mustConsume '}'
+    return
+  endOn
+
+  beginList
+
+  if (consume(EOL) or (nextHasAttribute(structural) and not nextIs(';'))) produceList Statements
+  statement
+  while (consume(';'))
+    if (not nextIs(EOL)) statement
+  endWhile
+  consume_eols
+
+  produceList Statements
+
+- control_structure
+  on     "local"       local_declarations: return
+  onPeek "localize"    localize:           return
+  onPeek "block"       block:              return
+  onPeek "contingent"  contingent:         return
+  onPeek "forEach"     forEach_loop:       return
+  onPeek "if"          if_statement:       return
+  onPeek "loop"        loop:               return
+  onPeek "which"       which_conditional:  return
+  onPeek "while"       while_loop:         return
+  onPeek "temporarily" temporarily:        return
+  onPeek "try"         try_catch:          return
+  onPeek "use"         use:                return
+  statement
+
+- optional_args
+  if (nextIs('(')) args
+  else             createNull
+
+- args
+  beginList
+
+  if consume '('
+    consume_eols
+    if (consume(')')) produceList Args
+    consume_eols
+    while (hasAnother and not nextHasAttribute(structural))
+      arg
+      consume_eols
+      consume ','
+      consume_eols
+    endWhile
+    mustConsume ')'
+  else
+    while (hasAnother and not nextHasAttribute(structural) and not nextIs(EOL))
+      arg
+      if (consume ',') consume_eols
+    endWhile
+  endIf
+  produceList Args
+
+- arg
+  #FIXME call on_begin_arg # detect use of '$' and '$1' etc. generic fn args
+  arg_inner
+  #FIXME call on_end_arg
+
+- arg_inner
+  on '&'
+    on '!'
+      identifier
+      if (consume('=')) expression
+      else              createNull
+      produce NamedArg(name:String,value,zero="true":Logical)
+    elseOnOthers
+      identifier
+      if (consume('=')) expression
+      else              createNull
+      produce NamedArg(name:String,value)
+    endOn
+  elseOn "&="
+    identifier
+    if (consume('=')) expression
+    else              createNull
+    produce NamedArg(name:String,value,zero="false":Logical,forward="true":Logical)
+  endOn
+  expression
+
+- statement
+  on "assert"
+    savePosition
+    expression
+    createTokenListPreservingStack
+    produce Assert(expression,token_list:TokenList)
+  endOn
+  on "ensure" "<<" expression ">>" args -> Ensure(expression,args:Args)
+  on "escapeBlock"                -> EscapeBlock:Escape
+  on "escapeContingent"           -> EscapeContingent:Escape
+  on "escapeForEach"              -> EscapeForEach:Escape
+  on "escapeIf"                   -> EscapeIf:Escape
+  on "escapeLoop"                 -> EscapeLoop:Escape
+  on "escapeTry"                  -> EscapeTry:Escape
+  on "escapeWhich"                -> EscapeWhich:Escape
+  on "escapeWhile"                -> EscapeWhile:Escape
+  on "necessary" expression       -> Necessary(condition)
+  on "nextIteration"              -> NextIteration
+  on "noAction":                     return
+  on @"print"   args              -> Access(name=content,args:Args)
+  on @"println" args              -> Access(name=content,args:Args)
+  on "return" optional_expression -> Return(result)
+  on "sufficient" expression      -> Sufficient(condition)
+  on "swapValues" '(' expression ',' expression ')' -> SwapValues(a,b)
+  onPeek "trace"
+    verbose_trace
+    return
+  elseOnPeek "@trace"
+    brief_trace
+    return
+  endOn
+  on "throw" expression           -> Throw(exception)
+
+  onPeek "nativeHeader"
+    native_code_block
+    return
+  elseOnPeek "nativeCode"
+    native_code_block
+    return
+  endOn
+
+  on "++" expression -> Increment(operand):Stepper
+  on "--" expression -> Decrement(operand):Stepper
+
+  expression
+
+  on "++" -> Increment(operand):Stepper
+  on "--" -> Decrement(operand):Stepper
+
+  on "=" consume_eols expression -> Assign(target,new_value)
+
+  on "+="     consume_eols expression -> AddAndAssign(target,operand):OpAndAssign
+  on "-="     consume_eols expression -> SubtractAndAssign(target,operand):OpAndAssign
+  on "*="     consume_eols expression -> MultiplyAndAssign(target,operand):OpAndAssign
+  on "/="     consume_eols expression -> DivideAndAssign(target,operand):OpAndAssign
+  on "%="     consume_eols expression -> ModAndAssign(target,operand):OpAndAssign
+  on "^="     consume_eols expression -> PowerAndAssign(target,operand):OpAndAssign
+  on "&="     consume_eols expression -> BitwiseAndAndAssign(target,operand):OpAndAssign
+  on "|="     consume_eols expression -> BitwiseOrAndAssign(target,operand):OpAndAssign
+  on "~="     consume_eols expression -> BitwiseXorAndAssign(target,operand):OpAndAssign
+  on ":<<:="  consume_eols expression -> BitShiftLeftAndAssign(target,operand):OpAndAssign
+  on ":>>:="  consume_eols expression -> BitShiftRightAndAssign(target,operand):OpAndAssign
+  on ":>>>:=" consume_eols expression -> BitShiftRightXAndAssign(target,operand):OpAndAssign
+
+  on ".="
+    consume_eols
+    create AccessAndAssignContext(context)
+    on '@'
+      identifier
+      create ContextDirectAccess(context,name:String)
+    elseOnOthers
+      procedure_name
+      access_args
+      create ContextAccess(context,name:String,args:Args)
+    endOn
+    access_inner  # parse any further accesses
+    produce AccessAndAssign(operand)
+  endOn
+
+  while (nextIs("?."))
+    on "?."
+      consume_eols
+      create ConditionalContext(context)
+      member_access
+    endOn
+  endWhile
+
+  if (hasAnother and not nextHasAttribute(structural) and not nextIs(EOL))
+    args
+    #FIXME call store_statement_args
+  endIf
+
+- verbose_trace
+  on "trace"
+    beginList
+    while (not nextIs(EOL))
+      savePosition
+      expression
+      createTokenListPreservingStack
+      create TracedExpression(expression,token_list:TokenList)
+      consume ','
+    endWhile
+    createList TracedExpressions
+    create VerboseTrace(expressions:TracedExpressions)
+  endOn
+
+- brief_trace
+  on "@trace"
+    beginList
+    while (not nextIs(EOL))
+      savePosition
+      expression
+      createTokenListPreservingStack
+      create TracedExpression(expression,token_list:TokenList)
+      consume ','
+    endWhile
+    createList TracedExpressions
+    create BriefTrace(expressions:TracedExpressions)
+  endOn
+
+- local_declarations
+  #onPeek '(' destructuring_local_declarations: return
+  beginList
+    consume_eols
+    local_declaration
+    while (consume(','))
+      consume_eols
+      local_declaration
+    endWhile
+  createList LocalList
+  optional_type
+
+  produce LocalDeclarations( declarations:LocalList, type:Type )
+
+- local_declaration
+  on IDENTIFIER
+    optional_parameter_initial_value
+    createNull
+    produce Local( name=content, initial_value, initial_value_tokens:TokenList, type:Type )
+  endOn
+  mustConsume IDENTIFIER  # throws error
+
+- localize
+  on "localize"
+    beginList
+      localize_declaration
+      while (consume(','))
+        localize_declaration
+      endWhile
+    createList LocalList
+
+    createNull
+    produce LocalDeclarations( declarations:LocalList, type:Type )
+  endOn
+
+- localize_declaration
+  savePosition
+  identifier
+  createTokenListPreservingStack
+  pop initial_value_tokens
+
+  #FIXME call clone
+  createNull
+  create Access(name:String,args:Args)
+  subclass
+
+  push initial_value_tokens
+
+  createNull
+  create Local(name:String,initial_value,initial_value_tokens:TokenList,type:Type)
+
+#{
+- destructuring_local_declarations
+  on '('
+    beginList
+
+    consume_eols
+    identifier
+    consume_eols
+    on ':'
+      type
+      consume_eols
+      create TypedDestructuringLocal(name:String,type:Type)
+      while (consume(','))
+        consume_eols
+        identifier
+        consume_eols
+        mustConsume ':'
+        consume_eols
+        type
+        consume_eols
+        create TypedDestructuringLocal(name:String,type:Type)
+      endWhile
+      createList TypedDestructuringLocals
+      mustConsume ')'
+      mustConsume '='
+      expression
+      produce    TypedDestructuringLocalDeclarations(locals:TypedDestructuringLocals,tuple)
+    elseOnOthers
+      while (consume(','))
+        consume_eols
+        identifier
+        consume_eols
+      endWhile
+      createList  Identifiers
+      mustConsume ')'
+      mustConsume '='
+      expression
+      produce     UntypedDestructuringLocalDeclarations(locals:Identifiers,tuple)
+    endOn
+  endOn
+}#
+
+- block
+  on "block"
+    if (consume(EOL))
+      createNull  # assignments
+    else
+      beginList
+        block_assignment
+        while (consume(','))
+          block_assignment
+        endWhile
+      createList
+      must_consume_eols
+    endIf
+    multi_line_statements
+    mustConsume "endBlock"
+  endOn
+  produce Block(assignments,statements:Statements):ControlStructure
+
+- block_assignment
+  identifier
+  on "="
+    expression
+    create Assign(target,new_value)
+  endOn
+
+- contingent
+  on "contingent"
+    multi_line_statements
+    on "satisfied"
+      multi_line_statements
+    elseOnOthers
+      createNull
+    endOn
+    on "unsatisfied"
+      multi_line_statements
+    elseOnOthers
+      createNull
+    endOn
+    mustConsume "endContingent"
+    produce Contingent(statements:Statements,satisfied_statements:Statements,unsatisfied_statements:Statements):ControlStructure
+  endOn
+
+- loop
+  on "loop"
+    on EOL
+      multi_line_statements
+      mustConsume "endLoop"
+      produce InfiniteLoop(statements:Statements):ControlStructure
+    elseOnOthers
+      expression
+      if (consume(EOL)) multi_line_statements; mustConsume "endLoop"
+      else              single_line_statements
+      produce Loop(loop_count,statements:Statements):ControlStructure
+    endOn
+  endOn
+
+- which_conditional
+  on "which"
+    expression
+    must_consume_eols
+    beginList
+      while (nextIs("case"))
+        on "case"
+          consume_eols
+          beginList
+            expression
+            while (consume(','))
+              consume_eols
+              expression
+            endWhile
+            if (not consume(':')) mustConsume EOL
+          createList Args
+          scoped_multi_line_statements
+          create WhichCase(args:Args,statements:Statements)
+        endOn
+      endWhile
+    createList WhichCases
+    on "others"
+      if (not consume(':')) mustConsume EOL
+      scoped_multi_line_statements
+    elseOnOthers
+      createNull
+    endOn
+    mustConsume "endWhich"
+    produce Which(condition,cases:WhichCases,statements:Statements):Conditional
+  endOn
+
+- while_loop
+  on "while"
+    expression
+    if (consume(EOL)) multi_line_statements; mustConsume "endWhile"
+    else              single_line_statements
+    produce While(condition,statements:Statements):ControlStructure
+  endOn
+
+- try_catch
+  on "try"
+    multi_line_statements
+    catches
+    mustConsume "endTry"
+    produce Try(statements:Statements,catches:Catches):ControlStructure
+  endOn
+
+- catches
+  beginList
+    while (nextIs("catch"))
+      on "catch"
+        if (consume('('))
+          catch_clause
+          mustConsume ')'
+        else
+          catch_clause
+        endIf
+        multi_line_statements
+        create Catch(var_name:String,exception_type:Type,statements:Statements):ControlStructure
+      endOn
+    endWhile
+  produceList Catches
+
+- catch_clause
+  savePosition
+  identifier
+  if (consume(':'))
+    discardPosition
+    type
+  else
+    restorePosition
+    createNull
+    type
+  endIf
+
+- temporarily
+  on "temporarily"
+    beginList
+      temporary_assignment
+      while (consume(','))
+        consume_eols
+        temporary_assignment
+      endWhile
+    createList TemporaryAssignments
+    must_consume_eols
+    multi_line_statements
+    mustConsume "endTemporarily"
+    produce Temporarily(assignments:TemporaryAssignments,statements:Statements):ControlStructure
+  endOn
+
+- temporary_assignment
+  expression
+  on '='
+    expression
+    produce TemporaryAssignment(target,new_value)
+  endOn
+  mustConsume '=' # error
+
+- use
+  on "use"
+    beginList
+      used_resource
+      while (consume(','))
+        consume_eols
+        used_resource
+      endWhile
+    createList UsedResources
+    must_consume_eols
+    multi_line_statements
+    mustConsume "endUse"
+    produce Use(resources:UsedResources,statements:Statements):ControlStructure
+  endOn
+
+- used_resource
+  savePosition
+  on IDENTIFIER
+    create Identifier(name=content)
+    on '='
+      expression
+      create UsedResource(name:String,resource)
+      discardPosition
+      return
+    endOn
+  endOn
+
+  restorePosition
+  createNull
+  expression
+  produce UsedResource(name:String,resource)
+
+  expression
+
+- module_path
+  beginList
+    identifier
+    while (consume('/'))
+      identifier
+    endWhile
+  produceList
+
+- uses_attributes
+  beginList
+    on '['
+      while (hasAnother and not nextIs(']'))
+        uses_attribute
+        consume ','
+      endWhile
+      mustConsume(']')
+    endOn
+  produceList Attributes
+
+- uses_attribute
+  on "export"     -> AttributeExport
+  on @"noInclude" -> AttributeNoInclude
+  syntaxError "Illegal 'uses' attribute. Expected any of [export noInclude]."
+
+#- import_module_by_path_or_filepath
+#  on STRING
+#    produce ImportModuleByFilepath(filepath=content)
+#  endOn
+#
+#  beginList
+#    identifier
+#    while (consume('/'))
+#      identifier
+#    endWhile
+#  createList
+#
+#  produce ImportModuleByPath(segments)
+
+- access_args
+  if (not nextIs('(')) produceNull
+  args
+
+- optional_expression
+  if (nextIs(EOL) or nextIs(';')) produceNull
+  expression
+
+- expression
+  logical_xor
+
+- logical_xor [binary]
+  on "xor" -> LogicalXor
+
+- logical_or [binary]
+  on "or" -> LogicalOr
+
+- logical_and [binary]
+  on "and" -> LogicalAnd
+
+- comparison [binary]
+  on "==" -> CompareEQ
+  on "!=" -> CompareNE
+  on "<"  -> CompareLT
+  on ">"  -> CompareGT
+  on "<=" -> CompareLE
+  on ">=" -> CompareGE
+  on "<>" -> CompareOp
+
+- reference_comparison
+  range
+  on "is"
+    if (consume("not"))
+      reference_comparison
+      produce IsNot(left,right):Binary
+    else
+      reference_comparison
+      produce Is(left,right):Binary
+    endIf
+  endOn
+  on "instanceOf"
+    type
+    produce InstanceOf(operand,compare_type:Type)
+  elseOn "isType"
+    type
+    produce IsType(operand,compare_type:Type)
+  elseOn "not"
+    if (consume("instanceOf"))
+      type
+      produce NotInstanceOf(operand,compare_type:Type)
+    elseIf (consume("isType"))
+      type
+      produce NotIsType(operand,compare_type:Type)
+    else
+      syntaxError "'instanceOf' or 'isType' expected."
+    endIf
+  endOn
+
+- range
+  bitwise_xor
+  on ".."
+    expression
+    if (consume(@"step")) expression
+    else                  createNull
+    create CreateRangeUpTo(start,limit,step_size):CreateRange
+  elseOn "..<"
+    expression
+    if (consume(@"step")) expression
+    else                  createNull
+    create CreateRangeUpToLessThan(start,limit,step_size):CreateRange
+  elseOn "..>"
+    expression
+    if (consume(@"step")) expression
+    else                  createNull
+    create CreateRangeDownToGreaterThan(start,limit,step_size):CreateRange
+  elseOn "downTo"
+    expression
+    if (consume(@"step")) expression
+    else                  createNull
+    create CreateRangeDownTo(start,limit,step_size):CreateRange
+  endOn
+
+- bitwise_xor [binary]
+  on '~' -> BitwiseXor
+
+- bitwise_or  [binary]
+  on '|' -> BitwiseOr
+
+- bitwise_and [binary]
+  on '&' -> BitwiseAnd
+
+- add_subtract [binary]
+  on "+" -> Add
+  on "-" -> Subtract
+
+- bitwise_shift [binary]
+  on ":<<:"  -> BitShiftLeft
+  on ":>>:"  -> BitShiftRight
+  on ":>>>:" -> BitShiftRightX
+
+- multiply_divide_mod [binary]
+  on "*" -> Multiply
+  on "/" -> Divide
+  on "%" -> Mod
+
+- power [binary]
+  on "^" -> Power
+
+- pre_unary [preUnary]
+  on "!"   -> BitwiseNot
+  on "not" -> LogicalNot
+  on "-"   -> Negate
+  on "%"   -> Describe
+
+- post_unary [postUnary]
+  on '?'   -> Logicalize
+  if (nextIs('('))
+    args
+    create_InvokeContext
+    access_inner
+    return
+  endIf
+
+- access
+  term
+  access_inner
+
+- access_inner
+  on '.'
+    consume_eols
+    if (consume('['))
+      context_block
+      access_inner
+    else
+      member_access
+    endIf
+
+  elseOn "->"
+    if (nextIs('('))
+      savePosition
+      consume '('
+      on @"as"
+        discardPosition
+        type
+        mustConsume ')'
+        create As(operand,as_type:Type)
+        access_inner
+        return
+      elseOnOthers
+        restorePosition
+      endOn
+    else
+      consume_eols
+    endIf
+
+    type
+    if (nextIs('('))
+      args
+      create ConvertToTypeWithArgs( operand, to_type:Type, args:Args )
+    else
+      create ConvertToType(operand,to_type:Type)
+    endIf
+    access_inner
+  elseOn '['
+    consume_eols
+    savePosition
+    expression
+    consume_eols
+    if (consume(']'))
+      discardPosition
+      create IndexedAccess(context,index)
+    else
+      restorePosition
+      beginList
+      expression
+      consume_eols
+      while (not consume(']'))
+        consume(',')
+        consume_eols
+        expression
+        consume_eols
+      endWhile
+      createList
+      create ListIndexedAccess(context,args:Args)
+    endIf
+    access_inner
+  elseOn "//"
+    consume_eols
+    on IDENTIFIER
+      create LiteralString(value=content):Literal
+    elseOnOthers
+      identifier # throws an error
+    endOn
+    create IndexedAccess(context,index)
+    access_inner
+  elseOn ".["
+    context_block
+  elseOn "=>"
+    consume_eols
+    identifier
+    if (nextIs('(')) function_param_types
+    else             createNull
+    produce CallbackFunction(context,name:String,param_types:TypeList)
+  elseOn "[>"
+    consume_eols
+    beginList
+      expression
+    createList Args
+    consume_eols
+    mustConsume ']'
+    produce ContextAccess(context,name="set_state":String,args:Args)
+  endOn
+
+- context_block
+    consume_eols
+    if (consume(']'))
+      access_inner
+      return
+    endIf
+    beginList
+      context_block_command
+      consume_eols
+      while (consume(',') or (hasAnother and not nextIs(']')))
+        context_block_command
+        consume_eols
+      endWhile
+      mustConsume ']'
+    createList
+    create ContextCommandBlock(context,commands)
+    access_inner
+
+- member_access
+  on '@'
+    identifier
+    create ContextDirectAccess(context,name:String)
+  elseOnOthers
+    procedure_name
+    access_args
+    create ContextAccess(context,name:String,args:Args)
+  endOn
+  access_inner
+
+- context_block_command
+  create ContextBlockContext
+  procedure_name
+  access_args
+  create ContextAccess(context,name:String,args:Args)
+  access_inner
+  on "=" expression -> Assign(target,new_value)
+
+- term
+  on STRING
+    create LiteralString(value=content):Literal
+    while (nextIs(STRING))
+      on STRING
+        create LiteralString(value=content):Literal
+        #call join_strings #FIXME
+      endOn
+    endWhile
+    if (nextIs('('))
+      args
+      produce FormattedString(format:String,args:Args)
+    endIf
+    return
+  endOn
+  on INTEGER        -> LiteralInteger(content=content:String,base="10":Integer):LiteralPrimitive
+  on HEX_INTEGER    -> LiteralInteger(content=content:String,base="16":Integer):LiteralPrimitive
+  on BINARY_INTEGER -> LiteralInteger(content=content:String,base="2":Integer):LiteralPrimitive
+  on OCTAL_INTEGER  -> LiteralInteger(content=content:String,base="8":Integer):LiteralPrimitive
+  on REAL_NUMBER    -> LiteralReal(value=content:Real):LiteralPrimitive
+  on CHARACTER      -> LiteralCharacter(value=content:Character):LiteralPrimitive
+  on '@'
+    scoped_name
+    produce DirectAccess( name:String )
+  endOn
+
+  onPeek @"operator"
+    procedure_name
+    access_args
+    produce Access( name:String, args:Args )
+
+  elseOnPeek IDENTIFIER
+    scoped_name
+    if (nextIs("[]"))
+      remaining_type
+      type_access_or_typed_literal_list
+      return
+    elseIf (nextIs('?'))
+      on '?'
+        if (nextIs('(') or nextIs('?') or nextIs("[]"))
+          # Optional type constructor / optional type / optional list type
+          create Type(name:String)
+          create Type(element_type:Type,is_optional_type="true":Logical)
+          list_or_optional_type
+          type_access_or_typed_literal_list
+          return
+        else
+          # Logicalize
+          createNull
+          create Access( name:String, args:Args )
+          produce Logicalize(operand):Unary
+        endIf
+      endOn
+    else
+      access_args
+      create Access( name:String, args:Args )
+      subclass
+      return
+    endIf
+  endOn
+  onPeek PLACEHOLDER
+    id_or_type
+    access_args
+    create Access( name:String, args:Args )
+    subclass
+    return
+  endOn
+  on "true"               -> LiteralLogical(value="true":Logical):LiteralPrimitive
+  on "false"              -> LiteralLogical(value="false":Logical):LiteralPrimitive
+  on "null"               -> LiteralNull:Literal
+  on "pi"                 -> LiteralPi:Literal
+
+  on "prior"
+    mustConsume '.'
+    identifier
+    if (nextIs('(')) access_args
+    else             createNull
+    create CallPriorMethod( name:String, args:Args )
+    access_inner
+    return
+  endOn
+
+  on "this"
+    create This
+    if (nextIs('('))
+      create Identifier(name="call")
+      args
+      produce ContextAccess(context,name:String,args:Args)
+    endIf
+    return
+  endOn
+  onPeek "which" inline_which: return
+
+  # '(Function...)' type
+  onPeek '('
+    savePosition
+    on '('
+      on "Function"
+        restorePosition  # back to '(Function...'
+        type             # parse '(Function(...)->...)'
+        list_or_optional_type
+        access_args
+        produce TypeAccess(of_type:Type,args:Args)
+      endOn
+    endOn
+    restorePosition
+  endOn
+
+  # Parenthesized expression or generic function definition
+  onPeek '('
+    savePosition
+    on '('
+      consume_eols
+      on ')'
+        # No-params generic function
+        discardPosition
+        beginList   # empty args
+        createList IDList
+        remaining_generic_function_definition
+        return
+      elseOnOthers
+        expression
+        consume_eols
+        if (consume(')'))
+          if (not nextIs("=>"))
+            # good to go as expression grouping
+            discardPosition
+            return
+          endIf
+        endIf
+        restorePosition
+
+        # Generic function
+        consume '('
+        consume_eols
+        beginList
+          identifier
+          consume_eols
+          while (consume(","))
+            identifier
+            consume_eols
+          endWhile
+          mustConsume ')'
+        createList IDList
+        remaining_generic_function_definition
+        return
+      endOn
+    endOn
+  endOn
+
+  onPeek '['
+    savePosition
+    consume '['
+    consume_eols
+    expression
+    if (nextIs(':'))
+      restorePosition
+      type  # [Key:Variant] table
+      #FIXME call use_Table
+      if (nextIs('{'))
+        literal_table
+        create TypedLiteralTable( of_type:Type, table:KeyValuePairList )
+      else
+        access_args
+        create TypeAccess( of_type:Type, args:Args )
+      endIf
+      return
+    else
+      restorePosition
+      literal_list
+      return
+    endIf
+  endOn
+
+  onPeek '{'
+    literal_table
+    return
+  endOn
+
+  on "[]"
+    beginList
+    produceList LiteralList
+  endOn
+
+  onPeek "forEach"
+    inline_forEach
+    return
+  endOn
+
+  on "undefined"
+    #FIXME call use_Variant
+    produce LiteralUndefined
+  endOn
+
+  onPeek "function" function_definition: return
+
+  on "[>"
+    beginList
+      expression
+    createList Args
+    mustConsume ']'
+    produce Access(name="set_state":String,args:Args)
+  endOn
+
+  on "native"
+    native_code
+    return
+  endOn
+
+  on "@["
+    variant_list
+    return
+  endOn
+
+  on "@{"
+    variant_table
+    return
+  endOn
+
+  on '$'
+    #FIXME call on_generic_fn_arg
+    produce GenericFnArg  # token will contain necessary info
+  elseOn GENERIC_FN_ARG
+    #FIXME call on_generic_fn_arg
+    produce GenericFnArg
+  endOn
+
+  on "$defaultValue" "<<" type ">>"               -> DefaultValue(of_type:Type)
+
+  on "ThisType"
+    create Type(name="ThisType":String)
+    produce TypeContext(type:Type)
+  endOn
+
+  onPeek "Function"
+    type
+    optional_args
+    produce TypeAccess(of_type:Type,args:Args)
+  endOn
+
+  on "<<"
+    type
+    mustConsume ">>"
+    #FIXME call use_Introspection
+    produce GetTypeInfo(of_type:Type)
+  endOn
+
+  on "new" "<<" expression ">>" args -> New(type_expression,args:Args)
+
+  on "$isCompound"  "<<" type ">>" -> IsCompound(operand)
+  on "$isEnum"      "<<" type ">>" -> IsEnum(operand)
+  on "$isPrimitive" "<<" type ">>" -> IsPrimitive(operand)
+  on "$isReference" "<<" type ">>" -> IsReference(operand)
+
+  on "$fileBytes"
+    mustConsume '('
+    string
+    mustConsume ')'
+    #FIXME call filename_to_file_bytes
+    return
+
+  elseOn "$fileString"
+    mustConsume '('
+    string
+    mustConsume ')'
+    #FIXME call filename_to_file_string
+    return
+
+  elseOn "$exists"
+    mustConsume '<<'
+    expression
+    create CommandExists( command )
+    mustConsume '>>'
+    return
+  endOn
+
+  syntaxError
+
+- create_InvokeContext
+  produce InvokeContext( context, args:Args )
+
+- variant_expression
+  on '{' variant_table: return
+  on '[' variant_list:  return
+  on "[]" -> EmptyVariantList
+  expression
+
+- variant_list
+  #FIXME call use_Variant
+  consume_eols
+  if (consume(']')) produce EmptyVariantList
+
+  beginList
+    variant_expression
+    consume_eols
+    while (consume(',') or not nextIs(']'))
+      consume_eols
+      variant_expression
+      consume_eols
+    endWhile
+    mustConsume ']'
+  createList Args
+
+  produce VariantList(args:Args)
+
+- variant_table
+  #FIXME call use_Variant
+  consume_eols
+  if (consume('}')) produce EmptyVariantTable
+
+  beginList
+    variant_key_value_pair
+    consume_eols
+    while (consume(',') or not nextIs('}'))
+      variant_key_value_pair
+    endWhile
+    mustConsume '}'
+  createList KeyValuePairList
+
+  produce VariantTable(args:KeyValuePairList)
+
+- variant_key_value_pair
+  consume_eols
+
+  if (consume(':'))
+    # { :id } -> { "id":id }
+    on IDENTIFIER
+      create LiteralString(name=content)
+      createNull
+      create Access(name=content,args:Args)
+    elseOn STRING
+      create LiteralString(name=content)
+      println "FIXME"
+      #FIXME call clone
+    elseOnOthers
+      syntaxError "Identifier or literal string expected."
+    endOn
+  else
+    on IDENTIFIER
+      # { id:value } -> { "id":value }
+      create LiteralString(name=content)
+    elseOnOthers
+      variant_expression
+    endOn
+    consume_eols
+
+    mustConsume ':'
+    consume_eols
+
+    variant_expression
+  endIf
+
+  create KeyValuePair(key,value)
+  consume_eols
+
+- type_access_or_typed_literal_list
+  if (nextIs('['))
+    remaining_typed_literal_list
+  else
+    access_args
+    create TypeAccess( of_type:Type, args:Args )
+    subclass
+  endIf
+
+- remaining_generic_function_definition
+  onPeek "with"
+    with_values
+  elseOnOthers
+    createNull
+  endOn
+  mustConsume "=>"
+  single_line_statements
+  produce GenericFunctionDefinition(parameters:IDList,with_values:WithValues,statements)
+
+- native_code
+  if consume("(")
+    string
+    mustConsume ")"
+  else
+    consume_eols
+    string
+  endIf
+  if consume("->")
+    type
+    produce NativeExpression(content:String,result_type:Type)
+  else
+    produce NativeStatement(content:String)
+  endIf
+
+
+- literal_list
+  on '['
+    beginList
+    consume_eols
+    if (consume(']')) produceList LiteralList
+    expression
+    consume_eols
+    while (not nextIs(']'))
+      if (consume(',')) consume_eols
+      expression
+      consume_eols
+    endWhile
+    mustConsume( ']' )
+    produceList LiteralList
+  endOn
+
+- remaining_typed_literal_list
+  # a Type is on the stack
+  literal_list
+  produce TypedLiteralList(of_type:Type,list)
+
+- literal_table
+  on '{'
+    beginList
+    consume_eols
+    if (consume('}')) produceList KeyValuePairList
+    literal_table_entry
+    consume_eols
+    while (not nextIs('}'))
+      if (consume(',')) consume_eols
+      literal_table_entry
+      consume_eols
+    endWhile
+    mustConsume( '}' )
+    produceList KeyValuePairList
+  endOn
+
+- literal_table_entry
+  on IDENTIFIER
+    create LiteralString(value=content):Literal
+  elseOnOthers
+    expression
+  endOn
+
+  mustConsume ':'
+
+  expression
+  produce KeyValuePair(key,value)
+
+- preprocess
+  while (hasAnother)
+    process_another
+  endWhile
+  produceNull
+
+- process_another
+  on "$define"
+    #FIXME call mark_token
+    on IDENTIFIER
+      buffer = ""
+      #FIXME call collect_token_string
+      while (hasAnother and not nextIs(EOL))
+        #FIXME call collect_next_token
+      endWhile
+      #FIXME call create_definition
+    elseOnOthers
+      syntaxError "Identifier expected."
+    endOn
+
+  elseOn "$id"
+    #FIXME call begin_join_ids
+      mustConsume '('
+      process_another
+      while (consume(',') or not nextIs(')'))
+        process_another
+      endWhile
+      mustConsume ')'
+    #FIXME call end_join_ids
+    return
+
+  elseOn "$include"
+    collect_meta_filepath
+    include_attribute_api      = false
+    include_attribute_folder   = false
+    include_attribute_optional = false
+    include_attributes
+    #FIXME call include_filepath
+    return
+
+  elseOn "$includeFolder"
+    collect_meta_filepath
+    include_attribute_api      = false
+    include_attribute_folder   = true
+    include_attribute_optional = false
+    include_attributes
+    #FIXME call include_filepath
+    return
+
+  elseOn "$isDefined"
+    mustConsume '('
+    on IDENTIFIER
+      #FIXME call on_is_defined
+    elseOnOthers
+      syntaxError "Identifier expected."
+    endOn
+    mustConsume ')'
+    return
+
+  elseOn "$localDefine"
+    #FIXME call mark_token
+    on IDENTIFIER
+      buffer = ""
+      #FIXME call collect_token_string
+      while (hasAnother and not nextIs(EOL))
+        #FIXME call collect_next_token
+      endWhile
+      #FIXME call create_local_definition
+    elseOnOthers
+      syntaxError "Identifier expected."
+    endOn
+
+  elseOn "$localMacro"
+    identifier   # macro name
+
+    # placeholders
+    mustConsume '<<'
+    beginList
+      placeholder
+      while (consume(','))
+        placeholder
+      endWhile
+    createList Placeholders
+    mustConsume '>>'
+
+    if (nextIs(EOL))
+      consume_eols
+      savePosition
+      while (hasAnother and not nextIs("$endLocalMacro"))
+        read
+      endWhile
+      createTokenList # consumes saved position
+      mustConsume "$endLocalMacro"
+    else
+      savePosition
+      while (hasAnother and not nextIs(EOL))
+        read
+      endWhile
+      createTokenList # consumes saved position
+      consume_eols
+    endIf
+
+    #FIXME call define_macro
+    return
+
+  elseOn "$lowercase"
+    #FIXME call begin_join_lowercase
+      mustConsume '('
+      process_another
+      while (consume(',') or not nextIs(')'))
+        process_another
+      endWhile
+      mustConsume ')'
+    #FIXME call end_join_lowercase
+    return
+
+  elseOn "$macro"
+    identifier   # macro name
+
+    # placeholders
+    mustConsume '<<'
+    beginList
+      placeholder
+      while (consume(','))
+        placeholder
+      endWhile
+    createList Placeholders
+    mustConsume '>>'
+
+    if (nextIs(EOL))
+      consume_eols
+      savePosition
+      while (hasAnother and not nextIs("$endMacro"))
+        read
+      endWhile
+      createTokenList # consumes saved position
+      mustConsume "$endMacro"
+    else
+      savePosition
+      while (hasAnother and not nextIs(EOL))
+        read
+      endWhile
+      createTokenList # consumes saved position
+      consume_eols
+    endIf
+
+    #FIXME call define_macro
+    return
+
+  elseOn "module"
+    savePosition
+    #FIXME call parse_module_id # adjusts Program.current_module
+    restorePosition
+    #FIXME call rewrite_cur_token
+    return
+
+  elseOn "$requireRogue"
+    on STRING
+      #FIXME call require_rogue_version
+      return
+    elseOnOthers
+      syntaxError "Expected a literal string containing a version number."
+    endOn
+
+  elseOn "$rogueVersion"
+    #FIXME call create_rogue_version_string
+    return
+
+  elseOn "$sourceFilepath"
+    #FIXME call create_source_filepath
+    return
+
+  elseOn "$sourceLine"
+    #FIXME call create_source_line
+    return
+
+  elseOn "$target"
+    on '('
+      #FIXME call check_target
+      mustConsume ')'
+    elseOnOthers
+      #FIXME call check_target
+    endOn
+    return
+
+  elseOn "$thisModule"
+    #FIXME call write_this_module_id
+    return
+
+  elseOn "$string"
+    #FIXME call begin_join_strings
+      mustConsume '('
+      process_another
+      while (consume(',') or not nextIs(')'))
+        process_another
+      endWhile
+      mustConsume ')'
+    #FIXME call end_join_strings
+    return
+
+  elseOn "$uppercase"
+    #FIXME call begin_join_uppercase
+      mustConsume '('
+      process_another
+      while (consume(',') or not nextIs(')'))
+        process_another
+      endWhile
+      mustConsume ')'
+    #FIXME call end_join_uppercase
+    return
+
+  elseOn "uses"
+    #FIXME call rewrite_cur_token
+    collect_meta_filepath
+    savePosition
+    uses_attributes
+    restorePosition
+    #FIXME call uses_filepath # uses XYZ -> $include XYZ/XYZ.rogue
+    return
+
+  elseOn IDENTIFIER
+    #FIXME call insert_definition
+    return
+
+  endOn
+  #FIXME call rewrite_token
+
+- include_attributes
+  on '['
+    while (hasAnother and not nextIs(']'))
+      include_attribute
+      consume ','
+    endWhile
+    mustConsume(']')
+  endOn
+
+- include_attribute
+  on @"folder"
+    include_attribute_folder = true
+    return
+  endOn
+  on @"optional"
+    include_attribute_optional = true
+    return
+  endOn
+  syntaxError "Illegal $include attribute. Expected one or more of [folder optional]."
+
+- meta_expression
+  meta_term
+
+- meta_term
+  on "true"  -> LiteralLogical(value="true":Logical):LiteralPrimitive
+  on "false" -> LiteralLogical(value="false":Logical):LiteralPrimitive
+  on '(' meta_expression ')': return
+  syntaxError "Invalid metacondition."
+
+- collect_meta_filepath
+  #FIXME call mark_token
+  buffer = ""
+  on STRING
+    #FIXME call collect_token_string
+  elseOnOthers
+#FIXME
+#{
+    while (hasAnother and not nextIs('[') and not nextIs(EOL))
+      on IDENTIFIER:      call collect_token_string
+      elseOn INTEGER:     call collect_token_string
+      elseOn REAL_NUMBER: call collect_token_string
+      elseOn '~':         call collect_token_string
+      elseOn '/':         call collect_token_string
+      elseOn ':':         call collect_token_string
+      elseOn '.':         call collect_token_string
+      elseOn '\\':        call collect_token_string
+      elseOnOthers:       syntaxError "Unsupported filepath character. Put the filepath in quotes."
+    endWhile
+}#
+  endOn
+
+- native_constructor_signature
+  # Scoped::Type::Name(Native::Procedure::Parameter1,Parameter2=default_value)
+  scoped_name
+  native_method_parameters
+  produce NativeConstructorSignature(scoped_type_name:String,parameters:NativeParameters)
+
+- native_method_signature
+  # Scoped::Type::Name.method_name(Native::Procedure::Parameter1,Parameter2=default_value)->ReturnType
+  scoped_name
+  mustConsume '.'
+  procedure_name
+  native_method_parameters
+  procedure_return_type
+  produce NativeMethodSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type)
+
+- native_method_parameters
+  beginList
+    if (not consume('(')) produceList NativeParameters
+    consume_eols
+    if (consume(')')) produceList NativeParameters
+    consume_eols
+    native_method_parameter
+    consume_eols
+    while (consume(',')) native_method_parameter; consume_eols
+    mustConsume ')'
+  produceList NativeParameters
+
+- native_method_parameter
+  consume_eols
+
+  on '&'
+    type
+    create LiteralLogical(value="false":Logical):LiteralPrimitive
+    produce NativeParameter(of_type:Type,default_value)
+  endOn
+
+  type
+  optional_native_parameter_default_value
+  produce NativeParameter(of_type:Type,default_value)
+
+- optional_native_parameter_default_value
+  if (consume('='))
+    consume_eols
+    expression
+  else
+    createNull  # Cmd
+  endIf
+
+
+- additional_node_types
+  create AddXY(left,right):Add
+  create AddReal(left,right):Add
+  create AddReal32(left,right):Add
+  create AddReal64(left,right):Add
+  create AddInt(left,right):Add
+  create AddInt32(left,right):Add
+  create AddInt64(left,right):Add
+  create AddCharacter(left,right):Add
+  create AddByte(left,right):Add
+  create AddLogical(left,right):Add
+
+  create SubtractXY(left,right):Subtract
+  create SubtractReal(left,right):Subtract
+  create SubtractReal32(left,right):Subtract
+  create SubtractReal64(left,right):Subtract
+  create SubtractInt(left,right):Subtract
+  create SubtractInt32(left,right):Subtract
+  create SubtractInt64(left,right):Subtract
+  create SubtractCharacter(left,right):Subtract
+  create SubtractByte(left,right):Subtract
+  create SubtractLogical(left,right):Subtract
+
+  create MultiplyXY(left,right):Multiply
+  create MultiplyReal(left,right):Multiply
+  create MultiplyReal32(left,right):Multiply
+  create MultiplyReal64(left,right):Multiply
+  create MultiplyInt(left,right):Multiply
+  create MultiplyInt32(left,right):Multiply
+  create MultiplyInt64(left,right):Multiply
+  create MultiplyCharacter(left,right):Multiply
+  create MultiplyByte(left,right):Multiply
+  create MultiplyLogical(left,right):Multiply
+
+  create DivideXY(left,right):Divide
+  create DivideReal(left,right):Divide
+  create DivideReal32(left,right):Divide
+  create DivideReal64(left,right):Divide
+  create DivideInt(left,right):Divide
+  create DivideInt32(left,right):Divide
+  create DivideInt64(left,right):Divide
+  create DivideCharacter(left,right):Divide
+  create DivideByte(left,right):Divide
+  create DivideLogical(left,right):Divide
+
+  create ModXY(left,right):Mod
+  create ModReal(left,right):Mod
+  create ModReal32(left,right):Mod
+  create ModReal64(left,right):Mod
+  create ModInt(left,right):Mod
+  create ModInt32(left,right):Mod
+  create ModInt64(left,right):Mod
+  create ModCharacter(left,right):Mod
+  create ModByte(left,right):Mod
+  create ModLogical(left,right):Mod
+
+  create PowerXY(left,right):Power
+  create PowerReal(left,right):Power
+  create PowerReal32(left,right):Power
+  create PowerReal64(left,right):Power
+  create PowerInt(left,right):Power
+  create PowerInt32(left,right):Power
+  create PowerInt64(left,right):Power
+  create PowerCharacter(left,right):Power
+  create PowerByte(left,right):Power
+  create PowerLogical(left,right):Power
+
+  create BitwiseAndInt(left,right):BitwiseAnd
+  create BitwiseAndInt32(left,right):BitwiseAnd
+  create BitwiseAndInt64(left,right):BitwiseAnd
+  create BitwiseAndCharacter(left,right):BitwiseAnd
+  create BitwiseAndByte(left,right):BitwiseAnd
+  create BitwiseAndLogical(left,right):BitwiseAnd
+
+  create BitwiseOrInt(left,right):BitwiseOr
+  create BitwiseOrInt32(left,right):BitwiseOr
+  create BitwiseOrInt64(left,right):BitwiseOr
+  create BitwiseOrCharacter(left,right):BitwiseOr
+  create BitwiseOrByte(left,right):BitwiseOr
+
+  create BitwiseXorInt(left,right):BitwiseXor
+  create BitwiseXorInt32(left,right):BitwiseXor
+  create BitwiseXorInt64(left,right):BitwiseXor
+  create BitwiseXorCharacter(left,right):BitwiseXor
+  create BitwiseXorByte(left,right):BitwiseXor
+
+  create BitShiftLeftInt(left,right):BitShiftLeft
+  create BitShiftLeftInt32(left,right):BitShiftLeft
+  create BitShiftLeftInt64(left,right):BitShiftLeft
+  create BitShiftLeftCharacter(left,right):BitShiftLeft
+  create BitShiftLeftByte(left,right):BitShiftLeft
+
+  create BitShiftRightInt(left,right):BitShiftRight
+  create BitShiftRightInt32(left,right):BitShiftRight
+  create BitShiftRightInt64(left,right):BitShiftRight
+  create BitShiftRightCharacter(left,right):BitShiftRight
+  create BitShiftRightByte(left,right):BitShiftRight
+
+  create BitShiftRightXInt(left,right):BitShiftRightX
+  create BitShiftRightXInt32(left,right):BitShiftRightX
+  create BitShiftRightXInt64(left,right):BitShiftRightX
+  create BitShiftRightXCharacter(left,right):BitShiftRightX
+  create BitShiftRightXByte(left,right):BitShiftRightX
+
+  create ControlStructure(statements:Statements)
+  create Construct(type:Type,args:Args)
+
+  create CompareEQReal64(left,right):CompareEQ
+  create CompareNEReal64(left,right):CompareNE
+  create CompareLTReal64(left,right):CompareLT
+  create CompareLEReal64(left,right):CompareLE
+  create CompareGTReal64(left,right):CompareGT
+  create CompareGEReal64(left,right):CompareGE
+
+  create CompareEQXY(left,right):CompareEQ
+  create CompareNEXY(left,right):CompareNE
+  create CompareLTXY(left,right):CompareLT
+  create CompareLEXY(left,right):CompareLE
+  create CompareGTXY(left,right):CompareGT
+  create CompareGEXY(left,right):CompareGE
+
+  create CompareEQReal(left,right):CompareEQ
+  create CompareNEReal(left,right):CompareNE
+  create CompareLTReal(left,right):CompareLT
+  create CompareLEReal(left,right):CompareLE
+  create CompareGTReal(left,right):CompareGT
+  create CompareGEReal(left,right):CompareGE
+
+  create CompareEQReal32(left,right):CompareEQ
+  create CompareNEReal32(left,right):CompareNE
+  create CompareLTReal32(left,right):CompareLT
+  create CompareLEReal32(left,right):CompareLE
+  create CompareGTReal32(left,right):CompareGT
+  create CompareGEReal32(left,right):CompareGE
+
+  create CompareEQInt64(left,right):CompareEQ
+  create CompareNEInt64(left,right):CompareNE
+  create CompareLTInt64(left,right):CompareLT
+  create CompareLEInt64(left,right):CompareLE
+  create CompareGTInt64(left,right):CompareGT
+  create CompareGEInt64(left,right):CompareGE
+
+  create CompareEQInt(left,right):CompareEQ
+  create CompareNEInt(left,right):CompareNE
+  create CompareLTInt(left,right):CompareLT
+  create CompareLEInt(left,right):CompareLE
+  create CompareGTInt(left,right):CompareGT
+  create CompareGEInt(left,right):CompareGE
+
+  create CompareEQInt32(left,right):CompareEQ
+  create CompareNEInt32(left,right):CompareNE
+  create CompareLTInt32(left,right):CompareLT
+  create CompareLEInt32(left,right):CompareLE
+  create CompareGTInt32(left,right):CompareGT
+  create CompareGEInt32(left,right):CompareGE
+
+  create CompareEQCharacter(left,right):CompareEQ
+  create CompareNECharacter(left,right):CompareNE
+  create CompareLTCharacter(left,right):CompareLT
+  create CompareLECharacter(left,right):CompareLE
+  create CompareGTCharacter(left,right):CompareGT
+  create CompareGECharacter(left,right):CompareGE
+
+  create CompareEQByte(left,right):CompareEQ
+  create CompareNEByte(left,right):CompareNE
+  create CompareLTByte(left,right):CompareLT
+  create CompareLEByte(left,right):CompareLE
+  create CompareGTByte(left,right):CompareGT
+  create CompareGEByte(left,right):CompareGE
+
+  create CompareEQLogical(left,right):CompareEQ
+  create CompareNELogical(left,right):CompareNE
+  create CompareLTLogical(left,right):CompareLT
+  create CompareLELogical(left,right):CompareLE
+  create CompareGTLogical(left,right):CompareGT
+  create CompareGELogical(left,right):CompareGE
+
+  create Else(statements:Statements)
+  create ForEachElementInRangeUpToInt(element_info:Local,start,limit,statements:Statements):ControlStructure
+  #create ForEachInAnonymous(collection:ForEachCollection,statements:Statements)
+
+  create ConvertRealToReal64(operand):ConvertToReal64
+  create ConvertReal32ToReal64(operand):ConvertToReal64
+  create ConvertInt64ToReal64(operand):ConvertToReal64
+  create ConvertIntToReal64(operand):ConvertToReal64
+  create ConvertInt32ToReal64(operand):ConvertToReal64
+  create ConvertCharacterToReal64(operand):ConvertToReal64
+  create ConvertByteToReal64(operand):ConvertToReal64
+  create ConvertLogicalToReal64(operand):ConvertToReal64
+
+  create ConvertReal64ToReal(operand):ConvertToReal
+  create ConvertReal32ToReal(operand):ConvertToReal
+  create ConvertInt64ToReal(operand):ConvertToReal
+  create ConvertIntToReal(operand):ConvertToReal
+  create ConvertInt32ToReal(operand):ConvertToReal
+  create ConvertCharacterToReal(operand):ConvertToReal
+  create ConvertByteToReal(operand):ConvertToReal
+  create ConvertLogicalToReal(operand):ConvertToReal
+
+  create ConvertReal64ToReal32(operand):ConvertToReal32
+  create ConvertRealToReal32(operand):ConvertToReal32
+  create ConvertInt64ToReal32(operand):ConvertToReal32
+  create ConvertIntToReal32(operand):ConvertToReal32
+  create ConvertInt32ToReal32(operand):ConvertToReal32
+  create ConvertCharacterToReal32(operand):ConvertToReal32
+  create ConvertByteToReal32(operand):ConvertToReal32
+  create ConvertLogicalToReal32(operand):ConvertToReal32
+
+  create ConvertReal64ToInt64(operand):ConvertToInt64
+  create ConvertRealToInt64(operand):ConvertToInt64
+  create ConvertReal32ToInt64(operand):ConvertToInt64
+  create ConvertIntToInt64(operand):ConvertToInt64
+  create ConvertInt32ToInt64(operand):ConvertToInt64
+  create ConvertCharacterToInt64(operand):ConvertToInt64
+  create ConvertByteToInt64(operand):ConvertToInt64
+  create ConvertLogicalToInt64(operand):ConvertToInt64
+
+  create ConvertReal64ToInt(operand):ConvertToInt
+  create ConvertRealToInt(operand):ConvertToInt
+  create ConvertReal32ToInt(operand):ConvertToInt
+  create ConvertInt64ToInt(operand):ConvertToInt
+  create ConvertInt32ToInt(operand):ConvertToInt
+  create ConvertCharacterToInt(operand):ConvertToInt
+  create ConvertByteToInt(operand):ConvertToInt
+  create ConvertLogicalToInt(operand):ConvertToInt
+
+  create ConvertReal64ToInt32(operand):ConvertToInt32
+  create ConvertRealToInt32(operand):ConvertToInt32
+  create ConvertReal32ToInt32(operand):ConvertToInt32
+  create ConvertInt64ToInt32(operand):ConvertToInt32
+  create ConvertIntToInt32(operand):ConvertToInt32
+  create ConvertCharacterToInt32(operand):ConvertToInt32
+  create ConvertByteToInt32(operand):ConvertToInt32
+  create ConvertLogicalToInt32(operand):ConvertToInt32
+
+  create ConvertReal64ToCharacter(operand):ConvertToCharacter
+  create ConvertRealToCharacter(operand):ConvertToCharacter
+  create ConvertReal32ToCharacter(operand):ConvertToCharacter
+  create ConvertInt64ToCharacter(operand):ConvertToCharacter
+  create ConvertIntToCharacter(operand):ConvertToCharacter
+  create ConvertInt32ToCharacter(operand):ConvertToCharacter
+  create ConvertByteToCharacter(operand):ConvertToCharacter
+  create ConvertLogicalToCharacter(operand):ConvertToCharacter
+
+  create ConvertReal64ToByte(operand):ConvertToByte
+  create ConvertRealToByte(operand):ConvertToByte
+  create ConvertReal32ToByte(operand):ConvertToByte
+  create ConvertInt64ToByte(operand):ConvertToByte
+  create ConvertIntToByte(operand):ConvertToByte
+  create ConvertInt32ToByte(operand):ConvertToByte
+  create ConvertCharacterToByte(operand):ConvertToByte
+  create ConvertLogicalToByte(operand):ConvertToByte
+
+  create ConvertReal64ToLogical(operand):ConvertToLogical
+  create ConvertRealToLogical(operand):ConvertToLogical
+  create ConvertReal32ToLogical(operand):ConvertToLogical
+  create ConvertInt64ToLogical(operand):ConvertToLogical
+  create ConvertIntToLogical(operand):ConvertToLogical
+  create ConvertInt32ToLogical(operand):ConvertToLogical
+  create ConvertCharacterToLogical(operand):ConvertToLogical
+  create ConvertByteToLogical(operand):ConvertToLogical
+
+  create LiteralReal64(value:Real)
+  create LiteralReal32(value:Real)
+  create LiteralInt64(value:Integer)
+  create LiteralInt32(value:Integer)
+  create LiteralByte(value:Integer)
+
+  create OpAndAssign(target,operand)
+  create OpAndAssignLocal(info:Local,operand)
+  create OpAndAssignProperty(info:Property,operand)
+
+  create AddAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalLogical(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
+  create AddAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyLogical(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create AddAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
+
+  create SubtractAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
+  create SubtractAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create SubtractAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
+
+  create MultiplyAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalLogical(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
+  create MultiplyAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyLogical(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create MultiplyAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
+
+  create DivideAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
+  create DivideAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create DivideAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
+
+  create ModAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
+  create ModAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create ModAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
+
+  create PowerAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignGlobalPropertyXY(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignLocalXY(info:Local,operand):OpAndAssignLocal
+  create PowerAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignPropertyXY(context,info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create PowerAndAssignThisPropertyXY(info:Property,operand):OpAndAssignProperty
+
+  create BitwiseAndAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalLogical(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create BitwiseAndAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyLogical(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitwiseAndAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create BitwiseOrAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalLogical(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create BitwiseOrAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyLogical(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitwiseOrAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create BitwiseXorAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalLogical(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create BitwiseXorAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyLogical(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyLogical(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitwiseXorAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create BitShiftLeftAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create BitShiftLeftAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitShiftLeftAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create BitShiftRightAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create BitShiftRightXAndAssignGlobalProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignGlobalPropertyReal64(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignLocal(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalByte(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalCharacter(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalInt(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalInt32(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalInt64(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalReal(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalReal32(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignLocalReal64(info:Local,operand):OpAndAssignLocal
+  create BitShiftRightXAndAssignProperty(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyByte(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyCharacter(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyInt(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyInt32(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyInt64(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyReal(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyReal32(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignPropertyReal64(context,info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisProperty(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyByte(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyCharacter(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyInt(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyInt32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyInt64(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyReal(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyReal32(info:Property,operand):OpAndAssignProperty
+  create BitShiftRightXAndAssignThisPropertyReal64(info:Property,operand):OpAndAssignProperty
+
+  create LogicalBinary(left,right):Binary
+  create LogicalUnary(operand):Unary
+  create NativeProcedureSignature(scoped_type_name:String,name:String,parameters:NativeParameters,return_type:Type)
+  create PowerInt(left,right):Power
+  create PowerReal(left,right):Power
+  create Print(args:Args)
+  create Println(args:Args)
+  create ReadGlobalProperty(info:Property)
+  create ReadLocal(info:Local)
+  create ReadNativeSingleton(of_type:Type)
+  create ReadObjectProperty(context,info:Property)
+  create ReadProperty(context,info:Property)
+  create ReadSingleton(of_type:Type)
+  create ReadThisObjectProperty(info:Property)
+  create ReadThisProperty(info:Property)
+  create ReturnResult(result)
+  create WriteGlobalProperty(info:Property,new_value)
+  create WriteLocal(info:Local,new_value)
+  create WriteLocalInt(info:Local,new_value):WriteLocal
+  create WriteProperty(context,info:Property,new_value)
+  create WriteThisProperty(info:Property,new_value)
+  create WriteThisPropertyValue(info:Property)
+
+  create CallProcedure(info:Procedure,args:Args)
+  create CallMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallThisMethod(info:Procedure,args:Args):CallProcedure
+  create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
+  create CallNativeMethod
+
+  create Compare(left,right):Binary
+  create Conditional(condition,statements:Statements):ControlStructure
+  create Convert(operand)
+  create ConvertToByte(operand):Convert
+  create ConvertToCharacter(operand):Convert
+  create ConvertToInt32(operand):Convert
+  create ConvertToInt(operand):Convert
+  create ConvertToInt64(operand):Convert
+  create ConvertToLogical(operand):Convert
+  create ConvertToReal32(operand):Convert
+  create ConvertToReal(operand):Convert
+  create ConvertToReal64(operand):Convert
+  create CreateDefaultObject(of_type:Type)
+  create CreateDefaultString(of_type:Type)
+  create CreateDefaultList(of_type:Type)
+  create CreateDefaultTable(of_type:Type)
+  create CreateDefaultVariant(of_type:Type)
+  create DefaultConstructor(of_type:Type)
+  create CreateObject(of_type:Type,m_init:Procedure,args:Args)
+  create CreateCompound(of_type:Type,args:Args)
+  create DefaultArg(operand):Unary
+  create DummyInitialValue
+  create ExplicitCast(operand,to_type:Type)
+  create EnumValue(of_type:Type,name:String)
+  create EnumValueDef(value)
+  create EmptyCompound(of_type:Type)
+  create Escape
+  #create ForEachControl(name:String,optional_at:ForEachAt,collection:ForEachCollection)
+  create FunctionReturnValue(operand)
+  #create IfConditionalContext(conditional_context:ConditionalContext,statements)
+  create InlineAssignment(info:Local,value)
+  create IntrospectionGetObjectProperty(info:Property,context)
+  create Iterator(control,condition,statements:Statements,upkeep):Conditional
+  create Literal
+  create LiteralPrimitive:Literal
+  create LiteralInt(content=content:String,base="10":Integer):LiteralPrimitive
+  create LiteralNullOptional(optional_type:Type):Literal
+  create LocalDeclaration(info:Local)
+  create Logicalized(operand):Unary
+  create PreDecrementLocal(info:Local)  # Internal use
+  create Procedure(name:String,parameters:Parameters,return_type:Type,attributes:Attributes,doc=`null`,statements:Statements):ControlStructure
+  create PushStackTraceCutoff
+  create CreateRange(start,limit,step_size)
+  create ReturnOnException
+  create SetLocalToDefaultValue(info:Local)
+  create Stepper(operand)
+  create Switch(condition,cases:WhichCases,statements:Statements):Conditional
+  create TypeContext(type:Type)
+  create TypeIndex(of_type:Type)
+  create WideningCast(operand,to_type:Type)
+
+  create DecrementGlobalProperty(info:Property)
+  create DecrementLocal(info:Local)
+  create DecrementProperty(context,info:Property)
+  create DecrementThisProperty(info:Property)
+  create IncrementGlobalProperty(info:Property)
+  create IncrementLocal(info:Local)
+  create IncrementProperty(context,info:Property)
+  create IncrementThisProperty(info:Property)
+

@@ -10,8 +10,8 @@ augment Build
   # You can create a Local.settings file with overrides for these values, e.g.:
   # BUILD_MODE = release
   PROPERTIES
-    PROJECT          = "RogueS"
-    LAUNCHER_NAME    = "rogues" : String
+    PROJECT          = "Boss"
+    LAUNCHER_NAME    = "boss" : String
 
     BUILD_MODE       = "debug"  # set to "debug" or "release"
     LAUNCHER_FOLDER  = "/usr/local/bin"
@@ -33,7 +33,7 @@ endRoutine
 
 routine rogo_run
   # Runs this project.
-  execute "$ Test.rogue" (exe_file.esc)
+  execute "$ Test.boss" (exe_file.esc)
 endRoutine
 
 routine rogo_debug
@@ -58,12 +58,12 @@ routine rogo_build
   # Recompiles Rogue -> C -> Exe if needed. 'rogo rebuild' forces a build.
   localize exe_file
 
-  if (File("Source/RogueScript/RogueScript.froley").is_newer_than(exe_file))
+  if (File("Source/Boss/Boss.froley").is_newer_than(exe_file))
     rogo_froley
   endIf
 
-  local source_files = Files( "Source", "RogueS.rogue" )
-  source_files.add( "RogueScript/**" )
+  local source_files = Files( "Source", "Boss.rogue" )
+  source_files.add( "Boss/**" )
   if (source_files.any_newer_than(exe_file))
     local h_filepath = "Build/$-$.h" (Build.PROJECT,System.os)
     if (source_files.any_newer_than(h_filepath))
@@ -74,8 +74,8 @@ routine rogo_build
 endRoutine
 
 routine rogo_froley
-  local froley_src = File( "Source/RogueScript/RogueScript.froley" )
-  execute "froley $ Source/RogueScript"(froley_src.esc)
+  local froley_src = File( "Source/Boss/Boss.froley" )
+  execute "froley $ Source/Boss"(froley_src.esc)
 endRoutine
 
 routine rogo_build_debug

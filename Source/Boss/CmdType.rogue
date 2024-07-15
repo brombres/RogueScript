@@ -1,0 +1,144 @@
+module Boss
+
+================================================================================
+# type
+================================================================================
+augment
+  METHODS
+    method Cmd.require_type->Type
+      local result = this.type
+      if (not result) throw t.error( "Value expected." )
+      return result
+
+    method Cmd.require_value->Cmd
+      if (not this.type) throw t.error( "Value expected." )
+      return this
+
+    method Cmd.type->Type
+      return null
+
+    method CallProcedure.type->Type
+      return info.return_type
+
+    method Compare.type->Type
+      return Program.type_Logical
+
+    method Construct.type->Type
+      return @type
+
+    method CreateDefaultObject.type->Type
+      return of_type
+
+    method CreateDefaultString.type->Type
+      return of_type
+
+    method CreateDefaultList.type->Type
+      return of_type
+
+    method CreateDefaultTable.type->Type
+      return of_type
+
+    method CreateDefaultVariant.type->Type
+      return of_type
+
+    method CreateObject.type->Type
+      return of_type
+
+    method GetSingleton.type->Type
+      return @type
+
+    method GlobalPropertyDeclarations.type->Type
+      return @type
+
+    method ConvertIntToReal.type->Type
+      return Program.type_Real
+
+    method LiteralByte.type->Type
+      return Program.type_Byte
+
+    method LiteralCharacter.type->Type
+      return Program.type_Character
+
+    method LiteralInt.type->Type
+      return Program.type_Int
+
+    method LiteralInt32.type->Type
+      return Program.type_Int32
+
+    method LiteralInt64.type->Type
+      return Program.type_Int64
+
+    method LiteralLogical.type->Type
+      return Program.type_Logical
+
+    method LiteralReal.type->Type
+      return Program.type_Real
+
+    method LiteralReal32.type->Type
+      return Program.type_Real32
+
+    method LiteralReal64.type->Type
+      return Program.type_Real64
+
+    method LiteralString.type->Type
+      return Program.type_String
+
+    method Local.type->Type
+      return @type
+
+    method LocalDeclarations.type->Type
+      return @type
+
+    method LogicalBinary.type->Type
+      return Program.type_Logical
+
+    method LogicalUnary.type->Type
+      return Program.type_Logical
+
+    method NativeParameter.type->Type
+      return @type
+
+    method Property.type->Type
+      return @type
+
+    method PropertyDeclarations.type->Type
+      return @type
+
+    method ReadGlobalProperty.type->Type
+      return info.type
+
+    method ReadLocal.type->Type
+      return info.type
+
+    method ReadNativeSingleton.type->Type
+      return of_type
+
+    method ReadObjectProperty.type->Type
+      return info.type
+
+    method ReadProperty.type->Type
+      return info.type
+
+    method ReadSingleton.type->Type
+      return of_type
+
+    method ReadThisObjectProperty.type->Type
+      return info.type
+
+    method ReadThisProperty.type->Type
+      return info.type
+
+    method This.type->Type
+      return @type
+
+    method Type.type->Type
+      return this
+
+    method TypeContext.type->Type
+      return @type
+
+    method TypedDestructuringLocal.type->Type
+      return @type
+
+
+endAugment

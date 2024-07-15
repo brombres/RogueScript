@@ -1,0 +1,24 @@
+module Boss
+
+uses Geometry [export]
+
+$include Boss/Attributes
+$include Boss/BossObject
+$include Boss/CallCandidates
+$include Boss/CmdExecute
+$include Boss/CmdPreprocess
+$include Boss/CmdStore
+$include Boss/CmdType
+$include Boss/CollectTypes
+$include Boss/Module
+$include Boss/NativeTypeInfo
+$include Boss/Organizer
+$include Boss/Parser        [optional]
+$include Boss/Procedure
+$include Boss/Program
+$include Boss/Resolver
+$include Boss/Scanner
+$include Boss/ScopeStack
+$include Boss/Type
+$include Boss/TypeResolver
+$include Boss/VM

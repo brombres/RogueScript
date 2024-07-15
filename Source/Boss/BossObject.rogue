@@ -1,0 +1,10 @@
+module Boss
+
+class Object
+  PROPERTIES
+    type       : Type
+    properties = [String:Variant]
+
+  METHODS
+    method init( type )
+endClass

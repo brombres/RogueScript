@@ -1,0 +1,83 @@
+module Boss
+
+class Procedure : ControlStructure
+  PROPERTIES
+    type_context   : Type
+    name           : String
+    parameters     : Parameters
+    return_type    : Type
+    attributes     : Attributes
+    doc            : String
+    _signature     : String
+    param_count    : Int  # Includes 'this' context.
+    local_count    : Int  # Count of all non-parameter locals in this scope and all nested scopes.
+    min_args       : Int
+    max_args       : Int
+
+    cmd_call       : Cmd
+
+  METHODS
+    method init( t, name, parameters, return_type, attributes, doc, statements )
+      ensure<<attributes>>(t)
+
+    method init( t, name, parameters=null, return_type=null, statements=null )
+      ensure<<attributes>>(t)
+      ensure<<statements>>(t)
+
+    method init( existing:Procedure )
+      prior.init( existing )
+      name = existing.name
+      if (existing.parameters) parameters = existing.parameters.cloned
+      if (existing.return_type) return_type = existing.return_type.cloned
+      if (existing.attributes) attributes = existing.attributes.cloned
+      cmd_call = existing.cmd_call
+      doc = existing.doc
+
+    method description->String
+      return signature
+
+    method organize
+      if (parameters)
+        max_args = parameters.count
+        min_args = max_args
+
+        forEach (param at i in parameters)
+          if (param.type)
+            param.type = type_context.module_context.validate_type( param.type )
+            if (param.initial_value)
+              if (min_args == max_args) min_args = i
+            else
+              if (min_args != max_args)
+                throw param.t.error( "Parameter '$' must specify a default value; once any parameter specifies a default value, all successive parameters must specify a default value."(param.name) )
+              endIf
+            endIf
+          else
+            trace
+            throw param.t.error( "TODO: auto-store parameter" )
+          endIf
+        endForEach
+      endIf
+
+      return_type = type_context.module_context.validate_type( return_type )
+
+    method signature->String
+      if (_signature) return _signature
+
+      _signature = String()
+      _signature.print( name )
+      _signature.print( '(' )
+      if (parameters)
+        forEach (param at i in parameters)
+          assert param.type
+          if (i) _signature.print ','
+          _signature.print param.type
+        endForEach
+      endIf
+      _signature.print( ')' )
+      return _signature
+
+    method to->String
+      return signature
+
+endClass
+

@@ -1,0 +1,30 @@
+module Boss
+
+class NativePrimitives [singleton]
+  METHODS
+    method register( vm:VM )
+      # Int32
+      vm.register_type( "Int32", (value)=>value.is_int32, &variant_type=Variant.TYPE_INT32 )
+
+      # Int
+      vm.register_definition( "Int.BITS", Int.BITS->String )
+      vm.register_global_method( "Int.MAXIMUM", () => Int.MAXIMUM )
+      vm.register_global_method( "Int.MINIMUM", () => Int.MINIMUM )
+      vm.register_method( "Int.format(String)", () => VM.context->Int.format(VM.string(1)) )
+
+      # Int64
+      vm.register_type( "Int64", (value)=>value.is_int64, &variant_type=Variant.TYPE_INT64 )
+
+      # Color
+      vm.register_type( "Graphics::Color", (value)=>value.is_color, &variant_type=Variant.TYPE_COLOR )
+      vm.register_constructor( "Graphics::Color(Int32)", ()=>Color(VM.int(0)) )
+      vm.register_method( "Graphics::Color.argb->Int32", ()=>VM.context->Int32 )
+
+      # Triangle
+      vm.register_type( "Geometry::Triangle", (value)=>value.is_triangle, &variant_type=Variant.TYPE_TRIANGLE )
+      vm.register_constructor( "Geometry::Triangle(XY,XY,XY)", ()=>Triangle(VM.xy(1),VM.xy(2),VM.xy(3)) )
+
+      # XY
+      vm.register_type( "Geometry::XY", (value)=>value.is_xy, &variant_type=Variant.TYPE_XY )
+      vm.register_constructor( "Geometry::XY(Real,Real)", ()=>XY(VM.real(1),VM.real(2)) )
+endClass

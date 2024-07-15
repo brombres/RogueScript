@@ -1,0 +1,33 @@
+module Boss
+
+class NativeMath [singleton]
+  METHODS
+    method register( vm:VM )
+      vm.register_type( "Random" )
+      vm.register_method(
+        "Random.next32()->Int32",
+        function()->Variant
+          if local obj = VM.context.object->(as Boss::Object)
+            local seed   = obj.properties//seed->Int64
+            local state  = obj.properties//state->Int64
+            local stream = obj.properties//stream->Int64
+            local result : Int32
+
+            native
+            @|RogueUInt64 old_state = (RogueUInt64)$state;
+             |$state = (RogueInt64)(old_state * 6364136223846793005ULL) + $stream;
+             |RogueUInt32 xorshifted = (RogueUInt32)(((old_state >> 18u) ^ old_state) >> 27u);
+             |RogueUInt32 rot = (RogueUInt32)(old_state >> 59u);
+             |$result = (RogueInt32)((xorshifted >> rot) | (xorshifted << ((-rot) & 31)));
+
+            obj.properties//seed   = seed
+            obj.properties//state  = state
+            obj.properties//stream = stream
+
+            return result
+          else
+            throw RogueScriptError( "Null context reference to type Random." )
+          endIf
+        endFunction
+      )
+endClass

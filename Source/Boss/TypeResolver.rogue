@@ -1,0 +1,20 @@
+module Boss
+
+class TypeResolver : Visitor [singleton]
+  PROPERTIES
+
+  METHODS
+    method resolve_types
+      visit_program( Program )
+
+    method visit_type( type:Type ) [override]
+      temporarily this_type = type
+        visit( type.definition )
+        visit( forEach in type.global_methods )
+        visit( forEach in type.methods )
+      endTemporarily
+
+    method on_visit( type:Type )->Cmd
+      return type.resolved
+
+endClass
