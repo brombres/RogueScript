@@ -15,7 +15,7 @@ augment Build
 
     BUILD_MODE       = "debug"  # set to "debug" or "release"
     LAUNCHER_FOLDER  = "/usr/local/bin"
-    ROGUEC_FLAGS     = ""
+    ROGUEC_FLAGS     = "--gc=manual"
     CC_ARGS_MACOS    = ""
     CC_LINK_MACOS    = ""
     CC_ARGS_UNIX     = ""
@@ -65,8 +65,8 @@ routine rogo_build
   local source_files = Files( "Source", "RogueS.rogue" )
   source_files.add( "RogueScript/**" )
   if (source_files.any_newer_than(exe_file))
-    local c_filepath = "Build/$-$.c" (Build.PROJECT,System.os)
-    if (source_files.any_newer_than(c_filepath))
+    local h_filepath = "Build/$-$.h" (Build.PROJECT,System.os)
+    if (source_files.any_newer_than(h_filepath))
       compile_rogue
     endIf
     compile_c
@@ -310,12 +310,20 @@ endRoutine
 
 routine compile_rogue
   local src_filepath = "Source/$.rogue" (Build.PROJECT)
-  local c_filepath = "Build/$-$" (Build.PROJECT,System.os)
+  local c_filename = "$-$" (Build.PROJECT,System.os)
+  local c_filepath = "Build/$" (c_filename)
+
+  local ext = which{ System.is_macos or System.is_ios:"m" || "c" }
+  local existing = Files( "Build" )
+  existing.add( "$.h"(c_filename) )
+  existing.add( "$-*.$"(c_filename,ext) )
+  existing.delete
+
   local flags = Build.ROGUEC_FLAGS
-  if (Build.BUILD_MODE == "debug") flags = flags.with_suffix(' ') + "--debug"
+  #if (Build.BUILD_MODE == "debug") flags = flags.with_suffix(' ') + "--debug"
   local targets = "--target=Console,C,$"(System.os)
   if (System.is_macos) targets += ",ObjC"
-  local cmd = "roguec $ $ --main --output=$ $"...
+  local cmd = "roguec $ $ --main --split --output=$ $"...
               (File(src_filepath).esc,flags,File(c_filepath).esc,targets)
   println "> " + cmd
   local status = Process.run( cmd, &env )
@@ -328,14 +336,17 @@ routine compile_rogue
 endRoutine
 
 routine compile_c
-  local c_filepath = File( "Build/$-$" (Build.PROJECT,System.os) ).esc
+  local c_filename   = "$-$" (Build.PROJECT,System.os)
+  local ext = which{ System.is_macos or System.is_ios:"m" || "c" }
+  local c_filepaths = Files( "Build/$-*.$"(c_filename,ext) )->String[].map<<String>>( File($1).esc ).join(' ')
+
   local exe_filepath = exe_file.esc
   if (System.is_windows)
     local flags = Build.CC_ARGS_WINDOWS
     if (flags != "") flags += " "
     flags += which{ Build.BUILD_MODE=="release":"/O2" || "/Od" }
     local obj_filepath = File( "Build/$-Windows.obj"(Build.PROJECT) ).esc
-    local cc = "cl $ /nologo $.c /Fo$ /Fe$" (flags,c_filepath,obj_filepath,exe_filepath)
+    local cc = "cl $ /nologo $ /Fo$ /Fe$" (flags,c_filepaths,obj_filepath,exe_filepath)
     cc .= appending( "$LIBRARY_FLAGS" )
     cc .= appending( Build.CC_LINK_WINDOWS )
     execute cc
@@ -343,7 +354,7 @@ routine compile_c
     local flags = Build.CC_ARGS_MACOS
     if (flags != "") flags += " "
     flags += which{ Build.BUILD_MODE=="release":"-O3" || "-O0" }
-    local cc = "cc $ -Wall -fno-strict-aliasing $.m -o $ -lm" (flags,File(c_filepath).esc,exe_file.esc)
+    local cc = "cc $ -Wall -fno-strict-aliasing $ -o $ -lm" (flags,c_filepaths,exe_file.esc)
     cc .= appending( "$LIBRARY_FLAGS" )
     cc .= appending( Build.CC_LINK_MACOS )
     execute cc
@@ -351,7 +362,7 @@ routine compile_c
     local flags = Build.CC_ARGS_UNIX
     if (flags != "") flags += " "
     flags += which{ Build.BUILD_MODE=="release":"-O3" || "-O0" }
-    local cc = "cc $ -Wall -fno-strict-aliasing $.c -o $ -lm" (flags,File(c_filepath).esc,exe_file.esc)
+    local cc = "cc $ -Wall -fno-strict-aliasing $ -o $ -lm" (flags,c_filepaths,exe_file.esc)
     cc .= appending( "$LIBRARY_FLAGS" )
     cc .= appending( Build.CC_LINK_UNIX )
     execute cc
