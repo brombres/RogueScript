@@ -1,4 +1,15 @@
-local pos = XY(3,4)
-println pos
-pos += XY(1,2)
-println pos
+class Test
+  PROPERTIES
+    sum = 0
+endClass
+
+local start_ms = System.time_ms
+
+local test = Test()
+forEach (i in 1..50_000_000)
+  test.sum += i
+endForEach
+
+println test.sum
+
+println ((System.time_ms - start_ms) / 1000.0)

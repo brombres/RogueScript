@@ -98,6 +98,9 @@ augment
     method ConvertIntToReal.execute->Variant
       return operand.execute.integer->Real
 
+    method ConvertInt64ToReal.execute->Variant
+      return operand.execute.int64->Real
+
     method If.execute->Variant
       if (condition.execute?)
         return statements.execute
@@ -142,6 +145,14 @@ augment
 
     method LogicalNot.execute->Variant
       return not operand.execute?
+
+    method Loop.execute->Variant
+      local n = loop_count.execute->Int
+      while (n > 0)
+        statements.execute
+        --n
+      endWhile
+      return undefined
 
     method Println.execute->Variant
       forEach (arg in args)

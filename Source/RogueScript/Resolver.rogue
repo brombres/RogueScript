@@ -917,6 +917,8 @@ class Resolver : Visitor [singleton]
       endIf
       return cmd
 
+      #method on_visit( cmd:Loop )->Cmd
+
     method on_visit( proc:Procedure )->Cmd
       temporarily this_procedure = proc
         scope_stack.add( proc )

@@ -2093,15 +2093,15 @@ parser
 - loop
   on "loop"
     on EOL
-      createNull # loop_count
       multi_line_statements
       mustConsume "endLoop"
+      produce InfiniteLoop(statements:Statements):ControlStructure
     elseOnOthers
       expression
       if (consume(EOL)) multi_line_statements; mustConsume "endLoop"
       else              single_line_statements
+      produce Loop(loop_count,statements:Statements):ControlStructure
     endOn
-    produce Loop(loop_count,statements)
   endOn
 
 - which_conditional

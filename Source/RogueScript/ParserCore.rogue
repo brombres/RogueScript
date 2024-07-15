@@ -3332,9 +3332,11 @@ class ParserCore [abstract]
         temporarily _cur_t = _on_t
           if (_next_t.type == TokenType.EOL)
             temporarily _cur_t = _on_t
-              if (not disable_output) _push( null, 0 )
               r_multi_line_statements
               if (not _consume(TokenType.KEYWORD_END_LOOP)) _throw_syntax_error( &expected=TokenType.KEYWORD_END_LOOP )
+              if (not disable_output) _push( InfiniteLoop(_cur_t,_node_arg(-1)->(as Statements)), 1 )
+              _cur_t = _previous_cur_t
+              return 0
             endTemporarily
           else
             r_expression
@@ -3344,10 +3346,10 @@ class ParserCore [abstract]
             else
               r_single_line_statements
             endIf
+            if (not disable_output) _push( Loop(_cur_t,_node_arg(-2),_node_arg(-1)->(as Statements)), 2 )
+            _cur_t = _previous_cur_t
+            return 0
           endIf
-          if (not disable_output) _push( Loop(_cur_t,_node_arg(-2),_node_arg(-1)), 2 )
-          _cur_t = _previous_cur_t
-          return 0
         endTemporarily
       endIf
       _cur_t = _previous_cur_t
