@@ -20,6 +20,9 @@ augment
     method CallProcedure.type->Type
       return info.return_type
 
+    method Compare.type->Type
+      return Program.type_Logical
+
     method Construct.type->Type
       return @type
 

@@ -1,15 +1,2 @@
-class Test
-  PROPERTIES
-    sum = 0
-endClass
-
-local start_ms = System.time_ms
-
-local test = Test()
-forEach (i in 1..50_000_000)
-  test.sum += i
-endForEach
-
-println test.sum
-
-println ((System.time_ms - start_ms) / 1000.0)
+if (Int.BITS == 64) 64
+else                32

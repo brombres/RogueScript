@@ -6,7 +6,8 @@ class Program [singleton]
     default_module : Module
     current_module : Module
     modules        = [String:Module]
-    types          = [String:Type]  # All types, fully qualified e.g. RogueScript::Int
+    types          = [String:Type]  # All types, keys fully qualified e.g. RogueScript::Int
+    definitions    = [String:Cmd]   # Includes VM.definitions
 
     type_Byte      : Type
     type_Character : Type
@@ -32,6 +33,13 @@ class Program [singleton]
 
     method add( elements:ProgramElements[] )
       pending_elements.add( elements )
+
+    method add_definition( name:String, value:String )
+      local parser = Parser( "[define $]"(name), value )
+      definitions[name] = parser.parse( ParserCore.ip_expression )
+
+    method add_definitions( other:[String:Cmd] )
+      definitions.add( other )
 
     method execute( cmd:Cmd )->Variant
       temporarily Program = this
@@ -86,6 +94,16 @@ class Program [singleton]
             type.attributes.is_singleton = true
           endIf
           type.variant_type = entry.value.variant_type
+        endForEach
+
+        forEach (entry in VM.native_definitions.entries)
+          local parser = Parser( "[VM.register_definition($)]"(entry.key), entry.key )
+          local type = parser.parse( ParserCore.ip_type )->(as Type).resolved
+          parser._consume( TokenType.SYMBOL_PERIOD )
+          local name = parser.parse( ParserCore.ip_identifier )
+          parser = Parser( "[VM.register_definition($)]"(entry.key), entry.value )
+          local value = parser.parse( ParserCore.ip_expression )
+          type.definitions[name] = value
         endForEach
 
         forEach (entry in VM.native_constructors.entries)

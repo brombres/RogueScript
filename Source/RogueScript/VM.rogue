@@ -11,6 +11,8 @@ class VM [singleton]
     native_constructors   = [String:Cmd]
     native_global_methods = [String:Cmd]
     native_methods        = [String:Cmd]
+    native_definitions    = [String:String]
+    definitions           = [String:Cmd]
 
     program : Program
     stack   = Variant[]
@@ -163,6 +165,11 @@ class VM [singleton]
 
     method register_constructor( full_signature:String, callback:Function()->Variant )
       register_constructor( full_signature, CallNativeMethod(t,callback) )
+
+    method register_definition( scoped_name:String, value:String )
+      # E.g. register_definition( "Int.BITS", "64" )
+      # E.g. register_definition( "Rogue::Int.BITS", "64" )
+      native_definitions[scoped_name] = value
 
     method register_global_method( full_signature:String, cmd:Cmd )
       native_global_methods[full_signature] = cmd

@@ -15,6 +15,6 @@ class TypeResolver : Visitor [singleton]
       endTemporarily
 
     method on_visit( type:Type )->Cmd
-      return Program.current_module.must_find_type( type.t, type.name )
+      return type.resolved
 
 endClass

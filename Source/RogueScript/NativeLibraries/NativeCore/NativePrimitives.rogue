@@ -7,7 +7,7 @@ class NativePrimitives [singleton]
       vm.register_type( "Int32", (value)=>value.is_int32, &variant_type=Variant.TYPE_INT32 )
 
       # Int
-      vm.register_global_method( "Int.BITS",    () => Int.BITS )
+      vm.register_definition( "Int.BITS", Int.BITS->String )
       vm.register_global_method( "Int.MAXIMUM", () => Int.MAXIMUM )
       vm.register_global_method( "Int.MINIMUM", () => Int.MINIMUM )
       vm.register_method( "Int.format(String)", () => VM.context->Int.format(VM.string(1)) )

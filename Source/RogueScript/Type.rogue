@@ -30,7 +30,7 @@ class Type : Cmd
     properties             = [String:Property]
 
     visiting  : Logical
-    resolved  : Logical
+    is_resolved  : Logical
 
     singleton_value : Variant
     m_init_class    : GlobalMethod
@@ -283,9 +283,14 @@ class Type : Cmd
       return false
 
     method resolve
-      if (resolved) return
-      resolved = true
+      if (is_resolved) return
+      is_resolved = true
       Resolver.resolve_type( this )
+
+    method resolved->Type
+      local mod = module_context
+      if (not mod) mod = Program.default_module
+      return mod.must_find_type( this )
 
     method scoped_name->String
       if (@scoped_name) return @scoped_name

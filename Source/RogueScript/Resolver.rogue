@@ -109,13 +109,13 @@ augment
 endAugment
 $endLocalMacro
 
-$localMacro VALIDATE_BINARY_OP<<$Cmd,$op,$Type>>
+$localMacro BINARY_OP_VALIDATE<<$Cmd,$op,$OpType,$ResultType>>
 augment Resolver
   METHODS
-    method on_validate( cmd:$id($Cmd,$Type) )->Cmd
-      if local left_literal = cmd.left->(as $id(Literal,$Type))
-        if local right_literal = cmd.right->(as $id(Literal,$Type))
-          return $id(Literal,$Type)( cmd.t, left_literal.value $op right_literal.value )
+    method on_validate( cmd:$id($Cmd,$OpType) )->Cmd
+      if local left_literal = cmd.left->(as $id(Literal,$OpType))
+        if local right_literal = cmd.right->(as $id(Literal,$OpType))
+          return $id(Literal,$ResultType)( cmd.t, left_literal.value $op right_literal.value )
         endIf
       endIf
       return cmd
@@ -125,42 +125,45 @@ $endLocalMacro
 $localMacro MATH_OP<<$Cmd,$op>>
 GENERAL_OP_RESOLVE<< $Cmd, $op, false >>
 GENERAL_OP_EXECUTE<< $Cmd, $op >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Real64 >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Real   >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Real32 >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Int64 >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Int   >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Int32 >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Character >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Real64,    Real64 >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Real,      Real   >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Real32,    Real32 >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int64,     Int64 >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int,       Int   >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int32,     Int32 >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Character, Character >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Byte,      Byte >>
 $endLocalMacro
 
+$localMacro LOGICAL_OP_EXECUTE<<$Cmd,$op,$OpType,$variant_property>>
+augment $id($Cmd,$OpType)
+  METHODS
+    method execute->Variant
+      local left_value = left.execute
+      local right_value = right.execute
+      return Variant( left_value.$variant_property $op right_value.$variant_property )
+endAugment
+$endLocalMacro
 
 $localMacro LOGICAL_OP<<$Cmd,$op>>
 
 GENERAL_OP_RESOLVE<< $Cmd, $op, true >>
-
-augment $id($Cmd,Int)
-  METHODS
-    method type->Type
-      return Program.type_Logical
-
-    method execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.integer $op right_value.integer )
-endAugment
-
-augment $id($Cmd,Real)
-  METHODS
-    method type->Type
-      return Program.type_Logical
-
-    method execute->Variant
-      local left_value = left.execute
-      local right_value = right.execute
-      return Variant( left_value.real $op right_value.real )
-endAugment
+BINARY_OP_VALIDATE<< $Cmd, $op, Real64,    Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Real,      Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Real32,    Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int64,     Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int,       Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int32,     Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Character, Logical >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Byte,      Logical >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Real64,    logical >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Real,      real >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Real32,    real32 >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Int64,     int64 >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Int,       integer >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Int32,     int32 >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Character, character >>
+LOGICAL_OP_EXECUTE<< $Cmd, $op, Byte,      byte >>
 $endLocalMacro
 
 $localMacro VALIDATE_CONVERT_OP<<$FromType,$ToType>>
@@ -177,11 +180,11 @@ $endLocalMacro
 $localMacro BITWISE_OP<<$Cmd,$op>>
 BITWISE_OP_RESOLVE<< $Cmd, $op >>
 BITWISE_OP_EXECUTE<< $Cmd, $op >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Int64 >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Int   >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Int32 >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Character >>
-VALIDATE_BINARY_OP<< $Cmd, $op, Byte >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int64,     Int64 >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int,       Int   >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Int32,     Int32 >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Character, Character >>
+BINARY_OP_VALIDATE<< $Cmd, $op, Byte,      Byte >>
 $endLocalMacro
 
 $localMacro OP_AND_ASSIGN_EXE<<$Cmd,$op,$OpType,$variant_property>>

@@ -89,6 +89,7 @@ class Module
 
     method launch
       if (m_on_launch)
+trace m_on_launch.statements
         VM.stack.add( Variant() )
         Program.execute( m_on_launch )
       endIf
@@ -97,6 +98,9 @@ class Module
       local result = find_type( type_name, &=limited )
       if (result) return result
       throw t.error( "Reference to undefined type $."(type_name) )
+
+    method must_find_type( type:Type )->Type
+      return must_find_type( type.t, type.name )
 
     method organize
       if (global_statements)

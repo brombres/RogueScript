@@ -723,49 +723,49 @@ class Compare : Binary
 
 endClass
 
-class CompareEQ : Binary
+class CompareEQ : Compare
   METHODS
     method description->String
       return "CompareEQ($,$)" (%left,%right)
 
 endClass
 
-class CompareGE : Binary
+class CompareGE : Compare
   METHODS
     method description->String
       return "CompareGE($,$)" (%left,%right)
 
 endClass
 
-class CompareGT : Binary
+class CompareGT : Compare
   METHODS
     method description->String
       return "CompareGT($,$)" (%left,%right)
 
 endClass
 
-class CompareLE : Binary
+class CompareLE : Compare
   METHODS
     method description->String
       return "CompareLE($,$)" (%left,%right)
 
 endClass
 
-class CompareLT : Binary
+class CompareLT : Compare
   METHODS
     method description->String
       return "CompareLT($,$)" (%left,%right)
 
 endClass
 
-class CompareNE : Binary
+class CompareNE : Compare
   METHODS
     method description->String
       return "CompareNE($,$)" (%left,%right)
 
 endClass
 
-class CompareOp : Binary
+class CompareOp : Compare
   METHODS
     method description->String
       return "CompareOp($,$)" (%left,%right)
