@@ -53,14 +53,32 @@ augment
     method ConvertIntToReal.type->Type
       return Program.type_Real
 
+    method LiteralByte.type->Type
+      return Program.type_Byte
+
+    method LiteralCharacter.type->Type
+      return Program.type_Character
+
     method LiteralInt.type->Type
       return Program.type_Int
+
+    method LiteralInt32.type->Type
+      return Program.type_Int32
+
+    method LiteralInt64.type->Type
+      return Program.type_Int64
 
     method LiteralLogical.type->Type
       return Program.type_Logical
 
     method LiteralReal.type->Type
       return Program.type_Real
+
+    method LiteralReal32.type->Type
+      return Program.type_Real32
+
+    method LiteralReal64.type->Type
+      return Program.type_Real64
 
     method LiteralString.type->Type
       return Program.type_String

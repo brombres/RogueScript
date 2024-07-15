@@ -1790,7 +1790,7 @@ class LiteralCharacter : LiteralPrimitive
 
 endClass
 
-class LiteralInt : LiteralPrimitive
+class LiteralInt : LiteralInteger
   PROPERTIES
     content : String
     value   : Int
@@ -1812,6 +1812,8 @@ class LiteralInt : LiteralPrimitive
       if (content) return "LiteralInt($,$)" (%content,%base)
       else         return value
 
+    method to->Int:       return value
+    method to->String:    return value
 endClass
 
 class LiteralList : CmdList
@@ -1844,6 +1846,9 @@ class LiteralNull : Literal
   METHODS
     method description->String
       return "LiteralNull"
+
+    method to->Int:       return 0
+    method to->String:    return null
 endClass
 
 class LiteralNullOptional : Literal
@@ -1860,18 +1865,27 @@ class LiteralNullOptional : Literal
     method description->String
       return "LiteralNullOptional($)" (%optional_type)
 
+    method to->Int:       return 0
+    method to->String:    return null
 endClass
 
-class LiteralPi : Literal
+class LiteralPi : LiteralPrimitive
   METHODS
     method description->String
       return "LiteralPi"
+
+    method to->Int:       return pi
+    method to->Real:      return pi
+    method to->String:    return pi
 endClass
 
 class LiteralUndefined : Cmd
   METHODS
     method description->String
       return "LiteralUndefined"
+
+    method to->Int:       return 0
+    method to->String:    return null
 endClass
 
 class Local : Cmd
@@ -5097,7 +5111,7 @@ class ConvertRealToReal64 : ConvertToReal64
 
 endClass
 
-class LiteralByte : Cmd
+class LiteralByte : LiteralPrimitive
   PROPERTIES
     value : Byte
 
@@ -5116,7 +5130,7 @@ class LiteralByte : Cmd
 
 endClass
 
-class LiteralInt32 : Cmd
+class LiteralInt32 : LiteralInteger
   PROPERTIES
     value : Int32
 
@@ -5135,7 +5149,7 @@ class LiteralInt32 : Cmd
 
 endClass
 
-class LiteralInt64 : Cmd
+class LiteralInt64 : LiteralInteger
   PROPERTIES
     value : Int64
 
@@ -5154,7 +5168,7 @@ class LiteralInt64 : Cmd
 
 endClass
 
-class LiteralReal32 : Cmd
+class LiteralReal32 : LiteralPrimitive
   PROPERTIES
     value : Real32
 
@@ -5174,7 +5188,7 @@ class LiteralReal32 : Cmd
 
 endClass
 
-class LiteralReal64 : Cmd
+class LiteralReal64 : LiteralPrimitive
   PROPERTIES
     value : Real64
 
@@ -10213,5 +10227,46 @@ class Loop : ControlStructure
 
     method description->String
       return "Loop($,$)" (%loop_count,%statements)
+
+endClass
+
+class LiteralInteger : LiteralPrimitive
+  GLOBAL METHODS
+    method create( t:Token, content:String, base:Int32 )->LiteralInteger
+      if ("lLI".contains(content[content.count-1]))
+        return LiteralInt64( t, content.unright(1)->Int64(&=base) )
+      elseIf (content.ends_with('i'))
+        return LiteralInt32( t, content.unright(1)->Int32(&=base) )
+      elseIf (Int.BITS == 64)
+        return LiteralInt( t, content->Int64(&=base) )
+      endIf
+
+      contingent
+        if (base == 10)
+          sufficient (content.count > 10)
+          local n64 = content->Int64(&=base)
+          sufficient (n64 != n64->Int32->Int64)
+          return LiteralInt( t, n64->Int32 )
+        endIf
+
+        sufficient (base == 2 and content.count > 32)
+        if (base == 8)
+          sufficient (content.count > 11 or (content.count == 11 and content[0] > '3'))
+        endIf
+        sufficient (base == 16 and content.count > 8)
+
+        return LiteralInt( t, content->Int32(&=base) )
+
+      satisfied
+        return LiteralInt64( t, content->Int64(&=base) )
+
+      endContingent
+
+  METHODS
+    method init( existing:LiteralInteger )
+      prior.init( existing )
+
+    method description->String
+      return "LiteralInteger()"
 
 endClass

@@ -1934,7 +1934,7 @@ class ParserCore [abstract]
           if (_consume(TokenType.SYMBOL_OPEN_PAREN))
             if (_next_t.type == TokenType.INTEGER)
               temporarily _cur_t = _on_t
-                if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
+                if (not disable_output) _push( LiteralInteger(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
               endTemporarily
             else
               _throw_syntax_error("Integer ordinal expected.")
@@ -1964,7 +1964,7 @@ class ParserCore [abstract]
           if (_consume(TokenType.SYMBOL_OPEN_PAREN))
             if (_next_t.type == TokenType.INTEGER)
               temporarily _cur_t = _on_t
-                if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
+                if (not disable_output) _push( LiteralInteger(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
               endTemporarily
             else
               _throw_syntax_error("Integer ordinal expected.")
@@ -4362,28 +4362,28 @@ class ParserCore [abstract]
       endIf
       if (_next_t.type == TokenType.INTEGER)
         temporarily _cur_t = _on_t
-          if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
+          if (not disable_output) _push( LiteralInteger(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
           _cur_t = _previous_cur_t
           return 0
         endTemporarily
       endIf
       if (_next_t.type == TokenType.HEX_INTEGER)
         temporarily _cur_t = _on_t
-          if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("16")), 0 )
+          if (not disable_output) _push( LiteralInteger(_cur_t,_cur_t.content,_string_to_Int("16")), 0 )
           _cur_t = _previous_cur_t
           return 0
         endTemporarily
       endIf
       if (_next_t.type == TokenType.BINARY_INTEGER)
         temporarily _cur_t = _on_t
-          if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("2")), 0 )
+          if (not disable_output) _push( LiteralInteger(_cur_t,_cur_t.content,_string_to_Int("2")), 0 )
           _cur_t = _previous_cur_t
           return 0
         endTemporarily
       endIf
       if (_next_t.type == TokenType.OCTAL_INTEGER)
         temporarily _cur_t = _on_t
-          if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("8")), 0 )
+          if (not disable_output) _push( LiteralInteger(_cur_t,_cur_t.content,_string_to_Int("8")), 0 )
           _cur_t = _previous_cur_t
           return 0
         endTemporarily
@@ -6254,6 +6254,7 @@ class ParserCore [abstract]
       if (not disable_output) _push( Iterator(_cur_t,_node_arg(-4),_node_arg(-3),_node_arg(-2)->(as Statements),_node_arg(-1)), 4 )
       if (not disable_output) _push( Literal(_cur_t), 0 )
       if (not disable_output) _push( LiteralPrimitive(_cur_t), 0 )
+      if (not disable_output) _push( LiteralInt(_cur_t,_cur_t.content,_string_to_Int("10")), 0 )
       if (not disable_output) _push( LiteralNullOptional(_cur_t,_node_arg(-1)->(as Type)), 1 )
       if (not disable_output) _push( LocalDeclaration(_cur_t,_node_arg(-1)->(as Local)), 1 )
       if (not disable_output) _push( Logicalized(_cur_t,_node_arg(-1)), 1 )

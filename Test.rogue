@@ -1,2 +1,2 @@
-if (Int.BITS == 64) 64
-else                32
+if (Random.next32 & 1i) println "true"
+else                    println "false"

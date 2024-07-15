@@ -872,9 +872,22 @@ class Resolver : Visitor [singleton]
         cmd.condition = visit( cmd.condition ).require_value
         on_visit( cmd->(as ControlStructure) )
         cmd.cmd_else = visit( cmd.cmd_else )
-        return cmd
+        return validate( cmd )
       else
         return visit( Else(cmd.t,cmd.statements) )
+      endIf
+
+    method on_validate( cmd:If )->Cmd
+      if (cmd.condition instanceOf Literal)
+        if (cmd.condition->Logical)
+          return cmd.statements
+        else
+          local cmd_else = cmd.cmd_else->(as Else)
+          if (cmd_else) return cmd_else.statements
+          else          return cmd_else
+        endIf
+      else
+        return cmd
       endIf
 
     method on_validate( cmd:ConvertIntToReal )->Cmd
