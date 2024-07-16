@@ -1,10 +1,19 @@
 module Boss
 
-class Object
+class BossObject [aspect]
   PROPERTIES
-    type       : Type
-    properties = [String:Variant]
+    boss_type       : Type
+    boss_properties = [String:Variant]
 
   METHODS
-    method init( type )
+    method boss_properties->[String:Variant]: return @boss_properties
+    method boss_type->Type: return @boss_type
+
+    method set_boss_properties( @boss_properties )
+    method set_boss_type( @boss_type )
+endClass
+
+class Object : BossObject
+  METHODS
+    method init( boss_type )
 endClass

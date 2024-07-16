@@ -18,8 +18,8 @@ class Random [singleton]
     stream : Int64  # A PCG32-specific modifier that essentially acts as an additional seed.
 
   METHODS
-    method init
-      reset( Rogue::System.time_ms )
+    #method init
+    #reset( Rogue::System.time_ms )
 
     #{
     method init( seed:Int64, stream=0x14057b7e_f767814f:Int64 )

@@ -1,10 +1,11 @@
 module Boss
 
 class NativeTypeInfo(
-  instance_of:Function(Variant)->Logical,
-  base_class_name:String,
+  instance_of=null:Function(Variant)->Logical,
+  base_class_name=null:String,
   get_singleton=null:Function()->Variant,
   set_singleton=null:Function(Variant),
   variant_type=Varant.TYPE_OBJECT:Int
 ) [compound]
+
 endClass

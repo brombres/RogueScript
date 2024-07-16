@@ -188,7 +188,7 @@ augment
 
     method ReadObjectProperty.execute->Variant
       if local obj = this.context.execute.object->(as Boss::Object)
-        return obj.properties[info.name]
+        return obj.boss_properties[info.name]
       else
         throw t.error( "Null context reading property '$'."(info.name) )
       endIf
@@ -203,7 +203,7 @@ augment
 
     method ReadThisObjectProperty.execute->Variant
       if local obj = VM.context.object->(as Boss::Object)
-        return obj.properties[info.name]
+        return obj.boss_properties[info.name]
       else
         throw t.error( "Null context reading property '$'."(info.name) )
       endIf
@@ -238,23 +238,23 @@ augment
 
     method WriteProperty.execute->Variant
       if local obj = this.context.execute.object->(as Boss::Object)
-        obj.properties[info.name] = new_value.execute
+        obj.boss_properties[info.name] = new_value.execute
         return undefined
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
 
     method WriteThisProperty.execute->Variant
-      if local obj = VM.context.object->(as Object)
-        obj.properties[info.name] = new_value.execute
+      if local obj = VM.context.object->(as BossObject)
+        obj.boss_properties[info.name] = new_value.execute
         return undefined
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
 
     method WriteThisPropertyValue.execute->Variant
-      if local obj = VM.context.object->(as Object)
-        obj.properties[info.name] = value
+      if local obj = VM.context.object->(as BossObject)
+        obj.boss_properties[info.name] = value
         return undefined
       else
         throw t.error( "Null context assigning property '$'."(info.name) )
