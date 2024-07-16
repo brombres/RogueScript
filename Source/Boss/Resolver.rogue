@@ -791,7 +791,7 @@ class Resolver : Visitor [singleton]
           return visit( Construct(cmd.t,type,cmd.args) )
 
         elseIf (type.attributes.is_singleton)
-          if (type.native_get_singleton)
+          if (type.native_type.get_singleton)
             return visit( ReadNativeSingleton(cmd.t,type) )
           else
             return visit( ReadSingleton(cmd.t,type) )
@@ -830,7 +830,12 @@ class Resolver : Visitor [singleton]
       return cmd
 
     method on_visit( cmd:Construct )->Cmd
-      return resolve_access( cmd.t, cmd.@type, cmd, "init", cmd.args, &is_constructor )
+      local type = cmd.@type
+      if (type.native_type.create_object)
+        return CreateNativeObject( cmd.t, type )
+      else
+        return resolve_access( cmd.t, cmd.@type, cmd, "init", cmd.args, &is_constructor )
+      endIf
 
     method on_visit( cmd:ControlStructure )->Cmd
       scope_stack.add( cmd )

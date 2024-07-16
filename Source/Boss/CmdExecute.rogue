@@ -1,12 +1,15 @@
 module Boss
 
-class RogueScriptException : Exception
+class BossRuntimeException : Exception
   METHODS
     method save_stack_trace
       noAction
 endClass
 
-class ReturnResultException( result:Variant ) : RogueScriptException [singleton]
+class BossNullReferenceError : BossRuntimeException [singleton]
+endClass
+
+class ReturnResultException( result:Variant ) : BossRuntimeException [singleton]
   METHODS
     method to->String
       return result->String
@@ -77,6 +80,9 @@ augment
       local result : Variant
       result.type = of_type.variant_type
       return result
+
+    method CreateNativeObject.execute->Variant
+      return of_type.native_type.create_object()
 
     method CreateObject.execute->Variant
       local obj = VM.create_object( of_type, &no_init )

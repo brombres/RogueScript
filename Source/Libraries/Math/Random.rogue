@@ -13,9 +13,9 @@ class Random [singleton]
   # Under the hood Random uses the PCG32 algorithm adapted from:
   # https://github.com/imneme/pcg-c-basic
   PROPERTIES
-    seed   : Int64  # The original state value.
-    state  : Int64  # The current state used to produce the next psuedo-random number.
-    stream : Int64  # A PCG32-specific modifier that essentially acts as an additional seed.
+    #seed   : Int64  # The original state value.
+    #state  : Int64  # The current state used to produce the next psuedo-random number.
+    #stream : Int64  # A PCG32-specific modifier that essentially acts as an additional seed.
 
   METHODS
     #method init
@@ -44,19 +44,19 @@ class Random [singleton]
     }#
 
     method reset( seed:Int64, stream=0x14057b7e_f767814f:Int64 )
-      this.seed = seed
+      #this.seed = seed
       # Resets the Random generator ot use the specified seed and optional stream parameter.
       # 'stream' defaults to 0x14057b7e_f767814f. If you pass an explicit value, note that
       # the canonical PCG algorithm performs 'stream = (stream :<<: 1) | 1' but this
       # implementation only performs 'stream | 1'. This ensures that 'stream' isn't modified
       # each time it is passed from one Random generator to another.
-      this.stream = stream | 1
+      #this.stream = stream | 1
 
-      # Prime the generator
-      this.state = 0
-      next32
-      this.state += seed
-      next32
+      ## Prime the generator
+      #this.state = 0
+      #next32
+      #this.state += seed
+      #next32
 
 #{
     method byte->Byte

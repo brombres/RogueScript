@@ -1290,4 +1290,7 @@ class Visitor
       cmd.loop_count = visit(cmd.loop_count)
       cmd.statements = visit(cmd.statements)->(as Statements)
 
+    method on_visit_children( cmd:CreateNativeObject )
+      cmd.of_type = visit(cmd.of_type)->(as Type)
+
 endClass

@@ -3,18 +3,21 @@ module Boss
 class NativeMath [singleton]
   METHODS
     method register( vm:VM )
-      vm.register_type( "Random" )
-      vm.register_global_method( "Random.create()->Random",
-        function()->Variant
-          trace
-          return Random()
-        endFunction
+      vm.register_type(
+        "Random",
+        NativeTypeInfo(
+          &create_object = ()=>Random()
+        )
       )
 
       vm.register_method(
         "Random.next32()->Int32",
         function()->Variant
-          return 5
+          if local obj = VM.context.object->(as Boss::Random)
+            return obj.next32
+          else
+            throw BossNullReferenceError
+          endIf
         #{
           if local obj = VM.context.object->(as Boss::Object)
             local seed   = obj.boss_properties//seed->Int64
@@ -35,7 +38,7 @@ class NativeMath [singleton]
 
             return result
           else
-            throw RogueScriptError( "Null context reference to type Random." )
+            throw BossError( "Null context reference to type Random." )
           endIf
         }#
         endFunction

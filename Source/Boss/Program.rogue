@@ -87,10 +87,8 @@ class Program [singleton]
             type.base_class = base_class
           endIf
           type.attributes.is_native = true
-          type.native_instance_of   = entry.value.instance_of
-          type.native_get_singleton = entry.value.get_singleton
-          type.native_set_singleton = entry.value.set_singleton
-          if (type.native_get_singleton or type.native_set_singleton)
+          type.native_type = entry.value
+          if (type.native_type.get_singleton or type.native_type.set_singleton)
             type.attributes.is_singleton = true
           endIf
           type.variant_type = entry.value.variant_type

@@ -39,7 +39,7 @@ class Boss
 
         vm.update
 
-      catch (error:RogueScriptError)
+      catch (error:BossError)
         Global.error.println error
         System.exit 1
 

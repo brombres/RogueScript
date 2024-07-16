@@ -135,7 +135,7 @@ class VM [singleton]
         file = found_file
       else
         if (suppress_error) return false
-        throw RogueScriptError( "File not found: " + file )
+        throw BossError( "File not found: " + file )
       endIf
 
       return load( file, String(file), &=suppress_error )
@@ -185,17 +185,8 @@ class VM [singleton]
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeMethod(t,callback) )
 
-    method register_type(
-        scoped_name:String,
-        instance_of=null:Function(Variant)->Logical,
-        base_class_name=null:String,
-        get_singleton=null:Function()->Variant,
-        set_singleton=null:Function(Variant),
-        variant_type=Variant.TYPE_OBJECT:Int
-      )
-      native_types[scoped_name] = NativeTypeInfo(
-        instance_of, base_class_name, get_singleton, set_singleton, variant_type
-      )
+    method register_type( scoped_name:String, info=NativeTypeInfo():NativeTypeInfo )
+      native_types[scoped_name] = info
 
     method unload( file:File )
       .begin_staging

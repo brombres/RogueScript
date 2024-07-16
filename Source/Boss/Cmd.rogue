@@ -4251,7 +4251,7 @@ class ReadNativeSingleton : Cmd
       noAction
 
     method init( t, of_type )
-      fn_get_singleton = of_type.native_get_singleton
+      fn_get_singleton = of_type.native_type.get_singleton
 
     method init( existing:ReadNativeSingleton )
       t = existing.t
@@ -10268,5 +10268,22 @@ class LiteralInteger : LiteralPrimitive
 
     method description->String
       return "LiteralInteger()"
+
+endClass
+
+
+class CreateNativeObject : Cmd
+  PROPERTIES
+    of_type : Type
+
+  METHODS
+    method init( t, of_type )
+
+    method init( existing:CreateNativeObject )
+      prior.init( existing )
+      if (existing.of_type) of_type = existing.of_type.cloned
+
+    method description->String
+      return "CreateNativeObject($)" (%of_type)
 
 endClass

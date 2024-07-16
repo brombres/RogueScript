@@ -4099,6 +4099,7 @@ parser
   create DefaultConstructor(of_type:Type)
   create CreateObject(of_type:Type,m_init:Procedure,args:Args)
   create CreateCompound(of_type:Type,args:Args)
+  create CreateNativeObject(of_type:Type)
   create DefaultArg(operand):Unary
   create DummyInitialValue
   create ExplicitCast(operand,to_type:Type)

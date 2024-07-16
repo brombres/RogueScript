@@ -41,6 +41,9 @@ augment
     method CreateDefaultVariant.type->Type
       return of_type
 
+    method CreateNativeObject.type->Type
+      return of_type
+
     method CreateObject.type->Type
       return of_type
 
