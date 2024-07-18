@@ -4,46 +4,21 @@ class NativeMath [singleton]
   METHODS
     method register( vm:VM )
       vm.register_type(
-        "Random",
+        "Rogue::Random",
         NativeTypeInfo(
-          &create_object = ()=>Random()
+          &create_object = () => Rogue::Random(),
+          &get_singleton = () => Rogue::Random,
+          &set_singleton = (value) => Rogue::Random = value
         )
       )
 
-      vm.register_method(
-        "Random.next32()->Int32",
-        function()->Variant
-          if local obj = VM.context.object->(as Boss::Random)
-            return obj.next32
-          else
-            throw BossNullReferenceError
-          endIf
-        #{
-          if local obj = VM.context.object->(as Boss::Object)
-            local seed   = obj.boss_properties//seed->Int64
-            local state  = obj.boss_properties//state->Int64
-            local stream = obj.boss_properties//stream->Int64
-            local result : Int32
-
-            native
-            @|RogueUInt64 old_state = (RogueUInt64)$state;
-             |$state = (RogueInt64)(old_state * 6364136223846793005ULL) + $stream;
-             |RogueUInt32 xorshifted = (RogueUInt32)(((old_state >> 18u) ^ old_state) >> 27u);
-             |RogueUInt32 rot = (RogueUInt32)(old_state >> 59u);
-             |$result = (RogueInt32)((xorshifted >> rot) | (xorshifted << ((-rot) & 31)));
-
-            obj.boss_properties//seed   = seed
-            obj.boss_properties//state  = state
-            obj.boss_properties//stream = stream
-
-            return result
-          else
-            throw BossError( "Null context reference to type Random." )
-          endIf
-        }#
-        endFunction
-      )
+      vm.register_method( "Rogue::Random.next32()->Int32", () => VM.context_object->(as Rogue::Random).next32 )
 endClass
 
-class Random : Rogue::Random, BossObject
+class BossRandom : Rogue::Random, BossAdapted
+  PROPERTIES
+    #m_next32
+
+  METHODS
+    method next32->Int32
 endClass

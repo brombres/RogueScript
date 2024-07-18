@@ -3,7 +3,7 @@ module Boss
 uses Geometry [export]
 
 $include Boss/Attributes
-$include Boss/BossObject
+$include Boss/BossAdapted
 $include Boss/CallCandidates
 $include Boss/CmdExecute
 $include Boss/CmdPreprocess

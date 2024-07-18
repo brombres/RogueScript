@@ -1,6 +1,6 @@
 module Boss
 
-class BossObject [aspect]
+class BossAdapted [aspect]
   PROPERTIES
     boss_type       : Type
     boss_properties = [String:Variant]
@@ -13,7 +13,7 @@ class BossObject [aspect]
     method set_boss_type( @boss_type )
 endClass
 
-class Object : BossObject
+class BossObject : BossAdapted
   METHODS
     method init( boss_type )
 endClass

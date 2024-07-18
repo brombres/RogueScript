@@ -206,7 +206,7 @@ augment
 
     method $id($Cmd,AndAssignProperty,$OpType).execute->Variant
       local operand = this.operand.execute
-      if local context = this.context.execute.object->(as BossObject)
+      if local context = this.context.execute.object->(as BossAdapted)
         local entry = context.boss_properties.find( info.name )
         entry.value.$variant_property $op operand.$variant_property
       else
@@ -216,7 +216,7 @@ augment
 
     method $id($Cmd,AndAssignThisProperty,$OpType).execute->Variant
       local operand = this.operand.execute
-      local context = VM.context.object->(as BossObject)
+      local context = VM.context.object->(as BossAdapted)
       local entry = context.boss_properties.find( info.name )
       entry.value.$variant_property $op operand.$variant_property
       return undefined

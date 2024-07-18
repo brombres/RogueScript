@@ -43,6 +43,13 @@ class VM [singleton]
     method context->Variant
       return stack[fp]
 
+    method context_object->Rogue::Object
+      if local obj = stack[fp].object
+        return obj
+      else
+        throw BossNullReferenceError
+      endIf
+
     method int( index:Int )->Int
       return stack[fp+index]->Int
 
@@ -59,14 +66,16 @@ class VM [singleton]
       stack.discard_from( old_stack_count )
       return result
 
+    #method create_method_call( scoped_signature:String )->(Function->Variant)
+
     method create_object( of_type:Type, &no_init )->Variant
-      local obj = Variant( Object(of_type) )
+      local obj = Variant( BossObject(of_type) )
       if (of_type.m_init_object) call_method( obj, of_type.m_init_object )
       if (not no_init and of_type.m_init) call_method( obj, of_type.m_init )
       return obj
 
     method create_object( of_type:Type, m_init:Procedure, args:Args )->Variant
-      local obj = Variant( Object(of_type) )
+      local obj = Variant( BossObject(of_type) )
       call_method( obj, m_init, args )
       return obj
 

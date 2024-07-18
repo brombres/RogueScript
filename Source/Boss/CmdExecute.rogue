@@ -193,7 +193,7 @@ augment
       return info.type_context.global_property_values[ info.name ]
 
     method ReadObjectProperty.execute->Variant
-      if local obj = this.context.execute.object->(as Boss::Object)
+      if local obj = this.context.execute.object->(as BossObject)
         return obj.boss_properties[info.name]
       else
         throw t.error( "Null context reading property '$'."(info.name) )
@@ -201,14 +201,14 @@ augment
 
     method ReadSingleton.execute->Variant
       if (of_type.singleton_value) return of_type.singleton_value
-      local instance = Object( of_type )
+      local instance = BossObject( of_type )
       of_type.singleton_value = instance
       if (of_type.m_init_object) VM.call_method( instance, of_type.m_init_object )
       if (of_type.m_init)        VM.call_method( instance, of_type.m_init )
       return instance
 
     method ReadThisObjectProperty.execute->Variant
-      if local obj = VM.context.object->(as Boss::Object)
+      if local obj = VM.context.object->(as BossObject)
         return obj.boss_properties[info.name]
       else
         throw t.error( "Null context reading property '$'."(info.name) )
@@ -243,7 +243,7 @@ augment
       return undefined
 
     method WriteProperty.execute->Variant
-      if local obj = this.context.execute.object->(as Boss::Object)
+      if local obj = this.context.execute.object->(as BossObject)
         obj.boss_properties[info.name] = new_value.execute
         return undefined
       else
@@ -251,7 +251,7 @@ augment
       endIf
 
     method WriteThisProperty.execute->Variant
-      if local obj = VM.context.object->(as BossObject)
+      if local obj = VM.context.object->(as BossAdapted)
         obj.boss_properties[info.name] = new_value.execute
         return undefined
       else
@@ -259,7 +259,7 @@ augment
       endIf
 
     method WriteThisPropertyValue.execute->Variant
-      if local obj = VM.context.object->(as BossObject)
+      if local obj = VM.context.object->(as BossAdapted)
         obj.boss_properties[info.name] = value
         return undefined
       else
