@@ -22,7 +22,7 @@ augment
       throw t.error( "[TODO] $.execute"(type_name) )
 
     method CallGlobalMethod.execute->Variant
-      local old_stack_count = VM.stack.count
+      local old_sp = VM.stack.count
 
       VM.stack.add( Variant() )
       if (args and args.count)
@@ -30,7 +30,7 @@ augment
       endIf
 
       local result = info.execute
-      VM.stack.discard_from( old_stack_count )
+      VM.stack.discard_from( old_sp )
       return result
 
     method CallMethod.execute->Variant
@@ -40,25 +40,25 @@ augment
           throw t.error( "Boss call context is null or undefined." )
       endWhich
 
-      local old_stack_count = VM.stack.count
+      local old_sp = VM.stack.count
       VM.stack.add( context )
 
       if (args and args.count) VM.stack.add( (forEach in args).execute )
 
       local result = info.execute
-      VM.stack.discard_from( old_stack_count )
+      VM.stack.discard_from( old_sp )
       return result
 
     method CallThisMethod.execute->Variant
       local context = VM.context
 
-      local old_stack_count = VM.stack.count
+      local old_sp = VM.stack.count
       VM.stack.add( context )
 
       if (args and args.count) VM.stack.add( (forEach in args).execute )
 
       local result = info.execute
-      VM.stack.discard_from( old_stack_count )
+      VM.stack.discard_from( old_sp )
       return result
 
     method CallNativeMethod.execute->Variant
@@ -166,12 +166,12 @@ augment
       endForEach
 
     method Procedure.execute->Variant
-      local old_stack_count = VM.stack.count
-      temporarily VM.fp = (old_stack_count - this.param_count)
+      local old_sp = VM.stack.count
+      temporarily VM.fp = (old_sp - this.param_count)
         try
           VM.stack.expand( this.local_count )
           local result = statements.execute
-          VM.stack.discard_from( old_stack_count )
+          VM.stack.discard_from( old_sp )
           return result
         catch (on_return_result:ReturnResultException)
           return on_return_result.result
@@ -266,3 +266,264 @@ augment
         throw t.error( "Null context assigning property '$'."(info.name) )
       endIf
 endAugment
+
+
+augment GlobalMethod
+  METHODS
+    method call->Variant
+      if (parameters.count != 0) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant )->Variant
+      if (parameters.count != 1) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant )->Variant
+      if (parameters.count != 2) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant )->Variant
+      if (parameters.count != 3) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant )->Variant
+      if (parameters.count != 4) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant )->Variant
+      if (parameters.count != 5) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant )->Variant
+      if (parameters.count != 6) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant )->Variant
+      if (parameters.count != 7) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant, h:Variant )->Variant
+      if (parameters.count != 8) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+      stack.add( h )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+endAugment
+
+augment Method
+  METHODS
+    method call( context:Variant )->Variant
+      if (parameters.count != 0) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant )->Variant
+      if (parameters.count != 1) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant )->Variant
+      if (parameters.count != 2) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant )->Variant
+      if (parameters.count != 3) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant )->Variant
+      if (parameters.count != 4) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant )->Variant
+      if (parameters.count != 5) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant )->Variant
+      if (parameters.count != 6) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant )->Variant
+      if (parameters.count != 7) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant,
+                 h:Variant )->Variant
+      if (parameters.count != 8) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+      stack.add( h )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+endAugment
+

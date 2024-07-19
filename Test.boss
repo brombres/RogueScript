@@ -1,1 +1,5 @@
-println Random.next32
+class R2 : Random
+endClass
+
+local r = R2()
+println r.next32

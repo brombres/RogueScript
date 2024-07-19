@@ -261,6 +261,7 @@ class Type : Cmd
 
     method inherit_methods
       if (base_class) inherit_methods( base_class )
+
       if (aspects)
         forEach (a in aspects)
           inherit_methods( a )
@@ -269,6 +270,12 @@ class Type : Cmd
 
     method inherit_methods( of_type:Type )
       of_type.inherit_methods
+
+      if (not native_type.create_boss_object)
+        native_type.create_boss_object = of_type.native_type.create_boss_object
+      endIf
+
+      add_method( forEach in of_type.methods )
 
     method instance_of( ancestor_type:Type )->Logical
       if (this is ancestor_type) return true

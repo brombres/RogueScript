@@ -2,6 +2,7 @@ module Boss
 
 class NativeTypeInfo(
   create_object=null:Function()->Variant,
+  create_boss_object=null:Function(Type)->Variant,
   instance_of=null:Function(Variant)->Logical,
   base_class_name=null:String,
   get_singleton=null:Function()->Variant,

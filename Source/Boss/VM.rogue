@@ -66,10 +66,13 @@ class VM [singleton]
       stack.discard_from( old_stack_count )
       return result
 
-    #method create_method_call( scoped_signature:String )->(Function->Variant)
-
     method create_object( of_type:Type, &no_init )->Variant
-      local obj = Variant( BossObject(of_type) )
+      local obj : Variant
+      if local create_fn = of_type.native_type.create_boss_object
+        obj = create_fn( of_type )
+      else
+        obj = BossObject( of_type )
+      endIf
       if (of_type.m_init_object) call_method( obj, of_type.m_init_object )
       if (not no_init and of_type.m_init) call_method( obj, of_type.m_init )
       return obj
@@ -78,6 +81,16 @@ class VM [singleton]
       local obj = Variant( BossObject(of_type) )
       call_method( obj, m_init, args )
       return obj
+
+    method find_global_method( scoped_signature:String )->GlobalMethod
+      local type = Program.default_module.find_type( scoped_signature.before_first('.') )
+      if (not type) return null
+      return type.global_methods[ scoped_signature.after_first('.') ]
+
+    method find_method( scoped_signature:String )->Method
+      local type = Program.default_module.find_type( scoped_signature.before_first('.') )
+      if (not type) return null
+      return type.methods[ scoped_signature.after_first('.') ]
 
     method parameter( index:Int )->Variant
       # First parameter is index 1.

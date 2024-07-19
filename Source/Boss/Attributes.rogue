@@ -23,6 +23,7 @@ enum Attribute [bitflags]
     IS_GLOBAL
     REQUIRES_CLEANUP
     IS_NATIVE
+    IS_NATIVE_FUNCTION
 
     NO_INCLUDE
 
@@ -61,6 +62,7 @@ class Attributes : CmdList
   ROGUE_SCRIPT_ATTRIBUTE<< is_override,          Attribute.OVERRIDE >>
   ROGUE_SCRIPT_ATTRIBUTE<< is_preferred,         Attribute.PREFERRED >>
   ROGUE_SCRIPT_ATTRIBUTE<< is_native,            Attribute.IS_NATIVE >>
+  ROGUE_SCRIPT_ATTRIBUTE<< is_native_function,   Attribute.IS_NATIVE_FUNCTION >>
   ROGUE_SCRIPT_ATTRIBUTE<< is_no_include,        Attribute.NO_INCLUDE >>
 
   PROPERTIES

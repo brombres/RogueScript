@@ -19,9 +19,11 @@ class Procedure : ControlStructure
   METHODS
     method init( t, name, parameters, return_type, attributes, doc, statements )
       ensure<<attributes>>(t)
+      ensure<<parameters>>(t)
 
     method init( t, name, parameters=null, return_type=null, statements=null )
       ensure<<attributes>>(t)
+      ensure<<parameters>>(t)
       ensure<<statements>>(t)
 
     method init( existing:Procedure )

@@ -111,6 +111,7 @@ class Program [singleton]
           ).parse( ParserCore.ip_native_constructor_signature )->(as NativeConstructorSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
           local m = GlobalMethod( sig.t, "create" ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
           if (sig.parameters.count)
             ensure<<m.parameters>>( sig.t )
             forEach (param at i in sig.parameters)
@@ -129,6 +130,7 @@ class Program [singleton]
           ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
           local m = GlobalMethod( sig.t, sig.name ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
           if (sig.parameters.count)
             ensure<<m.parameters>>( sig.t )
             forEach (param at i in sig.parameters)
@@ -147,6 +149,7 @@ class Program [singleton]
           ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
           local m = Method( sig.t, sig.name ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
           if (sig.parameters.count)
             ensure<<m.parameters>>( sig.t )
             forEach (param at i in sig.parameters)

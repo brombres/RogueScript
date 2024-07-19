@@ -589,6 +589,8 @@ class Resolver : Visitor [singleton]
       endUse
 
     method resolve( procedure:Procedure )
+      if (procedure.type_context is not this_type) return  # inherited method
+
       use scope_stack
         local type_context = procedure.type_context
         temporarily Program.current_module=type_context.module_context, this_type=type_context
@@ -941,6 +943,8 @@ class Resolver : Visitor [singleton]
       #method on_visit( cmd:Loop )->Cmd
 
     method on_visit( proc:Procedure )->Cmd
+      if (proc.type_context is not this_type) return proc  # inherited
+
       temporarily this_procedure = proc
         scope_stack.add( proc )
 

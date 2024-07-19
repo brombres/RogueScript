@@ -6,19 +6,36 @@ class NativeMath [singleton]
       vm.register_type(
         "Rogue::Random",
         NativeTypeInfo(
-          &create_object = () => Rogue::Random(),
-          &get_singleton = () => Rogue::Random,
-          &set_singleton = (value) => Rogue::Random = value
+          &create_object      = () => Rogue::Random(),
+          &create_boss_object = (of_type) => Rogue::BossRandom(of_type),
+          &get_singleton      = () => Rogue::Random,
+          &set_singleton      = (value) => Rogue::Random = value
         )
       )
 
-      vm.register_method( "Rogue::Random.next32()->Int32", () => VM.context_object->(as Rogue::Random).next32 )
+      vm.register_method(
+        "Rogue::Random.next32()->Int32",
+        () => VM.context_object->(as Rogue::Random).next32 )
+      vm.register_method(
+        "Rogue::Random.prior_next32()->Int32",
+         () => VM.context_object->(as Rogue::BossRandom).prior_next32 )
 endClass
 
-class BossRandom : Rogue::Random, BossAdapted
+module Rogue
+
+class BossRandom : Rogue::Random, Boss::BossAdapted
   PROPERTIES
-    #m_next32
+    m_next32 : Boss::Method
 
   METHODS
+    method init( boss_type )
+      prior.init
+
     method next32->Int32
+      if (not m_next32) m_next32 = boss_type.methods[ "next32()" ]
+      if (m_next32.attributes.is_native_function) return prior.next32
+      else                                        return m_next32( this )
+      return 0
+
+    method prior_next32->Int32: return prior.next32
 endClass
