@@ -9,4 +9,4 @@ println r.next32
 println 3
 }#
 
-println Random.logical
+println Random.next32

@@ -181,21 +181,20 @@ class Program [singleton]
     method .configure
       Program = this
       t = Token( TokenType.IDENTIFIER, "[Boss]", &content="Boss" )
-      default_module = Module( t, "Rogue" )
+      default_module = Module( t, "Boss" )
       current_module = default_module
 
-      type_Byte      = default_module.define_type( t, "Byte",      Attribute.PRIMITIVE )
-      type_Character = default_module.define_type( t, "Character", Attribute.PRIMITIVE )
-      type_Int       = default_module.define_type( t, "Int",       Attribute.PRIMITIVE )
-      type_Int32     = default_module.define_type( t, "Int32",     Attribute.PRIMITIVE )
-      type_Int64     = default_module.define_type( t, "Int64",     Attribute.PRIMITIVE )
-      type_Logical   = default_module.define_type( t, "Logical",   Attribute.PRIMITIVE )
-      type_Real      = default_module.define_type( t, "Real",      Attribute.PRIMITIVE )
-      type_Real32    = default_module.define_type( t, "Real32",    Attribute.PRIMITIVE )
-      type_Real64    = default_module.define_type( t, "Real64",    Attribute.PRIMITIVE )
-      type_String    = default_module.define_type( t, "String",    Attribute.OBJECT )
+      type_Byte      = default_module.type( t, "Rogue::Byte",      Attribute.PRIMITIVE )
+      type_Character = default_module.type( t, "Rogue::Character", Attribute.PRIMITIVE )
+      type_Int       = default_module.type( t, "Rogue::Int",       Attribute.PRIMITIVE )
+      type_Int32     = default_module.type( t, "Rogue::Int32",     Attribute.PRIMITIVE )
+      type_Int64     = default_module.type( t, "Rogue::Int64",     Attribute.PRIMITIVE )
+      type_Logical   = default_module.type( t, "Rogue::Logical",   Attribute.PRIMITIVE )
+      type_Real      = default_module.type( t, "Rogue::Real",      Attribute.PRIMITIVE )
+      type_Real32    = default_module.type( t, "Rogue::Real32",    Attribute.PRIMITIVE )
+      type_Real64    = default_module.type( t, "Rogue::Real64",    Attribute.PRIMITIVE )
+      type_String    = default_module.type( t, "Rogue::String",    Attribute.OBJECT )
 
-      local geometry = get_module( t, "Geometry" )
-      type_XY = geometry.define_type( t, "XY", Attribute.COMPOUND )
+      type_XY = default_module.type( t, "Geometry::XY", Attribute.COMPOUND )
 
 endClass

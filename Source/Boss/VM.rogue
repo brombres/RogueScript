@@ -23,9 +23,23 @@ class VM [singleton]
   METHODS # External runtime API
     method init
       forEach (type in TypeInfo)
-        if (type.scoped_name == "Rogue::Random")
-          .register_native_type( type )
-        endIf
+        contingent
+          necessary (type.module_context == "Rogue")
+          sufficient (type.name.begins_with("Function_"))
+          sufficient (type.name.begins_with("Augment_"))
+
+          sufficient (type.name.contains("<<"))
+          sufficient (type.name.ends_with(']'))
+          sufficient (type.name.ends_with('?'))
+          sufficient (type.name.begins_with('('))
+
+          which (type.scoped_name)
+            case "Rogue::Object", "Rogue::Random"
+              .register_native_type( type )
+            others
+              trace type.scoped_name
+          endWhich
+        endContingent
       endForEach
 
     method compile( script:String )->(Function->Variant)
