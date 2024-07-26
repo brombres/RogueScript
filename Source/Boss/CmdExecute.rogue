@@ -527,3 +527,14 @@ augment Method
       return result
 endAugment
 
+augment Rogue::MethodInfo
+  METHODS
+    method boss_call_method->Variant
+      use args = WorkList<<Variant>>
+        forEach (param_index of parameters)
+          args.add( Boss::VM.parameter(param_index+1) )
+        endForEach
+        return call( Boss::VM.context, Variant(args) )
+      endUse
+
+endAugment

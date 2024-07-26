@@ -1,6 +1,7 @@
 module Boss
 
 uses Geometry [export]
+uses Introspection
 
 $include Boss/Attributes
 $include Boss/BossAdapted

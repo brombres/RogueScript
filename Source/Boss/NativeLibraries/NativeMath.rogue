@@ -3,6 +3,7 @@ module Boss
 class NativeMath [singleton]
   METHODS
     method register( vm:VM )
+      #{
       vm.register_type(
         "Rogue::Random",
         NativeTypeInfo(
@@ -19,6 +20,7 @@ class NativeMath [singleton]
       vm.register_method(
         "Rogue::Random.prior_next32()->Int32",
          () => VM.context_object->(as Rogue::BossRandom).prior_next32 )
+     }#
 endClass
 
 module Rogue

@@ -1,5 +1,12 @@
+#{
 class R2 : Random
 endClass
 
+println 1
 local r = R2()
+println 2
 println r.next32
+println 3
+}#
+
+println Random.logical

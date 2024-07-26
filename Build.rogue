@@ -15,7 +15,7 @@ augment Build
 
     BUILD_MODE       = "debug"  # set to "debug" or "release"
     LAUNCHER_FOLDER  = "/usr/local/bin"
-    ROGUEC_FLAGS     = "--gc=manual"
+    ROGUEC_FLAGS     = "--gc=manual --api=Rogue::Random"
     CC_ARGS_MACOS    = ""
     CC_LINK_MACOS    = ""
     CC_ARGS_UNIX     = ""
