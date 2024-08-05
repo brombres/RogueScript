@@ -12,6 +12,7 @@ class VM [singleton]
     native_global_methods = [String:Cmd]
     native_methods        = [String:Cmd]
     native_definitions    = [String:String]
+    native_boss_types     = [String:Function(Type)->Variant]
     definitions           = [String:Cmd]
 
     program : Program
@@ -259,6 +260,13 @@ class VM [singleton]
 
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeMethod(t,callback) )
+
+    method register_boss_type( native_type:String, create_boss_object:Function(Type)->Variant )
+      if local entry = native_types.find( native_type )
+        entry.value.create_boss_object = create_boss_object
+      else
+        native_boss_types[native_type] = create_boss_object
+      endIf
 
     method register_type( scoped_name:String, info=NativeTypeInfo():NativeTypeInfo )
       native_types[scoped_name] = info

@@ -3,17 +3,8 @@ module Boss
 class NativeMath [singleton]
   METHODS
     method register( vm:VM )
+      VM.register_boss_type( "Rogue::Random", (boss_type) => Boss::BossRandom(boss_type) )
       #{
-      vm.register_type(
-        "Rogue::Random",
-        NativeTypeInfo(
-          &create_object      = () => Rogue::Random(),
-          &create_boss_object = (of_type) => Rogue::BossRandom(of_type),
-          &get_singleton      = () => Rogue::Random,
-          &set_singleton      = (value) => Rogue::Random = value
-        )
-      )
-
       vm.register_method(
         "Rogue::Random.next32()->Int32",
         () => VM.context_object->(as Rogue::Random).next32 )
@@ -31,13 +22,11 @@ class BossRandom : Rogue::Random, Boss::BossAdapted
 
   METHODS
     method init( boss_type )
-      prior.init
 
     method next32->Int32
       if (not m_next32) m_next32 = boss_type.methods[ "next32()" ]
       if (m_next32.attributes.is_native_function) return prior.next32
       else                                        return m_next32( this )
-      return 0
 
     method prior_next32->Int32: return prior.next32
 endClass

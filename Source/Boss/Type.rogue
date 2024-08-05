@@ -27,10 +27,11 @@ class Type : Cmd
     global_property_values = [String:Variant]
     properties             = [String:Property]
 
-    visiting             : Logical
-    is_resolved          : Logical
-    properties_inherited : Logical
-    methods_inherited    : Logical
+    visiting               : Logical
+    is_resolved            : Logical
+    properties_inherited   : Logical
+    methods_inherited      : Logical
+    native_info_propagated : Logical
 
     singleton_value : Variant
     m_init_class    : GlobalMethod
@@ -305,6 +306,17 @@ class Type : Cmd
         endForEach
       endIf
       return false
+
+    method propagate_native_info
+      if (native_info_propagated) return
+      native_info_propagated = true
+
+      if (base_class)
+        base_class.propagate_native_info
+        if (not native_type.create_boss_object)
+          native_type.create_boss_object = base_class.native_type.create_boss_object
+        endIf
+      endIf
 
     method resolve
       if (is_resolved) return

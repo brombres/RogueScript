@@ -94,6 +94,10 @@ class Program [singleton]
           type.variant_type = entry.value.variant_type
         endForEach
 
+        forEach (fn at type_name in VM.native_boss_types)
+          VM.register_boss_type( type_name, fn )
+        endForEach
+
         forEach (entry in VM.native_definitions.entries)
           local parser = Parser( "[VM.register_definition($)]"(entry.key), entry.key )
           local type = parser.parse( ParserCore.ip_type )->(as Type).resolved
