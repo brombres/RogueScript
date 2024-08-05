@@ -593,6 +593,10 @@ class ParserCore [abstract]
     method r_program_elements->Int
       local _previous_cur_t = _cur_t
       _begin_list
+      _begin_list
+      if (disable_output)     _discard_list
+      else                    _push_list( Attributes(_list_t) )
+      if (not disable_output) _push( SetModuleContext(_cur_t,"Boss",_node_arg(-1)->(as Attributes)), 1 )
       while ((_position < _limit))
         r_program_element
       endWhile

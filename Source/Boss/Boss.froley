@@ -609,6 +609,11 @@ parser
 ----------------------------------------------------------------------
 - program_elements
   beginList
+    # Implicit '$module Boss' at the start of each file
+    beginList
+    createList Attributes
+    create SetModuleContext(name="Boss",attributes:Attributes)
+
     while (hasAnother) program_element
   produceList ProgramElements
 
