@@ -10,3 +10,4 @@ println 3
 }#
 
 println Random.next32
+println Random.hashcode

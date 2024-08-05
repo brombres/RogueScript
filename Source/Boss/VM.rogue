@@ -35,9 +35,9 @@ class VM [singleton]
 
           which (type.scoped_name)
             case "Rogue::Object", "Rogue::Random"
-              .register_native_type( type )
+              .bind_native_type( type )
             others
-              trace type.scoped_name
+              #trace type.scoped_name
           endWhich
         endContingent
       endForEach
@@ -60,13 +60,16 @@ class VM [singleton]
     method execute( script:String )->Variant
       return compile(script)()
 
-    method .register_native_type( type:TypeInfo )
+    method .bind_native_type( type:TypeInfo )
       local info = NativeTypeInfo( type )
       info.create_object = () => type.create_object
       info.instance_of = (v) => v? and v->Object.type_info.instance_of(type)
       if (type.is_singleton)
         info.get_singleton = () => type.singleton
         info.set_singleton = (new_value) => type.singleton = new_value
+        if local base_class = type.base_class
+          info.base_class_name = base_class.scoped_name
+        endIf
       endIf
       register_type( type.scoped_name, info )
 

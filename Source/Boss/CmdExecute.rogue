@@ -167,7 +167,7 @@ augment
 
     method Procedure.execute->Variant
       local old_sp = VM.stack.count
-      temporarily VM.fp = (old_sp - this.param_count)
+      temporarily VM.fp = (old_sp - this.param_count)  # param_count includes 'this' context or null context
         try
           VM.stack.expand( this.local_count )
           local result = statements.execute

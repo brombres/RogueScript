@@ -949,7 +949,7 @@ class Resolver : Visitor [singleton]
         scope_stack.add( proc )
 
         proc.param_count = which{ proc.parameters:proc.parameters.count || 0 }
-        ++proc.param_count
+        ++proc.param_count  # 'this' for methods, null for global methods
         if (proc instanceOf Method)
           add_local( this_type.t, "this", this_type )
         else
