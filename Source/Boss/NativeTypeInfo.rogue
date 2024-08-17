@@ -9,6 +9,6 @@ class NativeTypeInfo(
   get_singleton=null:Function()->Variant,
   set_singleton=null:Function(Variant),
   variant_type=Variant.TYPE_OBJECT:Int
-) [compound]
+)
 
 endClass

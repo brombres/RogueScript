@@ -2,6 +2,7 @@ class R2 : Random
 endClass
 
 local r = R2()
+println r
 
 #{
 println 2

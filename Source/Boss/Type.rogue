@@ -307,12 +307,13 @@ class Type : Cmd
       endIf
       return false
 
-    method propagate_native_info
+    method propagate_constructor_info
       if (native_info_propagated) return
       native_info_propagated = true
 
+      ensure<<native_type>>
       if (base_class)
-        base_class.propagate_native_info
+        base_class.propagate_constructor_info
         if (not native_type.create_boss_object)
           native_type.create_boss_object = base_class.native_type.create_boss_object
         endIf

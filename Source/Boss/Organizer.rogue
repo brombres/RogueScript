@@ -7,7 +7,7 @@ class Organizer : Visitor [singleton]
     method organize_program
       (forEach in Program.types).collect_base_types
       (forEach in Program.types).validate_type_hierarchy
-      (forEach in Program.types).propagate_native_info
+      (forEach in Program.types).propagate_constructor_info
 
       visit_program( Program )
 
