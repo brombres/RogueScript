@@ -1,0 +1,540 @@
+module RogueScript
+
+class RogueScriptRuntimeException : Exception
+  METHODS
+    method save_stack_trace
+      noAction
+endClass
+
+class RogueScriptNullReferenceError : RogueScriptRuntimeException [singleton]
+endClass
+
+class ReturnResultException( result:Variant ) : RogueScriptRuntimeException [singleton]
+  METHODS
+    method to->String
+      return result->String
+endClass
+
+augment
+  METHODS
+    method Cmd.execute->Variant
+      trace this
+      throw t.error( "[TODO] $.execute"(type_name) )
+
+    method CallGlobalMethod.execute->Variant
+      local old_sp = VM.stack.count
+
+      VM.stack.add( Variant() )
+      if (args and args.count)
+        VM.stack.add( (forEach in args).execute )
+      endIf
+
+      local result = info.execute
+      VM.stack.discard_from( old_sp )
+      return result
+
+    method CallMethod.execute->Variant
+      local context = context.execute
+      which (context.type)
+        case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
+          throw t.error( "RogueScript call context is null or undefined." )
+      endWhich
+
+      local old_sp = VM.stack.count
+      VM.stack.add( context )
+
+      if (args and args.count) VM.stack.add( (forEach in args).execute )
+
+      local result = info.execute
+      VM.stack.discard_from( old_sp )
+      return result
+
+    method CallThisMethod.execute->Variant
+      local context = VM.context
+
+      local old_sp = VM.stack.count
+      VM.stack.add( context )
+
+      if (args and args.count) VM.stack.add( (forEach in args).execute )
+
+      local result = info.execute
+      VM.stack.discard_from( old_sp )
+      return result
+
+    method CallNativeMethod.execute->Variant
+      return callback()
+
+    method CreateDefaultObject.execute->Variant
+      return VM.create_object( of_type )
+
+    method CreateDefaultString.execute->Variant
+      return String()
+
+    method CreateDefaultList.execute->Variant
+      return @[]
+
+    method CreateDefaultTable.execute->Variant
+      return @{}
+
+    method CreateDefaultVariant.execute->Variant
+      local result : Variant
+      result.type = of_type.variant_type
+      return result
+
+    method CreateNativeObject.execute->Variant
+      return of_type.native_type.create_object()
+
+    method CreateObject.execute->Variant
+      local obj = VM.create_object( of_type, &no_init )
+      VM.call_method( obj, m_init, args )
+      return obj
+
+    method Else.execute->Variant
+      return statements.execute
+
+    method ForEachElementInRangeUpToInt.execute->Variant
+      local v_index = VM.fp + element_info.index
+      localize statements
+      forEach (i in start.execute->Int..limit.execute->Int)
+        VM.stack[ v_index ] = i
+        statements.execute
+      endForEach
+      return undefined
+
+    method ConvertIntToReal.execute->Variant
+      return operand.execute.integer->Real
+
+    method ConvertInt64ToReal.execute->Variant
+      return operand.execute.int64->Real
+
+    method If.execute->Variant
+      if (condition.execute?)
+        return statements.execute
+      elseIf (cmd_else)
+        return cmd_else.execute
+      else
+        return false
+      endIf
+
+    method LiteralByte.execute->Variant
+      return value
+
+    method LiteralCharacter.execute->Variant
+      return value
+
+    method LiteralInt.execute->Variant
+      return value
+
+    method LiteralInt32.execute->Variant
+      return value
+
+    method LiteralInt64.execute->Variant
+      return value
+
+    method LiteralLogical.execute->Variant
+      return value
+
+    method LiteralPi.execute->Variant
+      return pi
+
+    method LiteralReal.execute->Variant
+      return value
+
+    method LiteralReal32.execute->Variant
+      return value
+
+    method LiteralReal64.execute->Variant
+      return value
+
+    method LiteralString.execute->Variant
+      return value
+
+    method LogicalNot.execute->Variant
+      return not operand.execute?
+
+    method Loop.execute->Variant
+      local n = loop_count.execute->Int
+      while (n > 0)
+        statements.execute
+        --n
+      endWhile
+      return undefined
+
+    method Println.execute->Variant
+      forEach (arg in args)
+        println arg.execute
+      endForEach
+
+    method Procedure.execute->Variant
+      local old_sp = VM.stack.count
+      temporarily VM.fp = (old_sp - this.param_count)  # param_count includes 'this' context or null context
+        try
+          VM.stack.expand( this.local_count )
+          local result = statements.execute
+          VM.stack.discard_from( old_sp )
+          return result
+        catch (on_return_result:ReturnResultException)
+          return on_return_result.result
+        endTry
+      endTemporarily
+
+    method ReturnResult.execute->Variant
+      local exception = ReturnResultException
+      exception.result = result.execute
+      throw exception
+
+    method ReadLocal.execute->Variant
+      return VM.stack[ VM.fp+info.index ]
+
+    method ReadNativeSingleton.execute->Variant
+      return fn_get_singleton()
+
+    method ReadGlobalProperty.execute->Variant
+      return info.type_context.global_property_values[ info.name ]
+
+    method ReadObjectProperty.execute->Variant
+      if local obj = this.context.execute.object->(as RogueScriptObject)
+        return obj.rs_properties[info.name]
+      else
+        throw t.error( "Null context reading property '$'."(info.name) )
+      endIf
+
+    method ReadSingleton.execute->Variant
+      if (of_type.singleton_value) return of_type.singleton_value
+      local instance = RogueScriptObject( of_type )
+      of_type.singleton_value = instance
+      if (of_type.m_init_object) VM.call_method( instance, of_type.m_init_object )
+      if (of_type.m_init)        VM.call_method( instance, of_type.m_init )
+      return instance
+
+    method ReadThisObjectProperty.execute->Variant
+      if local obj = VM.context.object->(as RogueScriptObject)
+        return obj.rs_properties[info.name]
+      else
+        throw t.error( "Null context reading property '$'."(info.name) )
+      endIf
+
+    method Statements.execute->Variant
+      local result = undefined
+      forEach (statement in this)
+        result = statement.execute
+      endForEach
+      return result
+
+    method This.execute->Variant
+      return VM.context
+
+    method While.execute->Variant
+      localize condition
+      localize statements
+      local result = Variant()
+      while (condition.execute?)
+        result = statements.execute
+      endWhile
+      return result
+
+    method WriteGlobalProperty.execute->Variant
+      info.type_context.global_property_values[info.name] = new_value.execute
+      return undefined
+
+    method WriteLocal.execute->Variant
+      local new_value = new_value.execute
+      VM.stack[ VM.fp+info.index ] = new_value
+      return undefined
+
+    method WriteProperty.execute->Variant
+      if local obj = this.context.execute.object->(as RogueScriptObject)
+        obj.rs_properties[info.name] = new_value.execute
+        return undefined
+      else
+        throw t.error( "Null context assigning property '$'."(info.name) )
+      endIf
+
+    method WriteThisProperty.execute->Variant
+      if local obj = VM.context.object->(as RogueScriptAdapted)
+        obj.rs_properties[info.name] = new_value.execute
+        return undefined
+      else
+        throw t.error( "Null context assigning property '$'."(info.name) )
+      endIf
+
+    method WriteThisPropertyValue.execute->Variant
+      if local obj = VM.context.object->(as RogueScriptAdapted)
+        obj.rs_properties[info.name] = value
+        return undefined
+      else
+        throw t.error( "Null context assigning property '$'."(info.name) )
+      endIf
+endAugment
+
+
+augment GlobalMethod
+  METHODS
+    method call->Variant
+      if (parameters.count != 0) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant )->Variant
+      if (parameters.count != 1) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant )->Variant
+      if (parameters.count != 2) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant )->Variant
+      if (parameters.count != 3) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant )->Variant
+      if (parameters.count != 4) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant )->Variant
+      if (parameters.count != 5) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant )->Variant
+      if (parameters.count != 6) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant )->Variant
+      if (parameters.count != 7) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant, h:Variant )->Variant
+      if (parameters.count != 8) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( null )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+      stack.add( h )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+endAugment
+
+augment Method
+  METHODS
+    method call( context:Variant )->Variant
+      if (parameters.count != 0) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant )->Variant
+      if (parameters.count != 1) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant )->Variant
+      if (parameters.count != 2) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant )->Variant
+      if (parameters.count != 3) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant )->Variant
+      if (parameters.count != 4) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant )->Variant
+      if (parameters.count != 5) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant )->Variant
+      if (parameters.count != 6) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant )->Variant
+      if (parameters.count != 7) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+
+    method call( context:Variant, a:Variant, b:Variant, c:Variant, d:Variant, e:Variant, f:Variant, g:Variant,
+                 h:Variant )->Variant
+      if (parameters.count != 8) return undefined
+      local stack = VM.stack
+      local old_sp = stack.count
+      stack.add( context )
+      stack.add( a )
+      stack.add( b )
+      stack.add( c )
+      stack.add( d )
+      stack.add( e )
+      stack.add( f )
+      stack.add( g )
+      stack.add( h )
+
+      local result = execute
+      stack.discard_from( old_sp )
+      return result
+endAugment
+
+augment Rogue::MethodInfo
+  METHODS
+    method rs_call_method->Variant
+      use args = WorkList<<Variant>>
+        forEach (param_index of parameters)
+          args.add( RogueScript::VM.parameter(param_index+1) )
+        endForEach
+        return call( RogueScript::VM.context, Variant(args) )
+      endUse
+
+endAugment

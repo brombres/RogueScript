@@ -1,0 +1,67 @@
+module RogueScript
+
+augment
+  METHODS
+    method Cmd.store
+      throw t.error( "[INTERNAL] $.store() is undefined."(type_name) )
+
+    method Cmd.store( type_context:Type )
+      throw t.error( "[INTERNAL] $.store(Type) is undefined."(type_name) )
+
+    method Class.store
+      noAction
+
+    method Definition.store( type_context:Type )
+      type_context.definitions[name] = value
+
+    method GlobalMethod.store( type_context:Type )
+      type_context.add_global_method( this )
+
+    method GlobalPropertyDeclarations.store( type_context:Type )
+      localize type
+      forEach (p in list)
+        if (not p.type) p.type = type
+        p.attributes = attributes.cloned
+        type_context.add_global_property( p )
+      endForEach
+
+    method Include.store
+      noAction
+
+    method Method.store( type_context:Type )
+      type_context.add_method( this )
+
+    method PropertyDeclarations.store( type_context:Type )
+      localize type
+      forEach (p in list)
+        if (not p.type) p.type = type
+        p.attributes = attributes.cloned
+        type_context.add_property( p )
+      endForEach
+
+    method SetModuleContext.store
+      Program.current_module = Program.modules[name]
+
+    method RoutineDef.store
+      local type_Routine = Program.current_module.type( t, "Routine" )
+      local m = GlobalMethod( t, name, parameters, return_type, attributes, null, &=statements )
+      type_Routine.add_global_method( m )
+
+    method Statements.store
+      local mod = Program.current_module
+      if (mod.global_statements)
+        mod.global_statements.add( (forEach in this).cloned )
+      else
+        mod.global_statements = this.cloned
+      endIf
+
+    method ToTypeMethod.store( type_context:Type )
+      local m = Method( t, "to_"+to_type, parameters, to_type, statements )
+      type_context.add_method( m )
+
+    method Uses.store
+      Program.current_module.use_module( t, id_filepath.replacing("/","::") )
+      if (not attributes.is_no_include)
+        VM.include( id_filepath, &suppress_error )
+      endIf
+endAugment

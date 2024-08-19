@@ -1,0 +1,21 @@
+module RogueScript
+
+class NativeCompounds [singleton]
+  METHODS
+    method register( vm:VM )
+      # Color
+      vm.register_type( "Graphics::Color",
+        NativeTypeInfo( &instance_of=(value)=>value.is_color, &variant_type=Variant.TYPE_COLOR ) )
+      vm.register_constructor( "Graphics::Color(Int32)", ()=>Color(VM.int(0)) )
+      vm.register_method( "Graphics::Color.argb->Int32", ()=>VM.context->Int32 )
+
+      # Triangle
+      vm.register_type( "Geometry::Triangle",
+        NativeTypeInfo( &instance_of=(value)=>value.is_triangle, &variant_type=Variant.TYPE_TRIANGLE ) )
+      vm.register_constructor( "Geometry::Triangle(XY,XY,XY)", ()=>Triangle(VM.xy(1),VM.xy(2),VM.xy(3)) )
+
+      # XY
+      vm.register_type( "Geometry::XY",
+        NativeTypeInfo( &instance_of=(value)=>value.is_xy, &variant_type=Variant.TYPE_XY ) )
+      vm.register_constructor( "Geometry::XY(Real,Real)", ()=>XY(VM.real(1),VM.real(2)) )
+endClass

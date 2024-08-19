@@ -1,0 +1,204 @@
+module RogueScript
+
+class Program [singleton]
+  PROPERTIES
+    t              : Token
+    default_module : Module
+    current_module : Module
+    modules        = [String:Module]
+    types          = [String:Type]  # All types, keys fully qualified e.g. RogueScript::Int
+    definitions    = [String:Cmd]   # Includes VM.definitions
+
+    type_Byte      : Type
+    type_Character : Type
+    type_Int       : Type
+    type_Int32     : Type
+    type_Int64     : Type
+    type_Logical   : Type
+    type_Real      : Type
+    type_Real32    : Type
+    type_Real64    : Type
+    type_XY        : Type
+    type_String    : Type
+
+    pending_elements = ProgramElements[]
+
+  METHODS
+    method init
+      .configure
+
+    method init( elements:ProgramElements[] )
+      .configure
+      add( elements )
+
+    method add( elements:ProgramElements[] )
+      pending_elements.add( elements )
+
+    method add_definition( name:String, value:String )
+      local parser = Parser( "[define $]"(name), value )
+      definitions[name] = parser.parse( ParserCore.ip_expression )
+
+    method add_definitions( other:[String:Cmd] )
+      definitions.add( other )
+
+    method execute( cmd:Cmd )->Variant
+      temporarily Program = this
+        return cmd.execute
+      endTemporarily
+
+    method get_module( t:Token, module_name:String )->Module
+      local mod = modules[module_name]
+      if (not mod)
+        mod = Module( t, module_name )
+        modules[module_name] = mod
+      endIf
+      return mod
+
+    method launch
+      temporarily Program = this
+        forEach (type in types)
+          if (type.m_init_class)
+            VM.stack.add( Variant() )
+            Program.execute( type.m_init_class )
+          endIf
+        endForEach
+
+        (forEach in modules).launch
+      endTemporarily
+
+    method organize
+      temporarily Program = this
+        forEach (element in pending_elements)
+          temporarily current_module = default_module
+            CollectTypes.visit( element )
+          endTemporarily
+        endForEach
+      endTemporarily
+
+      temporarily Program=this, current_module=default_module
+        forEach (entry in VM.native_types.entries)
+          local type = Program.default_module.type( VM.t, entry.key )
+          if (entry.value.base_class_name)
+            local base_class = Program.default_module.type( VM.t, entry.value.base_class_name )
+            if (type.base_class and type.base_class is not base_class)
+              throw CompileError( "Multiple base types defined for $: $ and $."...
+                                  (type,type.base_class,base_class) )
+            endIf
+            type.base_class = base_class
+          endIf
+          type.attributes.is_native = true
+          type.native_type = entry.value
+          if (type.native_type.get_singleton or type.native_type.set_singleton)
+            type.attributes.is_singleton = true
+          endIf
+          type.variant_type = entry.value.variant_type
+        endForEach
+
+        forEach (fn at type_name in VM.native_rs_types)
+          VM.register_rs_type( type_name, fn )
+        endForEach
+
+        forEach (entry in VM.native_definitions.entries)
+          local parser = Parser( "[VM.register_definition($)]"(entry.key), entry.key )
+          local type = parser.parse( ParserCore.ip_type )->(as Type).resolved
+          parser._consume( TokenType.SYMBOL_PERIOD )
+          local name = parser.parse( ParserCore.ip_identifier )
+          parser = Parser( "[VM.register_definition($)]"(entry.key), entry.value )
+          local value = parser.parse( ParserCore.ip_expression )
+          type.definitions[name] = value
+        endForEach
+
+        forEach (entry in VM.native_constructors.entries)
+          local sig = Parser(
+            "[VM.register_constructor($)]"(entry.key),
+            entry.key
+          ).parse( ParserCore.ip_native_constructor_signature )->(as NativeConstructorSignature)
+          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local m = GlobalMethod( sig.t, "create" ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
+          if (sig.parameters.count)
+            ensure<<m.parameters>>( sig.t )
+            forEach (param at i in sig.parameters)
+              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+            endForEach
+          endIf
+          m.return_type = type
+          m.statements.add( entry.value.cloned )
+          type.add_global_method( m )
+        endForEach
+
+        forEach (entry in VM.native_global_methods.entries)
+          local sig = Parser(
+            "[VM.register_global_method($)]"(entry.key),
+            entry.key
+          ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
+          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local m = GlobalMethod( sig.t, sig.name ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
+          if (sig.parameters.count)
+            ensure<<m.parameters>>( sig.t )
+            forEach (param at i in sig.parameters)
+              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+            endForEach
+          endIf
+          m.return_type = sig.return_type
+          m.statements.add( entry.value.cloned )
+          type.add_global_method( m )
+        endForEach
+
+        forEach (entry in VM.native_methods.entries)
+          local sig = Parser(
+            "[VM.register_method($)]"(entry.key),
+            entry.key
+          ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
+          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local m = Method( sig.t, sig.name ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
+          if (sig.parameters.count)
+            ensure<<m.parameters>>( sig.t )
+            forEach (param at i in sig.parameters)
+              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+            endForEach
+          endIf
+          m.return_type = sig.return_type
+          m.statements.add( entry.value.cloned )
+          type.add_method( m )
+        endForEach
+
+        forEach (elements in pending_elements)
+          (forEach in elements.cloned).store
+        endForEach
+
+        (forEach in modules).organize
+
+        TypeResolver.resolve_types
+        Organizer.organize_program
+
+        pending_elements.clear
+      endTemporarily
+
+    method resolve
+      temporarily Program = this
+        Resolver.resolve_program
+      endTemporarily
+
+    method .configure
+      Program = this
+      t = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
+      default_module = Module( t, "RogueScript" )
+      current_module = default_module
+
+      type_Byte      = default_module.type( t, "Rogue::Byte",      Attribute.PRIMITIVE )
+      type_Character = default_module.type( t, "Rogue::Character", Attribute.PRIMITIVE )
+      type_Int       = default_module.type( t, "Rogue::Int",       Attribute.PRIMITIVE )
+      type_Int32     = default_module.type( t, "Rogue::Int32",     Attribute.PRIMITIVE )
+      type_Int64     = default_module.type( t, "Rogue::Int64",     Attribute.PRIMITIVE )
+      type_Logical   = default_module.type( t, "Rogue::Logical",   Attribute.PRIMITIVE )
+      type_Real      = default_module.type( t, "Rogue::Real",      Attribute.PRIMITIVE )
+      type_Real32    = default_module.type( t, "Rogue::Real32",    Attribute.PRIMITIVE )
+      type_Real64    = default_module.type( t, "Rogue::Real64",    Attribute.PRIMITIVE )
+      type_String    = default_module.type( t, "Rogue::String",    Attribute.OBJECT )
+
+      type_XY = default_module.type( t, "Geometry::XY", Attribute.COMPOUND )
+
+endClass

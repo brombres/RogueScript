@@ -1,7 +1,0 @@
-module Boss
-
-class NativeString [singleton]
-  METHODS
-    method register( vm:VM )
-
-endClass

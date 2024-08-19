@@ -1,0 +1,19 @@
+module RogueScript
+
+class RogueScriptAdapted [aspect]
+  PROPERTIES
+    rs_type       : Type
+    rs_properties = [String:Variant]
+
+  METHODS
+    method rs_properties->[String:Variant]: return @rs_properties
+    method rs_type->Type: return @rs_type
+
+    method set_rs_properties( @rs_properties )
+    method set_rs_type( @rs_type )
+endClass
+
+class RogueScriptObject : RogueScriptAdapted
+  METHODS
+    method init( rs_type )
+endClass

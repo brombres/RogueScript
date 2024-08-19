@@ -1,0 +1,11 @@
+module RogueScript
+
+augment
+  METHODS
+    method Cmd.preprocess
+      noAction
+
+    method Include.preprocess
+      VM.include( File(filepath) )
+
+endAugment

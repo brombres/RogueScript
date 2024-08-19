@@ -10,8 +10,9 @@ augment Build
   # You can create a Local.settings file with overrides for these values, e.g.:
   # BUILD_MODE = release
   PROPERTIES
-    PROJECT          = "Boss"
-    LAUNCHER_NAME    = "boss" : String
+    PROJECT          = "RogueScript"
+    LAUNCHER_NAME    = "rose"
+    EXT              = "rogue"
 
     BUILD_MODE       = "debug"  # set to "debug" or "release"
     LAUNCHER_FOLDER  = "/usr/local/bin"
@@ -33,7 +34,7 @@ endRoutine
 
 routine rogo_run
   # Runs this project.
-  execute "$ Test.boss" (exe_file.esc)
+  execute "$ Test.$" (exe_file.esc,Build.EXT)
 endRoutine
 
 routine rogo_debug
@@ -58,12 +59,12 @@ routine rogo_build
   # Recompiles Rogue -> C -> Exe if needed. 'rogo rebuild' forces a build.
   localize exe_file
 
-  if (File("Source/Boss/Boss.froley").is_newer_than(exe_file))
+  if (File("Source/RogueScript/RogueScript.froley").is_newer_than(exe_file))
     rogo_froley
   endIf
 
-  local source_files = Files( "Source", "Boss.rogue" )
-  source_files.add( "Boss/**" )
+  local source_files = Files( "Source", "Rose.rogue" )
+  source_files.add( "RogueScript/**" )
   if (source_files.any_newer_than(exe_file))
     local h_filepath = "Build/$-$.h" (Build.PROJECT,System.os)
     if (source_files.any_newer_than(h_filepath))
@@ -74,8 +75,8 @@ routine rogo_build
 endRoutine
 
 routine rogo_froley
-  local froley_src = File( "Source/Boss/Boss.froley" )
-  execute "froley $ Source/Boss"(froley_src.esc)
+  local froley_src = File( "Source/RogueScript/RogueScript.froley" )
+  execute "froley $ Source/RogueScript"(froley_src.esc)
 endRoutine
 
 routine rogo_build_debug
@@ -164,7 +165,7 @@ endRoutine
 
 routine current_version->String
   contingent
-    local file = File("Source/$.rogue"(Build.PROJECT))
+    local file = File("Source/Rose.rogue")
     necessary (file.exists)
 
     local v = String(file).extract_string( ''*define VERSION "$"*'' )
@@ -195,7 +196,7 @@ routine rogo_update_version( version:String )
     error.println( "[WARNING] The new version number ($) is not higher than the current version number ($)."(version,current_version) )
   endIf
 
-  block file = File( "Source/PROJECT_NAME.rogue" )
+  block file = File( "Source/Rose.rogue" )
     if (file.exists)
       local og_content = String(file)
       local content = og_content
@@ -309,7 +310,7 @@ routine rogo_publish( new_version:String )
 endRoutine
 
 routine compile_rogue
-  local src_filepath = "Source/$.rogue" (Build.PROJECT)
+  local src_filepath = "Source/Rose.rogue"
   local c_filename = "$-$" (Build.PROJECT,System.os)
   local c_filepath = "Build/$" (c_filename)
 
