@@ -15,6 +15,7 @@ class Procedure : ControlStructure
     max_args       : Int
 
     cmd_call       : Cmd
+    overridden_m   : Method
 
   METHODS
     method init( t, name, parameters, return_type, attributes, doc, statements )
@@ -34,6 +35,7 @@ class Procedure : ControlStructure
       if (existing.attributes) attributes = existing.attributes.cloned
       cmd_call = existing.cmd_call
       doc = existing.doc
+      overridden_m = existing.overridden_m
 
     method description->String
       return signature

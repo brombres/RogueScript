@@ -85,7 +85,7 @@ class Type : Cmd
 
       if (m.name == "create")
         if (not m.return_type or m.return_type is not this)
-          throw m.t.error( "A $ create() constructor must have return-type $."(this,this) )
+          throw m.t.error( "A $ create() constructor must have return type $."(this,this) )
         endIf
       elseIf (m.name == "init")
         throw m.t.error( "A $ init() constructor cannot be a global method."(this) )
@@ -114,15 +114,17 @@ class Type : Cmd
               if (m.attributes.is_native) return
               throw m.t.error( "A method $.$ already exists."(this,m.signature) )
             endIf
+            m.overridden_m = existing_m
           else
-            return # do not replace overridden method with base method
+            existing_m.overridden_m = m
+            return # do not replace overridden method (existing_m) with base method (m)
           endIf
         endIf
       endBlock
 
       if (m.name == "init")
         if (m.return_type)
-          throw m.t.error( "A $ init() constructor cannot have a return-type."(this) )
+          throw m.t.error( "A $ init() constructor cannot have a return type."(this) )
         endIf
       elseIf (m.name == "create")
         throw m.t.error( "A $ create() constructor must be a global method."(this) )

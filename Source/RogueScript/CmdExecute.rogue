@@ -33,7 +33,7 @@ augment
       VM.stack.discard_from( old_sp )
       return result
 
-    method CallMethod.execute->Variant
+    method CallStaticMethod.execute->Variant
       local context = context.execute
       which (context.type)
         case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
@@ -49,7 +49,7 @@ augment
       VM.stack.discard_from( old_sp )
       return result
 
-    method CallThisMethod.execute->Variant
+    method CallThisStaticMethod.execute->Variant
       local context = VM.context
 
       local old_sp = VM.stack.count

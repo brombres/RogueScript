@@ -864,11 +864,6 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.args)
       return result
 
-    method on_visit_children( cmd:CallPriorMethod )->$ReturnType
-      local result : $ReturnType
-      result = visit(cmd.args)
-      return result
-
     method on_visit_children( cmd:CallProcedure )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.args)
@@ -966,7 +961,7 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.args)
       return result
 
-    method on_visit_children( cmd:CallMethod )->$ReturnType
+    method on_visit_children( cmd:CallStaticMethod )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.context)
       if (result?) return result
@@ -2168,6 +2163,13 @@ class InspectionVisitor<<$ReturnType>>
     method on_visit_children( cmd:CreateNativeObject )->$ReturnType
       local result : $ReturnType
       result = visit(cmd.of_type)
+      return result
+
+    method on_visit_children( cmd:CallPriorMethod )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.type_context)
+      if (result?) return result
+      result = visit(cmd.args)
       return result
 
 endClass

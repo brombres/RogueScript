@@ -2602,11 +2602,13 @@ parser
   on "pi"                 -> LiteralPi:Literal
 
   on "prior"
+    if (consume('<<'))  type; mustConsume('>>')
+    else                createNull
     mustConsume '.'
     identifier
     if (nextIs('(')) access_args
     else             createNull
-    create CallPriorMethod( name:String, args:Args )
+    create CallPriorMethod( type_context:Type, name:String, args:Args )
     access_inner
     return
   endOn
@@ -4079,8 +4081,8 @@ parser
   create WriteThisPropertyValue(info:Property)
 
   create CallProcedure(info:Procedure,args:Args)
-  create CallMethod(context,info:Procedure,args:Args):CallProcedure
-  create CallThisMethod(info:Procedure,args:Args):CallProcedure
+  create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallThisStaticMethod(info:Procedure,args:Args):CallProcedure
   create CallGlobalMethod(info:Procedure,args:Args):CallProcedure
   create CallNativeMethod
 

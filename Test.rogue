@@ -1,14 +1,37 @@
+class Alpha
+  METHODS
+    method display
+      println "Alpha"
+endClass
+
+class Beta : Alpha
+  METHODS
+    method display
+      prior.display
+      println "Beta"
+endClass
+
+local a = Beta() : Alpha
+a.display
+
+#Beta().display
+
+#{
 class R2 : Random
+  METHODS
+    method next32->Int32
+      #return prior.next32
+      return 5
+
+    method prior_next32->Int32
+      return prior.next32
+
 endClass
 
 local r = R2()
-println r
-
-#{
-println 2
 println r.next32
-println 3
-}#
+println r.prior_next32
+#local r0 = r : Random
+#println r.next32
 
-#println Random.next32
-#println Random.hashcode
+}#

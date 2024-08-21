@@ -3687,24 +3687,6 @@ class CallGlobalMethod : CallProcedure
 
 endClass
 
-class CallPriorMethod : Cmd
-  PROPERTIES
-    name : String
-    args : Args
-
-  METHODS
-    method init( t, name, args )
-
-    method init( existing:CallPriorMethod )
-      prior.init( existing )
-      name = existing.name
-      if (existing.args) args = existing.args.cloned
-
-    method description->String
-      return "CallPriorMethod($,$)" (%name,%args)
-
-endClass
-
 class CallProcedure : Cmd
   PROPERTIES
     info : Procedure
@@ -3976,26 +3958,26 @@ class Println : Cmd
 
 endClass
 
-class CallMethod : CallProcedure
+class CallStaticMethod : CallProcedure
   PROPERTIES
     context : Cmd
 
   METHODS
     method init( t, context, info, args )
 
-    method init( existing:CallMethod )
+    method init( existing:CallStaticMethod )
       prior.init( existing )
       if (existing.context) context = existing.context.cloned
 
     method description->String
-      return "CallMethod($,$,$)" (%context,%info,%args)
+      return "CallStaticMethod($,$,$)" (%context,%info,%args)
 
 endClass
 
-class CallThisMethod : CallProcedure
+class CallThisStaticMethod : CallProcedure
   METHODS
     method description->String
-      return "CallThisMethod($,$)" (%info,%args)
+      return "CallThisStaticMethod($,$)" (%info,%args)
 
 endClass
 
@@ -10285,5 +10267,25 @@ class CreateNativeObject : Cmd
 
     method description->String
       return "CreateNativeObject($)" (%of_type)
+
+endClass
+
+class CallPriorMethod : Cmd
+  PROPERTIES
+    type_context : Type
+    name         : String
+    args         : Args
+
+  METHODS
+    method init( t, type_context, name, args )
+
+    method init( existing:CallPriorMethod )
+      prior.init( existing )
+      if (existing.type_context) type_context = existing.type_context.cloned
+      name = existing.name
+      if (existing.args) args = existing.args.cloned
+
+    method description->String
+      return "CallPriorMethod($,$,$)" (%type_context,%name,%args)
 
 endClass

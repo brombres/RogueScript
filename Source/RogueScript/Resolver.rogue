@@ -831,6 +831,15 @@ class Resolver : Visitor [singleton]
       cmd.right.require_type
       return cmd
 
+    method on_visit( cmd:CallPriorMethod )->Cmd
+      local m = find_procedure( cmd.t, this_type, null, cmd.name, cmd.args )->(as Method)
+      if (not m.overridden_m)
+        throw cmd.t.error( "Invalid 'prior' call - $() is not an override."(cmd.name) )
+      endIf
+
+      local result = validate( CallThisStaticMethod(cmd.t, m.overridden_m, cmd.args) )
+      return result
+
     method on_visit( cmd:Construct )->Cmd
       local type = cmd.@type
       if (type.native_type.create_object)
@@ -991,11 +1000,13 @@ class Resolver : Visitor [singleton]
       else            return cmd
 
     method on_visit( cmd:This )->Cmd
-      if (this_procedure.attributes.is_global)
-        throw cmd.t.error( "Global methods and routines do not have a 'this' object context." )
+      if (not cmd.type)
+        if (this_procedure.attributes.is_global)
+          throw cmd.t.error( "Global methods and routines do not have a 'this' object context." )
+        endIf
+        cmd.type = this_type
+        visit_children( cmd )
       endIf
-      cmd.type = this_type
-      visit_children( cmd )
       return cmd
 
     method on_validate( cmd:Unary )->Cmd
@@ -1036,6 +1047,61 @@ class Resolver : Visitor [singleton]
 
     method resolve_access( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
         &is_constructor, &suppress_error )->Cmd
+      local m = find_procedure( t, type_context, context, name, args, &=is_constructor, &suppress_error )
+
+      if (m)
+        args = resolve_args( t, m, args )
+        if (is_constructor)
+          if (m.attributes.is_global)
+            return visit( CallGlobalMethod(t, m, args) )
+          else
+            return visit( CreateObject(t, type_context, m, args) )
+          endIf
+        elseIf (m.attributes.is_global)
+          return visit( CallGlobalMethod(t, m, args) )
+        else
+          if (not context or context instanceOf This)
+            return visit( CallThisStaticMethod(t, m, args) )
+          else
+            return visit( CallStaticMethod(t, context, m, args) )
+          endIf
+        endIf
+      endIf
+
+      if (is_constructor and args and args.count == 0)
+        return visit( DefaultConstructor(t,type_context) )
+      endIf
+
+      if (not args)
+
+        # Check DEFINITIONS
+        if local def = type_context.definitions[name]
+          return visit( def.cloned )
+        endIf
+
+        # PROPERTIES
+        if (context)
+          if local p = type_context.properties[name]
+            if (context instanceOf This) return visit( ReadThisProperty(t,p) )
+            else                         return visit( ReadProperty(t,context,p) )
+          endIf
+        endIf
+
+        # GLOBAL PROPERTIES
+        if local p = type_context.global_properties[name]
+          return visit( ReadGlobalProperty(t,p) )
+        endIf
+
+      endIf
+
+      if (suppress_error) return null
+
+      # throw error
+      select_call_candidate( t, type_context, context, name, args, &=is_constructor )
+
+    method find_procedure( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
+      &is_constructor, &suppress_error )->Procedure
+
       if (args)
         visit( args )
         (forEach in args).require_value
@@ -1056,7 +1122,7 @@ class Resolver : Visitor [singleton]
         if (is_constructor)
           type_context.collect_global_methods( "create" )
           type_context.collect_methods( "init" )
-          if (CallCandidates.count == 0) return visit( DefaultConstructor(t,type_context) )
+          if (CallCandidates.count == 0) return null
         elseIf (context and context instanceOf TypeContext)
           type_context.collect_global_methods( name )
         else
@@ -1064,52 +1130,7 @@ class Resolver : Visitor [singleton]
           type_context.collect_global_methods( name )
         endIf
 
-        local m = select_call_candidate( t, type_context, context, name, args, &=is_constructor, &suppress_error )
-
-        if (m)
-          args = resolve_args( t, m, args )
-          if (is_constructor)
-            if (m.attributes.is_global)
-              return visit( CallGlobalMethod(t, m, args) )
-            else
-              return visit( CreateObject(t, type_context, m, args) )
-            endIf
-          elseIf (m.attributes.is_global)
-            return visit( CallGlobalMethod(t, m, args) )
-          else
-            if (not context or context instanceOf This)
-              return visit( CallThisMethod(t, m, args) )
-            else
-              return visit( CallMethod(t, context, m, args) )
-            endIf
-          endIf
-        endIf
-
-        if (not args)
-          # Check DEFINITIONS
-          if local def = type_context.definitions[name]
-            return visit( def.cloned )
-          endIf
-
-          # PROPERTIES
-          if (context)
-            if local p = type_context.properties[name]
-              if (context instanceOf This) return visit( ReadThisProperty(t,p) )
-              else                         return visit( ReadProperty(t,context,p) )
-            endIf
-          endIf
-
-          # GLOBAL PROPERTIES
-          if local p = type_context.global_properties[name]
-            return visit( ReadGlobalProperty(t,p) )
-          endIf
-
-        endIf
-
-        if (suppress_error) return null
-
-        # throw error
-        select_call_candidate( t, type_context, context, name, args, &=is_constructor )
+        return select_call_candidate( t, type_context, context, name, args, &=is_constructor, &=suppress_error )
       endUse
 
     method resolve_args( t:Token, m:Procedure, args:Args )->Args

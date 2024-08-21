@@ -4507,6 +4507,12 @@ class ParserCore [abstract]
       endIf
       if (_next_t.type == TokenType.KEYWORD_PRIOR)
         temporarily _cur_t = _on_t
+          if (_consume(TokenType.SYMBOL_LTLT))
+            r_type
+            if (not _consume(TokenType.SYMBOL_GTGT)) _throw_syntax_error( &expected=TokenType.SYMBOL_GTGT )
+          else
+            if (not disable_output) _push( null, 0 )
+          endIf
           if (not _consume(TokenType.SYMBOL_PERIOD)) _throw_syntax_error( &expected=TokenType.SYMBOL_PERIOD )
           r_identifier
           if ((_next_t.type == TokenType.SYMBOL_OPEN_PAREN))
@@ -4514,7 +4520,7 @@ class ParserCore [abstract]
           else
             if (not disable_output) _push( null, 0 )
           endIf
-          if (not disable_output) _push( CallPriorMethod(_cur_t,_string_arg(-2),_node_arg(-1)->(as Args)), 2 )
+          if (not disable_output) _push( CallPriorMethod(_cur_t,_node_arg(-3)->(as Type),_string_arg(-2),_node_arg(-1)->(as Args)), 3 )
           r_access_inner
           _cur_t = _previous_cur_t
           return 0
@@ -6230,8 +6236,8 @@ class ParserCore [abstract]
       if (not disable_output) _push( WriteThisProperty(_cur_t,_node_arg(-2)->(as Property),_node_arg(-1)), 2 )
       if (not disable_output) _push( WriteThisPropertyValue(_cur_t,_node_arg(-1)->(as Property)), 1 )
       if (not disable_output) _push( CallProcedure(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
-      if (not disable_output) _push( CallMethod(_cur_t,_node_arg(-3),_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 3 )
-      if (not disable_output) _push( CallThisMethod(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
+      if (not disable_output) _push( CallStaticMethod(_cur_t,_node_arg(-3),_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 3 )
+      if (not disable_output) _push( CallThisStaticMethod(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
       if (not disable_output) _push( CallGlobalMethod(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
       if (not disable_output) _push( CallNativeMethod(_cur_t), 0 )
       if (not disable_output) _push( Compare(_cur_t,_node_arg(-2),_node_arg(-1)), 2 )
