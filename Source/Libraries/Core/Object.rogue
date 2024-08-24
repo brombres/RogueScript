@@ -1,2 +1,4 @@
-class Object
+module RogueScript
+
+class Object : Rogue::Object
 endClass

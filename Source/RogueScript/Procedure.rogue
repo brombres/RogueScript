@@ -16,6 +16,7 @@ class Procedure : ControlStructure
 
     cmd_call       : Cmd
     overridden_m   : Method
+    vtable_index   = -1
 
   METHODS
     method init( t, name, parameters, return_type, attributes, doc, statements )

@@ -26,6 +26,7 @@ class Type : Cmd
     global_properties      = [String:Property]
     global_property_values = [String:Variant]
     properties             = [String:Property]
+    vtable                 = Method[]
 
     visiting               : Logical
     is_resolved            : Logical
@@ -131,6 +132,7 @@ class Type : Cmd
       endIf
 
       methods[m.signature] = m
+
       local group = methods_by_name[m.name]
       if (not group)
         group = Method[]
@@ -155,10 +157,11 @@ class Type : Cmd
       properties[p.name] = p
 
     method collect_base_types
+#trace name, base_class, attributes.is_native, attributes.is_object, definition?
       if (not definition) return
 
       forEach (base_type in definition.base_types)
-        base_type = module_context.must_find_type( base_type.t, base_type.name )
+        base_type = module_context.must_find_type( base_type )
         if (base_type.attributes.is_aspect)
           ensure<<aspects>>
           aspects.add( base_type )
@@ -168,6 +171,9 @@ class Type : Cmd
           throw t.error( "[INTERNAL] Unhandled type attributes for base type " + base_type )
         endIf
       endForEach
+
+#if (not base_class and attributes.is_object)
+#endIf
 
     method collect_global_methods( method_name:String )
       local methods = global_methods_by_name[ method_name ]
@@ -290,6 +296,29 @@ class Type : Cmd
         endForEach
       endIf
 
+      # Add inherited and overridden methods to vtable
+      forEach (m in methods)
+        if (m.overridden_m) m.vtable_index = m.overridden_m.vtable_index
+        if (m.vtable_index != -1)
+          vtable.expand_to_include( m.vtable_index )
+          vtable[m.vtable_index] = m
+        endIf
+      endForEach
+
+      # Add new methods to vtable
+      forEach (m in methods)
+        if (m.vtable_index == -1)
+          m.vtable_index = vtable.count
+          vtable.add( m )
+        endIf
+      endForEach
+
+#println "$$"(scoped_name,which{base_class?.scoped_name:" : " + base_class.scoped_name || ""})
+#forEach (m at i in vtable)
+#  println "$ $"(i,m)
+#endForEach
+#println
+
     method inherit_methods( of_type:Type )
       of_type.inherit_methods
 
@@ -329,10 +358,12 @@ class Type : Cmd
     method resolved->Type
       local mod = module_context
       if (not mod) mod = Program.default_module
-      return mod.must_find_type( this )
+      local result = mod.must_find_type( this )
+      return result
 
     method scoped_name->String
       if (@scoped_name) return @scoped_name
+      if (not module_context) return "<undefined>::$"(name)
       @scoped_name = "$::$"(module_context,name)
       return @scoped_name
 

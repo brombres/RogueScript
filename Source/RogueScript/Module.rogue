@@ -99,7 +99,11 @@ class Module
       throw t.error( "Reference to undefined type $."(type_name) )
 
     method must_find_type( type:Type )->Type
-      return must_find_type( type.t, type.name )
+      if (type.module_context and type.module_context is not this)
+        return type.module_context.must_find_type( type )
+      else
+        return must_find_type( type.t, type.name )
+      endIf
 
     method organize
       if (global_statements)

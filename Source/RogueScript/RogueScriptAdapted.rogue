@@ -4,7 +4,6 @@ class RogueScriptAdapted [aspect]
   PROPERTIES
     rs_type       : Type
     rs_properties = [String:Variant]
-    #rs_vtable     =
 
   METHODS
     method rs_properties->[String:Variant]: return @rs_properties

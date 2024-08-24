@@ -1,15 +1,16 @@
-class Alpha
-  METHODS
-    method display
-      println "Alpha"
-endClass
-
 class Beta : Alpha
   METHODS
     method display
       prior.display
       println "Beta"
 endClass
+
+class Alpha
+  METHODS
+    method display
+      println "Alpha"
+endClass
+
 
 local a = Beta() : Alpha
 a.display
