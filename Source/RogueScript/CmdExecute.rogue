@@ -45,7 +45,7 @@ augment
 
       if (args and args.count) VM.stack.add( (forEach in args).execute )
 
-      local info = context.object->(as RogueScriptAdapted)?.rs_type.vtable[ vtable_index ]
+      local info = context.object->(as RogueScriptAdapted).rs_type.vtable[ vtable_index ]
       local result = info.execute
       VM.stack.discard_from( old_sp )
       return result
@@ -58,7 +58,7 @@ augment
 
       if (args and args.count) VM.stack.add( (forEach in args).execute )
 
-      local info = context.object->(as RogueScriptAdapted)?.rs_type.vtable[ vtable_index ]
+      local info = context.object->(as RogueScriptAdapted).rs_type.vtable[ vtable_index ]
       local result = info.execute
       VM.stack.discard_from( old_sp )
       return result
