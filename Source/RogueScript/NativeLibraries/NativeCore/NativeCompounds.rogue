@@ -10,8 +10,14 @@ class NativeCompounds [singleton]
       vm.register_method( "Graphics::Color.argb->Int32", ()=>VM.context->Int32 )
 
       # Triangle
-      vm.register_type( "Geometry::Triangle",
-        NativeTypeInfo( &instance_of=(value)=>value.is_triangle, &variant_type=Variant.TYPE_TRIANGLE ) )
+      vm.register_type(
+        "Geometry::Triangle",
+        NativeTypeInfo(
+          &instance_of=(value)=>value.is_triangle,
+          &variant_type=Variant.TYPE_TRIANGLE,
+          &attributes=Attribute.COMPOUND
+        )
+      )
       vm.register_constructor( "Geometry::Triangle(XY,XY,XY)", ()=>Triangle(VM.xy(1),VM.xy(2),VM.xy(3)) )
 
       # XY

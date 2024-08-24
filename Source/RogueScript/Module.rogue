@@ -63,8 +63,8 @@ class Module
 
       return type
 
-    method define_type( t:Token, type_name:String, attribute_flags:Int )->Type
-      return define_type( t, type_name, Attributes(t,attribute_flags) )
+    method define_type( t:Token, type_name:String, attributes:Int )->Type
+      return define_type( t, type_name, Attributes(t,attributes) )
 
     method find_type( type_name:String, &limited )->Type
       if (visiting) return null
@@ -119,15 +119,15 @@ class Module
     method to->String
       return name
 
-    method type( t:Token, name:String, attribute_flags=Attribute.OBJECT:Int )->Type
+    method type( t:Token, name:String, attributes=Attribute.OBJECT:Int )->Type
       if (name.contains("::"))
-        return Program.get_module( t, name.before_last("::") ).type( t, name.after_last("::"), &=attribute_flags )
+        return Program.get_module( t, name.before_last("::") ).type( t, name.after_last("::"), &=attributes )
       endIf
 
       local result = types[name]
       if (result) return result
 
-      return define_type( t, name, attribute_flags )
+      return define_type( t, name, attributes )
 
     method type_Routine->Type
       return type( t, "Routine" )

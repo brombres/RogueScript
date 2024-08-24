@@ -8,7 +8,8 @@ class NativeTypeInfo(
   base_class_name=null:String,
   get_singleton=null:Function()->Variant,
   set_singleton=null:Function(Variant),
-  variant_type=Variant.TYPE_OBJECT:Int
+  variant_type=Variant.TYPE_OBJECT:Int,
+  attributes=Attribute.OBJECT:Int
 )
 
 endClass

@@ -157,23 +157,23 @@ class Type : Cmd
       properties[p.name] = p
 
     method collect_base_types
-#trace name, base_class, attributes.is_native, attributes.is_object, definition?
-      if (not definition) return
+      if (definition)
+        forEach (base_type in definition.base_types)
+          base_type = module_context.must_find_type( base_type )
+          if (base_type.attributes.is_aspect)
+            ensure<<aspects>>
+            aspects.add( base_type )
+          elseIf (base_type.attributes.is_object == this.attributes.is_object)
+            base_class = base_type
+          else
+            throw t.error( "[INTERNAL] Unhandled type attributes for base type " + base_type )
+          endIf
+        endForEach
+      endIf
 
-      forEach (base_type in definition.base_types)
-        base_type = module_context.must_find_type( base_type )
-        if (base_type.attributes.is_aspect)
-          ensure<<aspects>>
-          aspects.add( base_type )
-        elseIf (base_type.attributes.is_object == this.attributes.is_object)
-          base_class = base_type
-        else
-          throw t.error( "[INTERNAL] Unhandled type attributes for base type " + base_type )
-        endIf
-      endForEach
-
-#if (not base_class and attributes.is_object)
-#endIf
+      if (not base_class and attributes.is_object and this is not Program.type_Object)
+        base_class = Program.type_RogueScriptObject
+      endIf
 
     method collect_global_methods( method_name:String )
       local methods = global_methods_by_name[ method_name ]
@@ -313,11 +313,11 @@ class Type : Cmd
         endIf
       endForEach
 
-#println "$$"(scoped_name,which{base_class?.scoped_name:" : " + base_class.scoped_name || ""})
-#forEach (m at i in vtable)
-#  println "$ $"(i,m)
-#endForEach
-#println
+      #println "$$"(scoped_name,which{base_class?.scoped_name:" : " + base_class.scoped_name || ""})
+      #forEach (m at i in vtable)
+      #  println "$ $"(i,m)
+      #endForEach
+      #println
 
     method inherit_methods( of_type:Type )
       of_type.inherit_methods

@@ -9,5 +9,5 @@ class NativeCore [singleton]
       NativePrimitives.register( vm )
       NativeCompounds.register( vm )
 
-      vm.register_method( "System.time_ms()->Int64", () => System.time_ms )
+      #vm.register_method( "System.time_ms()->Int64", () => System.time_ms )
 endClass
