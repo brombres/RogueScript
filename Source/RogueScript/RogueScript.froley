@@ -4081,6 +4081,8 @@ parser
   create WriteThisPropertyValue(info:Property)
 
   create CallProcedure(info:Procedure,args:Args)
+  create CallVirtualMethod(context,info:Procedure,vtable_index:Integer,args:Args):CallProcedure
+  create CallThisVirtualMethod(info:Procedure,vtable_index:Integer,args:Args):CallProcedure
   create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure
   create CallThisStaticMethod(info:Procedure,args:Args):CallProcedure
   create CallGlobalMethod(info:Procedure,args:Args):CallProcedure

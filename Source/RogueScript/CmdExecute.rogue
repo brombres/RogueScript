@@ -33,6 +33,36 @@ augment
       VM.stack.discard_from( old_sp )
       return result
 
+    method CallVirtualMethod.execute->Variant
+      local context = context.execute
+      which (context.type)
+        case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
+          throw t.error( "RogueScript call context is null or undefined." )
+      endWhich
+
+      local old_sp = VM.stack.count
+      VM.stack.add( context )
+
+      if (args and args.count) VM.stack.add( (forEach in args).execute )
+
+      local info = context.object->(as RogueScriptAdapted)?.rs_type.vtable[ vtable_index ]
+      local result = info.execute
+      VM.stack.discard_from( old_sp )
+      return result
+
+    method CallThisVirtualMethod.execute->Variant
+      local context = VM.context
+
+      local old_sp = VM.stack.count
+      VM.stack.add( context )
+
+      if (args and args.count) VM.stack.add( (forEach in args).execute )
+
+      local info = context.object->(as RogueScriptAdapted)?.rs_type.vtable[ vtable_index ]
+      local result = info.execute
+      VM.stack.discard_from( old_sp )
+      return result
+
     method CallStaticMethod.execute->Variant
       local context = context.execute
       which (context.type)

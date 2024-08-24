@@ -1060,10 +1060,18 @@ class Resolver : Visitor [singleton]
         elseIf (m.attributes.is_global)
           return visit( CallGlobalMethod(t, m, args) )
         else
-          if (not context or context instanceOf This)
-            return visit( CallThisStaticMethod(t, m, args) )
+          if (type_context.attributes.is_object)
+            if (not context or context instanceOf This)
+              return visit( CallThisVirtualMethod(t, m, m.vtable_index, args) )
+            else
+              return visit( CallVirtualMethod(t, context, m, m.vtable_index, args) )
+            endIf
           else
-            return visit( CallStaticMethod(t, context, m, args) )
+            if (not context or context instanceOf This)
+              return visit( CallThisStaticMethod(t, m, args) )
+            else
+              return visit( CallStaticMethod(t, context, m, args) )
+            endIf
           endIf
         endIf
       endIf

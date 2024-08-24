@@ -2172,5 +2172,14 @@ class InspectionVisitor<<$ReturnType>>
       result = visit(cmd.args)
       return result
 
+    method on_visit_children( cmd:CallVirtualMethod )->$ReturnType
+      local result : $ReturnType
+      result = visit(cmd.context)
+      if (result?) return result
+      result = visit(cmd.info)
+      if (result?) return result
+      result = visit(cmd.args)
+      return result
+
 endClass
 

@@ -10289,3 +10289,38 @@ class CallPriorMethod : Cmd
       return "CallPriorMethod($,$,$)" (%type_context,%name,%args)
 
 endClass
+
+
+class CallThisVirtualMethod : CallProcedure
+  PROPERTIES
+    vtable_index : Int
+
+  METHODS
+    method init( t, info, vtable_index, args )
+
+    method init( existing:CallThisVirtualMethod )
+      prior.init( existing )
+      vtable_index = existing.vtable_index
+
+    method description->String
+      return "CallThisVirtualMethod($,$,$)" (%info,%vtable_index,%args)
+
+endClass
+
+class CallVirtualMethod : CallProcedure
+  PROPERTIES
+    context      : Cmd
+    vtable_index : Int
+
+  METHODS
+    method init( t, context, info, vtable_index, args )
+
+    method init( existing:CallVirtualMethod )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+      vtable_index = existing.vtable_index
+
+    method description->String
+      return "CallVirtualMethod($,$,$,$)" (%context,%info,%vtable_index,%args)
+
+endClass

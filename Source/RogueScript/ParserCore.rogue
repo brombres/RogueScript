@@ -6236,6 +6236,8 @@ class ParserCore [abstract]
       if (not disable_output) _push( WriteThisProperty(_cur_t,_node_arg(-2)->(as Property),_node_arg(-1)), 2 )
       if (not disable_output) _push( WriteThisPropertyValue(_cur_t,_node_arg(-1)->(as Property)), 1 )
       if (not disable_output) _push( CallProcedure(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
+      if (not disable_output) _push( CallVirtualMethod(_cur_t,_node_arg(-4),_node_arg(-3)->(as Procedure),_int_arg(-2),_node_arg(-1)->(as Args)), 4 )
+      if (not disable_output) _push( CallThisVirtualMethod(_cur_t,_node_arg(-3)->(as Procedure),_int_arg(-2),_node_arg(-1)->(as Args)), 3 )
       if (not disable_output) _push( CallStaticMethod(_cur_t,_node_arg(-3),_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 3 )
       if (not disable_output) _push( CallThisStaticMethod(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
       if (not disable_output) _push( CallGlobalMethod(_cur_t,_node_arg(-2)->(as Procedure),_node_arg(-1)->(as Args)), 2 )
