@@ -605,7 +605,7 @@ class ParserCore [abstract]
       _begin_list
       if (disable_output)     _discard_list
       else                    _push_list( Attributes(_list_t) )
-      if (not disable_output) _push( SetModuleContext(_cur_t,"RogueScript",_node_arg(-1)->(as Attributes)), 1 )
+      if (not disable_output) _push( SetModuleContext(_cur_t,"Rogue",_node_arg(-1)->(as Attributes)), 1 )
       while ((_position < _limit))
         r_program_element
       endWhile

@@ -5,7 +5,6 @@ class Program [singleton]
     t              : Token
     default_module : Module
     current_module : Module
-    rogue_module   : Module
     modules        = [String:Module]
     types          = [String:Type]  # All types, keys fully qualified e.g. RogueScript::Int
     definitions    = [String:Cmd]   # Includes VM.definitions
@@ -188,21 +187,20 @@ class Program [singleton]
     method .configure
       Program = this
       t = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
-      default_module = Module( t, "RogueScript" )
+      default_module = Module( t, "Rogue" )
       current_module = default_module
-      rogue_module   = Module( t, "Rogue" )
 
-      type_Byte      = rogue_module.type( t, "Byte",      Attribute.PRIMITIVE )
-      type_Character = rogue_module.type( t, "Character", Attribute.PRIMITIVE )
-      type_Int       = rogue_module.type( t, "Int",       Attribute.PRIMITIVE )
-      type_Int32     = rogue_module.type( t, "Int32",     Attribute.PRIMITIVE )
-      type_Int64     = rogue_module.type( t, "Int64",     Attribute.PRIMITIVE )
-      type_Logical   = rogue_module.type( t, "Logical",   Attribute.PRIMITIVE )
-      type_Real      = rogue_module.type( t, "Real",      Attribute.PRIMITIVE )
-      type_Real32    = rogue_module.type( t, "Real32",    Attribute.PRIMITIVE )
-      type_Real64    = rogue_module.type( t, "Real64",    Attribute.PRIMITIVE )
-      type_String    = rogue_module.type( t, "String",    Attribute.OBJECT )
-      type_Object    = rogue_module.type( t, "Object",    Attribute.OBJECT )
+      type_Byte      = default_module.type( t, "Byte",      Attribute.PRIMITIVE )
+      type_Character = default_module.type( t, "Character", Attribute.PRIMITIVE )
+      type_Int       = default_module.type( t, "Int",       Attribute.PRIMITIVE )
+      type_Int32     = default_module.type( t, "Int32",     Attribute.PRIMITIVE )
+      type_Int64     = default_module.type( t, "Int64",     Attribute.PRIMITIVE )
+      type_Logical   = default_module.type( t, "Logical",   Attribute.PRIMITIVE )
+      type_Real      = default_module.type( t, "Real",      Attribute.PRIMITIVE )
+      type_Real32    = default_module.type( t, "Real32",    Attribute.PRIMITIVE )
+      type_Real64    = default_module.type( t, "Real64",    Attribute.PRIMITIVE )
+      type_String    = default_module.type( t, "String",    Attribute.OBJECT )
+      type_Object    = default_module.type( t, "Object",    Attribute.OBJECT )
       type_RogueScriptObject = default_module.type( t, "Object", Attribute.OBJECT )
 
       type_XY = default_module.type( t, "Geometry::XY", Attribute.COMPOUND )

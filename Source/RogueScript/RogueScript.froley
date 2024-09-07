@@ -612,7 +612,7 @@ parser
     # Implicit '$module RogueScript' at the start of each file
     beginList
     createList Attributes
-    create SetModuleContext(name="RogueScript",attributes:Attributes)
+    create SetModuleContext(name="Rogue",attributes:Attributes)
 
     while (hasAnother) program_element
   produceList ProgramElements
