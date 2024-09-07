@@ -3,7 +3,7 @@ module RogueScript
 class NativeTypeInfo(
   info=null:TypeInfo,
   create_object=null:Function()->Variant,
-  create_rs_object=null:Function(Type)->Variant,
+  create_extended_object=null:Function(Type)->Variant,
   instance_of=null:Function(Variant)->Logical,
   base_class_name=null:String,
   get_singleton=null:Function()->Variant,

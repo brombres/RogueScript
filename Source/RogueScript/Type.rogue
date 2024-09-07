@@ -17,16 +17,18 @@ class Type : Cmd
     is_optional_type     : Logical
     variant_type         = Variant.TYPE_OBJECT : Int
 
-    native_type            : NativeTypeInfo
-    global_methods         = [String:GlobalMethod]
-    global_methods_by_name = [String:GlobalMethod[]]
-    methods                = [String:Method]
-    methods_by_name        = [String:Method[]]
-    definitions            = [String:Cmd]
-    global_properties      = [String:Property]
-    global_property_values = [String:Variant]
-    properties             = [String:Property]
-    vtable                 = Method[]
+    native_type             : NativeTypeInfo
+    global_methods          = [String:GlobalMethod]
+    global_methods_by_name  = [String:GlobalMethod[]]
+    methods                 = [String:Method]
+    methods_by_name         = [String:Method[]]
+    definitions             = [String:Cmd]
+    global_properties       = [String:Property]
+    global_property_values  = [String:Variant]
+    properties              = [String:Property]
+    vtable                  = Method[]
+    native_global_methods   : GlobalMethod[]
+    native_method_overrides : Method[]
 
     visiting               : Logical
     is_resolved            : Logical
@@ -322,8 +324,8 @@ class Type : Cmd
     method inherit_methods( of_type:Type )
       of_type.inherit_methods
 
-      if (not native_type.create_rs_object)
-        native_type.create_rs_object = of_type.native_type.create_rs_object
+      if (not native_type.create_extended_object)
+        native_type.create_extended_object = of_type.native_type.create_extended_object
       endIf
 
       add_method( forEach in of_type.methods )
@@ -345,8 +347,8 @@ class Type : Cmd
       ensure<<native_type>>
       if (base_class)
         base_class.propagate_constructor_info
-        if (not native_type.create_rs_object)
-          native_type.create_rs_object = base_class.native_type.create_rs_object
+        if (not native_type.create_extended_object)
+          native_type.create_extended_object = base_class.native_type.create_extended_object
         endIf
       endIf
 

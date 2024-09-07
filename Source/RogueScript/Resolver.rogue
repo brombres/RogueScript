@@ -624,110 +624,119 @@ class Resolver : Visitor [singleton]
     method convert_to( cmd:Cmd, to_type:Type )->Cmd
       local cmd_type = cmd.require_type
 
-      which (to_type)
-        case cmd_type
-          return cmd
-        case Program.type_Real64
-          which (cmd_type)
-            case Program.type_Real:      return validate( ConvertRealToReal64(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToReal64(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToReal64(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToReal64(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToReal64(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToReal64(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToReal64(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToReal64(cmd.t,cmd) )
-          endWhich
-        case Program.type_Real
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToReal(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToReal(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToReal(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToReal(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToReal(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToReal(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToReal(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToReal(cmd.t,cmd) )
-          endWhich
-        case Program.type_Real32
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToReal32(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToReal32(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToReal32(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToReal32(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToReal32(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToReal32(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToReal32(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToReal32(cmd.t,cmd) )
-          endWhich
-        case Program.type_Int64
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToInt64(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToInt64(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToInt64(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToInt64(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToInt64(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToInt64(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToInt64(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToInt64(cmd.t,cmd) )
-          endWhich
-        case Program.type_Int
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToInt(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToInt(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToInt(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToInt(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToInt(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToInt(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToInt(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToInt(cmd.t,cmd) )
-          endWhich
-        case Program.type_Int32
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToInt32(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToInt32(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToInt32(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToInt32(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToInt32(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToInt32(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToInt32(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToInt32(cmd.t,cmd) )
-          endWhich
-        case Program.type_Character
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToCharacter(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToCharacter(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToCharacter(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToCharacter(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToCharacter(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToCharacter(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToCharacter(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToCharacter(cmd.t,cmd) )
-          endWhich
-        case Program.type_Byte
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToByte(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToByte(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToByte(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToByte(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToByte(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToByte(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToByte(cmd.t,cmd) )
-            case Program.type_Logical:   return validate( ConvertLogicalToByte(cmd.t,cmd) )
-          endWhich
-        case Program.type_Logical
-          which (cmd_type)
-            case Program.type_Real64:    return validate( ConvertReal64ToLogical(cmd.t,cmd) )
-            case Program.type_Real:      return validate( ConvertRealToLogical(cmd.t,cmd) )
-            case Program.type_Real32:    return validate( ConvertReal32ToLogical(cmd.t,cmd) )
-            case Program.type_Int64:     return validate( ConvertInt64ToLogical(cmd.t,cmd) )
-            case Program.type_Int:       return validate( ConvertIntToLogical(cmd.t,cmd) )
-            case Program.type_Int32:     return validate( ConvertInt32ToLogical(cmd.t,cmd) )
-            case Program.type_Character: return validate( ConvertCharacterToLogical(cmd.t,cmd) )
-            case Program.type_Byte:      return validate( ConvertByteToLogical(cmd.t,cmd) )
-          endWhich
-      endWhich
+      if (cmd_type is to_type) return cmd
 
+      if (cmd_type.attributes.is_primitive and to_type.attributes.is_primitive)
+        which (to_type)
+          case Program.type_Real64
+            which (cmd_type)
+              case Program.type_Real:      return validate( ConvertRealToReal64(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToReal64(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToReal64(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToReal64(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToReal64(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToReal64(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToReal64(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToReal64(cmd.t,cmd) )
+            endWhich
+          case Program.type_Real
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToReal(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToReal(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToReal(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToReal(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToReal(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToReal(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToReal(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToReal(cmd.t,cmd) )
+            endWhich
+          case Program.type_Real32
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToReal32(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToReal32(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToReal32(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToReal32(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToReal32(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToReal32(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToReal32(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToReal32(cmd.t,cmd) )
+            endWhich
+          case Program.type_Int64
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToInt64(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToInt64(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToInt64(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToInt64(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToInt64(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToInt64(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToInt64(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToInt64(cmd.t,cmd) )
+            endWhich
+          case Program.type_Int
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToInt(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToInt(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToInt(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToInt(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToInt(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToInt(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToInt(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToInt(cmd.t,cmd) )
+            endWhich
+          case Program.type_Int32
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToInt32(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToInt32(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToInt32(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToInt32(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToInt32(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToInt32(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToInt32(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToInt32(cmd.t,cmd) )
+            endWhich
+          case Program.type_Character
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToCharacter(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToCharacter(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToCharacter(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToCharacter(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToCharacter(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToCharacter(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToCharacter(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToCharacter(cmd.t,cmd) )
+            endWhich
+          case Program.type_Byte
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToByte(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToByte(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToByte(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToByte(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToByte(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToByte(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToByte(cmd.t,cmd) )
+              case Program.type_Logical:   return validate( ConvertLogicalToByte(cmd.t,cmd) )
+            endWhich
+          case Program.type_Logical
+            which (cmd_type)
+              case Program.type_Real64:    return validate( ConvertReal64ToLogical(cmd.t,cmd) )
+              case Program.type_Real:      return validate( ConvertRealToLogical(cmd.t,cmd) )
+              case Program.type_Real32:    return validate( ConvertReal32ToLogical(cmd.t,cmd) )
+              case Program.type_Int64:     return validate( ConvertInt64ToLogical(cmd.t,cmd) )
+              case Program.type_Int:       return validate( ConvertIntToLogical(cmd.t,cmd) )
+              case Program.type_Int32:     return validate( ConvertInt32ToLogical(cmd.t,cmd) )
+              case Program.type_Character: return validate( ConvertCharacterToLogical(cmd.t,cmd) )
+              case Program.type_Byte:      return validate( ConvertByteToLogical(cmd.t,cmd) )
+            endWhich
+        endWhich
+      endIf
+
+      if (cmd_type.attributes.is_reference and to_type.attributes.is_reference)
+        if (cmd_type.instance_of(to_type))
+          return WideningCast( cmd.t, cmd, to_type )
+        endIf
+      endIf
+
+      trace
       throw cmd.t.error( "Cannot convert type $ to type $."(cmd_type,to_type) )
 
     method find_common_type( left:Cmd, right:Cmd, &bitwise, &promote_logical )->Type
@@ -1037,14 +1046,7 @@ class Resolver : Visitor [singleton]
 
     method on_visit( cmd:WriteLocal )->Cmd
       local new_value = convert_to( visit(cmd.new_value), cmd.info.type )
-
-      which (cmd.info.type)
-        case Program.type_Int
-          return WriteLocalInt( cmd.t, cmd.info, new_value )
-        others
-          trace cmd.info.type
-          throw cmd.t.error( "[INTERNAL] Unhandled type in WriteLocal: $"(cmd.info.type) )
-      endWhich
+      return WriteLocal( cmd.t, cmd.info, new_value )
 
     method on_validate( cmd:WriteProperty )->Cmd
       cmd.new_value.require_type
@@ -1070,10 +1072,18 @@ class Resolver : Visitor [singleton]
           return visit( CallGlobalMethod(t, m, args) )
         else
           if (type_context.attributes.is_object)
-            if (not context or context instanceOf This)
-              return visit( CallThisVirtualMethod(t, m, m.vtable_index, args) )
+            if (type_context.attributes.is_native)
+              if (not context or context instanceOf This)
+                return visit( CallThisDynamicNativeMethod(t, m, args) )
+              else
+                return visit( CallDynamicNativeMethod(t, context, m, args) )
+              endIf
             else
-              return visit( CallVirtualMethod(t, context, m, m.vtable_index, args) )
+              if (not context or context instanceOf This)
+                return visit( CallThisVirtualMethod(t, m, m.vtable_index, args) )
+              else
+                return visit( CallVirtualMethod(t, context, m, m.vtable_index, args) )
+              endIf
             endIf
           else
             if (not context or context instanceOf This)

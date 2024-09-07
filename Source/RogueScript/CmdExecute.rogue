@@ -33,6 +33,55 @@ augment
       VM.stack.discard_from( old_sp )
       return result
 
+    method CallDynamicNativeMethod.execute->Variant
+      local context = context.execute
+      which (context.type)
+        case Variant.TYPE_NULL, Variant.TYPE_UNDEFINED:
+          throw t.error( "RogueScript call context is null or undefined." )
+      endWhich
+
+      local type_info = context.object.type_info
+      local m : MethodInfo
+      if (type_info is cached_type)
+        m = cached_m
+      else
+        m = type_info.find_method( info.signature )
+        cached_type = type_info
+        cached_m    = m
+      endIf
+
+      if (not m)
+        throw Error( "Cannot find native method $.$. Class $ may need to be declared [api]."(type_info,info,type_info) )
+      endIf
+
+      use variant_args = WorkList<<Variant>>
+        if (args) variant_args.add( (forEach in args).execute )
+        return m( context, args )
+      endUse
+
+    method CallThisDynamicNativeMethod.execute->Variant
+      local context = VM.context
+
+      local type_info = context.object.type_info
+      local m : MethodInfo
+      if (type_info is cached_type)
+        m = cached_m
+      else
+        m = type_info.find_method( info.signature )
+        cached_type = type_info
+        cached_m    = m
+      endIf
+
+      if (not m)
+        throw Error( "Cannot find native method $.$. Class $ may need to be declared [api]."(type_info,info,type_info) )
+      endIf
+
+      use variant_args = WorkList<<Variant>>
+        if (args) variant_args.add( (forEach in args).execute )
+        return m( context, args )
+      endUse
+
+
     method CallVirtualMethod.execute->Variant
       local context = context.execute
       which (context.type)
@@ -262,6 +311,9 @@ augment
         result = statements.execute
       endWhile
       return result
+
+    method WideningCast.execute->Variant
+      return operand.execute
 
     method WriteGlobalProperty.execute->Variant
       info.type_context.global_property_values[info.name] = new_value.execute

@@ -7,13 +7,13 @@ class VM [singleton]
     resolved_elements : [String:ProgramElements]
     include_folders   = Set<<String>>().[ add("") ]
 
-    native_types          = [String:NativeTypeInfo]
-    native_constructors   = [String:Cmd]
-    native_global_methods = [String:Cmd]
-    native_methods        = [String:Cmd]
-    native_definitions    = [String:String]
-    native_rs_types     = [String:Function(Type)->Variant]
-    definitions           = [String:Cmd]
+    native_types            = [String:NativeTypeInfo]
+    native_constructors     = [String:Cmd]
+    native_global_methods   = [String:Cmd]
+    native_method_overrides = [String:Cmd]
+    native_definitions      = [String:String]
+    native_extended_types   = [String:Function(Type)->Variant]
+    definitions             = [String:Cmd]
 
     program : Program
     stack   = Variant[]
@@ -36,7 +36,7 @@ class VM [singleton]
 
           which (type.scoped_name)
             case "Rogue::Object", "Rogue::Random"
-              .bind_native_type( type )
+              register_native_type( type )
             others
               #trace type.scoped_name
           endWhich
@@ -60,23 +60,6 @@ class VM [singleton]
 
     method execute( script:String )->Variant
       return compile(script)()
-
-    method .bind_native_type( type:TypeInfo )
-      local info = NativeTypeInfo( type )
-      info.create_object = () => type.create_object
-      info.instance_of = (v) => v? and v->Object.type_info.instance_of(type)
-      if (type.is_singleton)
-        info.get_singleton = () => type.singleton
-        info.set_singleton = (new_value) => type.singleton = new_value
-        if local base_class = type.base_class
-          info.base_class_name = base_class.scoped_name
-        endIf
-      endIf
-      register_type( type.scoped_name, info )
-
-      forEach (m in type.methods)
-        .register_native_method( m )
-      endForEach
 
     method .register_native_method( m:MethodInfo )
       contingent # FIXME
@@ -120,10 +103,29 @@ class VM [singleton]
       stack.discard_from( old_stack_count )
       return result
 
+    method configure_native_method_override( obj:RogueScriptAdapted, index:Int, signature:String )
+      if local rs_type = obj.rs_type
+        if local base_type_info = obj.type_info.base_class
+          if local rs_m = rs_type.methods[signature]
+            if (not rs_m.attributes.is_native_function)
+              rs_type.native_method_overrides.[expand_to_include(index)][index] = rs_m
+            endIf
+          endIf
+        endIf
+      endIf
+
     method create_object( of_type:Type, &no_init )->Variant
       local obj : Variant
-      if local create_fn = of_type.native_type.create_rs_object
+      if local create_fn = of_type.native_type.create_extended_object
         obj = create_fn( of_type )
+        if (not of_type.native_method_overrides)
+          ensure<<of_type.native_method_overrides>>
+          local type_info = obj->Object?.type_info
+          assert type_info
+          assert type_info.base_class
+          of_type.native_method_overrides.expand_to_count( type_info.base_class.methods.count )
+          obj.to<<RogueScript::RogueScriptAdapted>>._configure_native_overrides
+        endIf
       else
         obj = RogueScriptObject( of_type )
       endIf
@@ -146,6 +148,9 @@ class VM [singleton]
       if (not type) return null
       return type.methods[ scoped_signature.after_first('.') ]
 
+    method find_type( name:String )->Type
+      return Program.default_module.find_type( name )
+
     method parameter( index:Int )->Variant
       # First parameter is index 1.
       return stack[fp+index]
@@ -167,7 +172,7 @@ class VM [singleton]
       if (native_global_methods.remove(full_signature)) .begin_staging
 
     method deregister_method( full_signature:String )
-      if (native_methods.remove(full_signature)) .begin_staging
+      if (native_method_overrides.remove(full_signature)) .begin_staging
 
     method deregister_type( scoped_name:String )
       if (native_types.remove(scoped_name)) .begin_staging
@@ -254,18 +259,37 @@ class VM [singleton]
     method register_global_method( full_signature:String, callback:Function()->Variant )
       register_global_method( full_signature, CallNativeMethod(t,callback) )
 
+    method register_native_type( type:TypeInfo, info=null:NativeTypeInfo )
+      ensure<<info>>( type )
+      if (not info.create_object) info.create_object = () => type.create_object
+      if (not info.instance_of)   info.instance_of = (v) => v? and v->Object.type_info.instance_of(type)
+      if (type.is_singleton)
+        if (not info.get_singleton) info.get_singleton = () => type.singleton
+        if (not info.set_singleton) info.set_singleton = (new_value) => type.singleton = new_value
+      endIf
+      if (not info.base_class_name)
+        if local base_class = type.base_class
+          info.base_class_name = base_class.scoped_name
+        endIf
+      endIf
+      register_type( type.scoped_name, info )
+
+      forEach (m in type.methods)
+        .register_native_method( m )
+      endForEach
+
     method register_method( full_signature:String, cmd:Cmd )
-      native_methods[full_signature] = cmd
+      native_method_overrides[full_signature] = cmd
       .begin_staging
 
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeMethod(t,callback) )
 
-    method register_rs_type( native_type:String, create_rs_object:Function(Type)->Variant )
+    method register_extended_type( native_type:String, create_extended_object:Function(Type)->Variant )
       if local entry = native_types.find( native_type )
-        entry.value.create_rs_object = create_rs_object
+        entry.value.create_extended_object = create_extended_object
       else
-        native_rs_types[native_type] = create_rs_object
+        native_extended_types[native_type] = create_extended_object
       endIf
 
     method register_type( scoped_name:String, info=NativeTypeInfo():NativeTypeInfo )

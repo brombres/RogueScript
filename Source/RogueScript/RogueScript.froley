@@ -4075,12 +4075,13 @@ parser
   create ReturnResult(result)
   create WriteGlobalProperty(info:Property,new_value)
   create WriteLocal(info:Local,new_value)
-  create WriteLocalInt(info:Local,new_value):WriteLocal
   create WriteProperty(context,info:Property,new_value)
   create WriteThisProperty(info:Property,new_value)
   create WriteThisPropertyValue(info:Property)
 
   create CallProcedure(info:Procedure,args:Args)
+  create CallDynamicNativeMethod(context,info:Procedure,args:Args):CallProcedure
+  create CallThisDynamicNativeMethod(info:Procedure,args:Args):CallProcedure
   create CallVirtualMethod(context,info:Procedure,vtable_index:Integer,args:Args):CallProcedure
   create CallThisVirtualMethod(info:Procedure,vtable_index:Integer,args:Args):CallProcedure
   create CallStaticMethod(context,info:Procedure,args:Args):CallProcedure

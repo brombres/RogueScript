@@ -97,8 +97,8 @@ class Program [singleton]
           type.variant_type = entry.value.variant_type
         endForEach
 
-        forEach (fn at type_name in VM.native_rs_types)
-          VM.register_rs_type( type_name, fn )
+        forEach (fn at type_name in VM.native_extended_types)
+          VM.register_extended_type( type_name, fn )
         endForEach
 
         forEach (entry in VM.native_definitions.entries)
@@ -149,7 +149,7 @@ class Program [singleton]
           type.add_global_method( m )
         endForEach
 
-        forEach (entry in VM.native_methods.entries)
+        forEach (entry in VM.native_method_overrides.entries)
           local sig = Parser(
             "[VM.register_method($)]"(entry.key),
             entry.key

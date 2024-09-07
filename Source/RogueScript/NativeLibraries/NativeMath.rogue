@@ -3,7 +3,7 @@ module RogueScript
 class NativeMath [singleton]
   METHODS
     method register( vm:VM )
-      VM.register_rs_type( "Rogue::Random", (rs_type) => RogueScript::RogueScriptRandom(rs_type) )
+      #VM.register_extended_type( "Rogue::Random", (rs_type) => RogueScript::RogueScriptRandom(rs_type) )
       #{
       vm.register_method(
         "Rogue::Random.next32()->Int32",
@@ -16,6 +16,7 @@ endClass
 
 module Rogue
 
+#{
 class RogueScriptRandom : Rogue::Random, RogueScript::RogueScriptAdapted
   PROPERTIES
     m_next32 : RogueScript::Method
@@ -30,3 +31,4 @@ class RogueScriptRandom : Rogue::Random, RogueScript::RogueScriptAdapted
 
     method prior_next32->Int32: return prior.next32
 endClass
+}#

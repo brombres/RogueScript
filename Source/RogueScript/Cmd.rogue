@@ -3233,13 +3233,6 @@ class AddReal : Add
 endClass
 
 
-class WriteLocalInt : WriteLocal
-  METHODS
-    method description->String
-      return "WriteLocalInt($,$)" (%info,%new_value)
-
-endClass
-
 class SubtractInt : Add
   METHODS
     method description->String
@@ -10322,5 +10315,35 @@ class CallVirtualMethod : CallProcedure
 
     method description->String
       return "CallVirtualMethod($,$,$,$)" (%context,%info,%vtable_index,%args)
+
+endClass
+
+class CallDynamicNativeMethod : CallProcedure
+  PROPERTIES
+    context     : Cmd
+    cached_type : TypeInfo
+    cached_m    : MethodInfo
+
+  METHODS
+    method init( t, context, info, args )
+
+    method init( existing:CallDynamicNativeMethod )
+      prior.init( existing )
+      if (existing.context) context = existing.context.cloned
+
+    method description->String
+      return "CallDynamicNativeMethod($,$,$)" (%context,%info,%args)
+
+endClass
+
+
+class CallThisDynamicNativeMethod : CallProcedure
+  PROPERTIES
+    cached_type : TypeInfo
+    cached_m    : MethodInfo
+
+  METHODS
+    method description->String
+      return "CallThisDynamicNativeMethod($,$)" (%info,%args)
 
 endClass

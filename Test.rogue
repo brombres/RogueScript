@@ -1,24 +1,24 @@
-class Alpha
+#local pet = Pet()
+#println pet
+
+class Dog : Pet
   METHODS
-    method display
-      println "Alpha"
+    #method speak
+    #println "Woof!"
 endClass
 
-class Beta : Alpha
+class Buffy : Dog
   METHODS
-    method display
-      println "Beta"
+    method speak
+      println "Rarararararar!"
 endClass
 
-class Gamma : Beta
-  METHODS
-    method display
-      prior<<Beta>>.display
-endClass
-
-
-
-Gamma().display
+local pet = Pet()
+pet.speak
+pet = Cat()
+pet.speak
+#pet = Buffy()
+#pet.speak
 
 #Beta().display
 

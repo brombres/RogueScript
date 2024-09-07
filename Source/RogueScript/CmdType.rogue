@@ -143,5 +143,7 @@ augment
     method TypedDestructuringLocal.type->Type
       return @type
 
+    method WideningCast.type->Type
+      return @to_type
 
 endAugment
