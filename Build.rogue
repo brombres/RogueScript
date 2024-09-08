@@ -6,6 +6,10 @@ $requireRogue "2.34"
 
 uses Utility/VersionNumber
 
+$include Source/BindingGen
+
+#$DEPENDENCIES = Source/BindingGen.rogue
+
 augment Build
   # You can create a Local.settings file with overrides for these values, e.g.:
   # BUILD_MODE = release
@@ -65,6 +69,13 @@ routine rogo_build
 
   local source_files = Files( "Source", "Rose.rogue" )
   source_files.add( "RogueScript/**" )
+  source_files.remove( "NativeBindings.rogue" )
+
+  local native_bindings = File( "Source/NativeBindings.rogue" )
+  if (source_files.any_newer_than(native_bindings))
+    rogo_bindings
+  endIf
+
   if (source_files.any_newer_than(exe_file))
     local h_filepath = "Build/$-$.h" (Build.PROJECT,System.os)
     if (source_files.any_newer_than(h_filepath))
@@ -106,6 +117,42 @@ routine rogo_rebuild_release
   # Force-rebuilds in release mode.
   Build.BUILD_MODE = "release"
   rogo_rebuild
+endRoutine
+
+routine rogo_bindings
+  local gen = BindingGen( "Source/Bindings.txt" )
+  gen.roguec_flags = "--main --gc=manual"
+  gen.roguec_flags .= appending( "--target=Console,C,$"(System.os) )
+  if (System.is_macos) gen.roguec_flags += ",ObjC"
+
+  gen.add_source( File("Source/Rose.rogue") )
+  gen.add_source( File("Source/RogueScript") )
+  gen.generate( File("Source/NativeBindings.rogue") )
+
+  #{
+  local bindings = parse_binding_rules( File("Source/Bindings.txt") )
+
+  local src_filepath = "Source/Rose.rogue"
+
+  File("Build").create_folder
+  local api_file = File("Build/NativeAPI.json")
+
+  local flags = Build.ROGUEC_FLAGS
+  #if (Build.BUILD_MODE == "debug") flags = flags.with_suffix(' ') + "--debug"
+  local targets = "--target=Console,C,$"(System.os)
+  if (System.is_macos) targets += ",ObjC"
+  local cmd = "roguec $ $ --main $ --doc --doc=Source/Rose.rogue --doc=Source/RogueScript --output=$"...
+    (File(src_filepath).esc,flags,targets,api_file)
+  execute cmd
+
+  local api = JSON.load( api_file )
+  forEach (mod in api//modules)
+    forEach (type in mod//types)
+      if (type//name == "Real")
+      endIf
+    endForEach
+  endForEach
+  }#
 endRoutine
 
 routine rogo_install
@@ -327,13 +374,7 @@ routine compile_rogue
   local cmd = "roguec $ $ --main --output=$ $"...
               (File(src_filepath).esc,flags,File(c_filepath).esc,targets)
   println "> " + cmd
-  local status = Process.run( cmd, &env )
-  local result = status->String
-  println result
-  if (not status.success) throw Error( "Build failed." )
-  if (result.contains("ROGO:"))
-    System.exit( execute("rogo".appending(System.command_line_arguments.join(' '))) )
-  endIf
+  execute cmd
 endRoutine
 
 routine compile_c
@@ -408,6 +449,50 @@ routine execute( commands:String, error_message=null:String, &suppress_error )->
   endForEach
   return true
 endRoutine
+
+#{
+routine parse_binding_rules( file:File )->BindingRule[]
+  local rules = BindingRule[]
+  local scanner = Scanner( file )
+  scanner.consume_eols
+  while (scanner.has_another)
+    local line = scanner.read_line.trimmed
+    scanner.consume_eols
+    if (line.begins_with('#')) nextIteration
+    trace line
+  endWhile
+  return rules
+endRoutine
+}#
+
+#{
+class BindingRule( api:Variant, rule:String )
+  METHODS
+    method keep_method( m:Variant )->Logical
+      return false
+
+    method keep_property( p:Variant )->Logical
+      return false
+
+    method keep_type( type:Variant )->Logical
+      return false
+
+    method discard_method( m:Variant )->Logical
+      return false
+
+    method discard_property( p:Variant )->Logical
+      return false
+
+    method discard_type( type:Variant )->Logical
+      return false
+endClass
+
+class KeepInstanceOfType
+  METHODS
+    method keep_type( type:Variant )->Logical
+      return false
+endClass
+}#
 
 #-------------------------------------------------------------------------------
 # Introspection-based Launcher Framework

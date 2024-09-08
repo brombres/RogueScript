@@ -1,0 +1,188 @@
+class BindingGen
+  PROPERTIES
+    source_files   = File[]
+    rules_file     : File
+    roguec_flags   = ""
+    types          = @{}
+
+    old_bindings   : String
+    output_module  : String
+    binding_writer = String()
+    class_writer   = String()
+
+  METHODS
+    method init( rules_file )
+
+    method add_source( file:File )
+      source_files.add( file )
+
+    method generate( binding_file:File )
+      File("Build").create_folder
+      local api_file = File( "Build/NativeAPI.json" )
+
+      local cmd = "roguec --output=$"(api_file.esc)
+      cmd .= appending( roguec_flags )
+      cmd .= appending( source_files.first.esc )
+
+      cmd .= appending( "--doc" )
+      forEach (source_file in source_files)
+        cmd .= appending( "--doc=$"(source_file.esc) )
+      endForEach
+
+      execute cmd
+
+      local api = JSON.load( api_file )
+      forEach (mod in api//modules)
+        forEach (type in mod//types)
+          if (type//scoped_name.contains('$')) nextIteration
+          types[type//scoped_name] = type
+        endForEach
+      endForEach
+
+      old_bindings = which{ binding_file.exists:String( binding_file ) || "" }
+
+      forEach (line in LineReader(rules_file))
+        line .= trimmed
+        if (line.begins_with('#')) nextIteration
+
+        if (line.begins_with("+=") or line.begins_with("=+"))
+          keep_type( line.unleft(2), &extensible )
+        elseIf (line.begins_with('='))
+          keep_type( line.unleft(1) )
+        elseIf (line.begins_with('+'))
+          keep_type( line.unleft(1), &extensible )
+        else
+          keep_type( line, &keep_subclasses )
+        endIf
+      endForEach
+
+      trace class_writer
+
+    method generate( type:Variant, &extensible )
+      if (not extensible) return
+
+      local scoped_name = "$::RogueScript$" (type["module"],type//name)
+      if (not old_bindings.contains(scoped_name))
+        println "Generating " + scoped_name
+      endIf
+
+      if (type["module"] != output_module)
+        output_module = type["module"]
+        class_writer.println "module " + output_module
+        class_writer.println
+      endIf
+
+      class_writer.println "class RogueScript$ : $, RogueScript::RogueScriptAdapted [api]"(type//name,type//name)
+      class_writer.println "  METHODS"
+      class_writer.indent += 4
+
+      local methods = @[]
+      forEach (m in type//methods)
+        methods.add( m )
+      endForEach
+
+      forEach (m at i in methods)
+        class_writer.print "method "
+        class_writer.print m//name
+        class_writer.print '('
+        if (m//parameters.count)
+          class_writer.print ' '
+          forEach (param at i in m//parameters)
+            if (i > 0) class_writer.print ", "
+              class_writer.print param//name
+              if (param//default_value)
+                class_writer.print '='
+                class_writer.print param//default_value
+              endIf
+              class_writer.print ':'
+              class_writer.print param//type
+          endForEach
+          class_writer.print ' '
+        endIf
+        class_writer.print ')'
+        if (m//return_type)
+          class_writer.print "->"
+          class_writer.print m//return_type
+        endIf
+        class_writer.println " [override]"
+        class_writer.println "  if local m = rs_type.native_method_overrides[$]"(i)
+        class_writer.print   "    "
+        if (m//return_type)
+          class_writer.print "return "
+        endIf
+        class_writer.print "m( this"
+        forEach (param in m//parameters)
+          class_writer.print ", "
+          class_writer.print param//name
+        endForEach
+        class_writer.println " )"
+        class_writer.println "  else"
+        class_writer.print   "    "
+        if (m//return_type)
+          class_writer.print "return "
+        endIf
+        class_writer.print   "prior."
+        class_writer.print   m//name
+        class_writer.print   '('
+        if (m//parameters.count)
+          class_writer.print   ' '
+          forEach (param at param_i in m//parameters)
+            if (param_i) class_writer.print ", "
+            class_writer.print param//name
+          endForEach
+          class_writer.print   ' '
+        endIf
+        class_writer.println ')'
+        class_writer.println "  endIf"
+        class_writer.println
+      endForEach
+
+      class_writer.indent -= 4
+      class_writer.println "endClass"
+      class_writer.println
+
+    method has_attribute( type:Variant, attribute:String )->Logical
+      if (not type//attributes) return false
+      return type//attributes.contains( attribute )
+
+    method instance_of( extended_type:Variant, base_type:Variant )->Logical
+      if (not extended_type) return false
+
+      if (extended_type//scoped_name == base_type//scoped_name) return true
+
+      if (extended_type//base_class)
+        if (instance_of(types[extended_type//base_class],base_type)) return true
+      endIf
+
+      if (extended_type//aspects)
+        forEach (aspect_type in extended_type//aspects)
+          if (instance_of(types[aspect_type],base_type)) return true
+        endForEach
+      endIf
+
+      return false
+
+    method keep_type( type_name:String, &extensible, &keep_subclasses )
+      local type = types[type_name]
+      if (not type)
+        throw Error( "Unknown type: " + type_name )
+      endIf
+
+      if (type//name->String.begins_with("RogueScript")) return
+
+      if (type//kept) return
+      type//kept = true
+
+      if (type//base_class) keep_type( type//base_class, &=extensible )
+
+      if (has_attribute(type,"class"))
+        generate( type, &=extensible )
+      endIf
+
+      if (keep_subclasses)
+        forEach (other_type in types)
+          if (instance_of(other_type,type)) keep_type( other_type//scoped_name, &=extensible )
+        endForEach
+      endIf
+
+endClass

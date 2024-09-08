@@ -1,0 +1,12 @@
+Rogue::Byte
+Rogue::Character
+Rogue::Int
+Rogue::Int32
+Rogue::Int64
+Rogue::Logical
+Rogue::Real
+Rogue::Real32
+Rogue::Real64
++=Rogue::Object
++Rogue::Pet
+Rogue::String

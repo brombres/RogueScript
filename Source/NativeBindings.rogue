@@ -1,0 +1,29 @@
+module Rogue
+
+class RogueScriptObject : Object, RogueScript::RogueScriptAdapted [api]
+  METHODS
+    method description()
+    method hashcode()
+    method hash_code()
+    method object_id()
+    method operator==( other:Rogue::Object )
+    method print_to( buffer:Rogue::PrintWriter )
+    method to<<Rogue::String>>()
+    method type_info()
+    method write_json( builder:Rogue::String, formatted:Rogue::Logical, omit_commas:Rogue::Logical )
+    method module_name()
+    method type_name()
+    method type_info_index()
+    method type_id()
+endClass
+
+class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
+  METHODS
+    method speak()
+endClass
+
+class RogueScriptCat : Cat, RogueScript::RogueScriptAdapted [api]
+  METHODS
+    method speak()
+endClass
+
