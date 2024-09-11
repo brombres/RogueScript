@@ -81,6 +81,12 @@ class BindingGen
         methods.add( m )
       endForEach
 
+      class_writer.println "method .configure_native_overrides"
+      forEach (m at i in methods)
+        class_writer.println ''  RogueScript::VM.configure_native_override( this, $, "$" )''(i,m//signature)
+      endForEach
+      class_writer.println
+
       forEach (m at i in methods)
         class_writer.print "method "
         class_writer.print m//name

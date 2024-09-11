@@ -9,11 +9,12 @@ class VM [singleton]
 
     native_types            = [String:NativeTypeInfo]
     native_constructors     = [String:Cmd]
-    native_global_methods   = [String:Cmd]
-    native_method_overrides = [String:Cmd]
+    native_global_method_definitions = [String:Cmd]
+    native_method_definitions        = [String:Cmd]
     native_definitions      = [String:String]
     native_extended_types   = [String:Function(Type)->Variant]
     definitions             = [String:Cmd]
+    native_method_slots     = [String:NativeMethodSlot[]]
 
     program : Program
     stack   = Variant[]
@@ -103,13 +104,11 @@ class VM [singleton]
       stack.discard_from( old_stack_count )
       return result
 
-    method configure_native_method_override( obj:RogueScriptAdapted, index:Int, signature:String )
-      if local rs_type = obj.rs_type
-        if local base_type_info = obj.type_info.base_class
-          if local rs_m = rs_type.methods[signature]
-            if (not rs_m.attributes.is_native_function)
-              rs_type.native_method_overrides.[expand_to_include(index)][index] = rs_m
-            endIf
+    method configure_native_method_override( rs_type:Type, index:Int, signature:String )
+      if local base_type_info = obj.type_info.base_class
+        if local rs_m = rs_type.methods[signature]
+          if (not rs_m.attributes.is_native_function)
+            rs_type.native_method_definitions.[expand_to_include(index)][index] = rs_m
           endIf
         endIf
       endIf
@@ -118,6 +117,7 @@ class VM [singleton]
       local obj : Variant
       if local create_fn = of_type.native_type.create_extended_object
         obj = create_fn( of_type )
+        #{
         if (not of_type.native_method_overrides)
           ensure<<of_type.native_method_overrides>>
           local type_info = obj->Object?.type_info
@@ -126,6 +126,7 @@ class VM [singleton]
           of_type.native_method_overrides.expand_to_count( type_info.base_class.methods.count )
           obj.to<<RogueScript::RogueScriptAdapted>>._configure_native_overrides
         endIf
+        }#
       else
         obj = RogueScriptObject( of_type )
       endIf
@@ -169,10 +170,10 @@ class VM [singleton]
       if (native_constructors.remove(signature)) .begin_staging
 
     method deregister_global_method( full_signature:String )
-      if (native_global_methods.remove(full_signature)) .begin_staging
+      if (native_global_method_definitions.remove(full_signature)) .begin_staging
 
     method deregister_method( full_signature:String )
-      if (native_method_overrides.remove(full_signature)) .begin_staging
+      if (native_method_definitions.remove(full_signature)) .begin_staging
 
     method deregister_type( scoped_name:String )
       if (native_types.remove(scoped_name)) .begin_staging
@@ -253,7 +254,7 @@ class VM [singleton]
       native_definitions[scoped_name] = value
 
     method register_global_method( full_signature:String, cmd:Cmd )
-      native_global_methods[full_signature] = cmd
+      native_global_method_definitions[full_signature] = cmd
       .begin_staging
 
     method register_global_method( full_signature:String, callback:Function()->Variant )
@@ -279,11 +280,19 @@ class VM [singleton]
       endForEach
 
     method register_method( full_signature:String, cmd:Cmd )
-      native_method_overrides[full_signature] = cmd
+      native_method_definitions[full_signature] = cmd
       .begin_staging
 
     method register_method( full_signature:String, callback:Function()->Variant )
       register_method( full_signature, CallNativeMethod(t,callback) )
+
+    method register_native_method_slot( type_name:String, index:Int, signature:String )
+      local list = native_method_slots[type_name]
+      if (not list)
+        list = NativeMethodSlot[]
+        native_method_slots[type_name] = list
+      endIf
+      list.add( NativeMethodSlot(index, signature) )
 
     method register_extended_type( native_type:String, create_extended_object:Function(Type)->Variant )
       if local entry = native_types.find( native_type )

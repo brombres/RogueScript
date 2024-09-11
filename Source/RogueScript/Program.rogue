@@ -129,7 +129,7 @@ class Program [singleton]
           type.add_global_method( m )
         endForEach
 
-        forEach (entry in VM.native_global_methods.entries)
+        forEach (entry in VM.native_global_method_definitions.entries)
           local sig = Parser(
             "[VM.register_global_method($)]"(entry.key),
             entry.key
@@ -148,7 +148,7 @@ class Program [singleton]
           type.add_global_method( m )
         endForEach
 
-        forEach (entry in VM.native_method_overrides.entries)
+        forEach (entry in VM.native_method_definitions.entries)
           local sig = Parser(
             "[VM.register_method($)]"(entry.key),
             entry.key
@@ -165,6 +165,14 @@ class Program [singleton]
           m.return_type = sig.return_type
           m.statements.add( entry.value.cloned )
           type.add_method( m )
+        endForEach
+
+        forEach (entry in VM.native_method_slots.entries)
+          if local type = VM.find_type( entry.key )
+            forEach (slot in entry.value)
+              type.add_native_method_slot( slot.index, slot.signature )
+            endForEach
+          endIf
         endForEach
 
         forEach (elements in pending_elements)

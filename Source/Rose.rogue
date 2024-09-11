@@ -13,12 +13,15 @@ class Cat : Pet [api]
 endClass
 
 class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
+  GLOBAL METHODS
+    #method .configure_native_overrides( rs_type:Type )
+    #RogueScript::VM.configure_native_method_override( rs_type, 0, "speak()" )
+
   METHODS
-    method .configure_native_overrides
-      RogueScript::VM.configure_native_method_override( this, 0, "speak()" )
+    #method .configure_native_overrides( rs_type:Type )
 
     method speak [override]
-      if local m = rs_type.native_method_overrides[0]
+      if local m = rs_type.native_method_overrides?[0]
         m( this )
       else
         prior.speak

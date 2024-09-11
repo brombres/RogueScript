@@ -71,10 +71,12 @@ routine rogo_build
   source_files.add( "RogueScript/**" )
   source_files.remove( "NativeBindings.rogue" )
 
+  #{
   local native_bindings = File( "Source/NativeBindings.rogue" )
   if (source_files.any_newer_than(native_bindings))
     rogo_bindings
   endIf
+  }#
 
   if (source_files.any_newer_than(exe_file))
     local h_filepath = "Build/$-$.h" (Build.PROJECT,System.os)
@@ -373,7 +375,6 @@ routine compile_rogue
   if (System.is_macos) targets += ",ObjC"
   local cmd = "roguec $ $ --main --output=$ $"...
               (File(src_filepath).esc,flags,File(c_filepath).esc,targets)
-  println "> " + cmd
   execute cmd
 endRoutine
 

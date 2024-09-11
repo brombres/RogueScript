@@ -158,6 +158,11 @@ class Type : Cmd
       endIf
       properties[p.name] = p
 
+    method add_native_method_slot( index:Int, signature:String )
+      ensure<<native_method_overrides>>
+      native_method_overrides.expand_to_include( index )
+      native_method_overrides[index] = methods[signature]
+
     method collect_base_types
       if (definition)
         forEach (base_type in definition.base_types)
@@ -290,7 +295,18 @@ class Type : Cmd
       if (methods_inherited) return
       methods_inherited = true
 
-      if (base_class) inherit_methods( base_class )
+      if (base_class)
+        inherit_methods( base_class )
+
+        # Inherit native method overrides
+        if (base_class.native_method_overrides)
+          ensure<<native_method_overrides>>
+          native_method_overrides.expand_to_count( base_class.native_method_overrides.count )
+          forEach (m at i in base_class.native_method_overrides)
+            if (m and not native_method_overrides[i]) native_method_overrides[i] = m
+          endForEach
+        endIf
+      endIf
 
       if (aspects)
         forEach (a in aspects)

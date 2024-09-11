@@ -8,8 +8,6 @@ class RogueScriptAdapted [abstract aspect]
   METHODS
     method init( rs_type )
 
-    method .configure_native_overrides [abstract]
-
     method rs_properties->[String:Variant]: return @rs_properties
     method rs_type->Type: return @rs_type
 
@@ -19,5 +17,4 @@ endClass
 
 class RogueScriptObject : RogueScriptAdapted
   METHODS
-    method .configure_native_overrides
 endClass

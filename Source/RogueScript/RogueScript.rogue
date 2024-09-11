@@ -12,6 +12,7 @@ $include RogueScript/CmdStore
 $include RogueScript/CmdType
 $include RogueScript/CollectTypes
 $include RogueScript/Module
+$include RogueScript/NativeMethodSlot
 $include RogueScript/NativeTypeInfo
 $include RogueScript/Organizer
 $include RogueScript/Parser        [optional]

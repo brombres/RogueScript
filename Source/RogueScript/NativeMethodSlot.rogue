@@ -1,0 +1,4 @@
+module RogueScript
+
+class NativeMethodSlot( index:Int, signature:String ) [compound]
+endClass
