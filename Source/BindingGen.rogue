@@ -1,14 +1,14 @@
 class BindingGen
   PROPERTIES
-    source_files   = File[]
-    rules_file     : File
-    roguec_flags   = ""
-    types          = @{}
+    source_files    = File[]
+    rules_file      : File
+    roguec_flags    = ""
+    types           = @{}
 
-    old_bindings   : String
-    output_module  : String
-    binding_writer = String()
-    class_writer   = String()
+    old_bindings    : String
+    output_module   : String
+    bindings_writer = String()
+    class_writer    = String()
 
   METHODS
     method init( rules_file )
@@ -16,7 +16,7 @@ class BindingGen
     method add_source( file:File )
       source_files.add( file )
 
-    method generate( binding_file:File )
+    method generate( bindings_file:File )
       File("Build").create_folder
       local api_file = File( "Build/NativeAPI.json" )
 
@@ -39,7 +39,15 @@ class BindingGen
         endForEach
       endForEach
 
-      old_bindings = which{ binding_file.exists:String( binding_file ) || "" }
+      old_bindings = which{ bindings_file.exists:String( bindings_file ) || "" }
+
+      bindings_writer.println ...
+      @|module RogueScript
+       |
+       |class NativeBindings [singleton]
+       |  METHODS
+       |    method register( vm:VM )
+      bindings_writer.indent += 6
 
       forEach (line in LineReader(rules_file))
         line .= trimmed
@@ -50,20 +58,90 @@ class BindingGen
         elseIf (line.begins_with('='))
           keep_type( line.unleft(1) )
         elseIf (line.begins_with('+'))
-          keep_type( line.unleft(1), &extensible )
+          keep_type( line.unleft(1), &extensible, &keep_subclasses )
         else
           keep_type( line, &keep_subclasses )
         endIf
       endForEach
 
-      trace class_writer
+      bindings_writer.indent -= 6
+      bindings_writer.println "endClass"
+      bindings_writer.println
+
+      local new_bindings = bindings_writer + class_writer
+      if (new_bindings != old_bindings)
+        println "Writing $"(bindings_file)
+      else
+        println "$ is up-to-date"(bindings_file)
+      endIf
+      bindings_file.save( new_bindings )  # need to resave regardless for a timestamp build dependency
 
     method generate( type:Variant, &extensible )
+      local first_line = ''vm.register_type( "$",''(type//scoped_name)
+      if (not old_bindings.contains(first_line))
+        println "Generating registration for " + type//scoped_name
+      endIf
+
+      bindings_writer.println first_line
+      bindings_writer.println ''  NativeTypeInfo(''
+      bindings_writer.indent += 4
+
+      if (has_attribute(type, "primitive"))
+        bindings_writer.println "&instance_of = (value) => value.is_$,"(type//name->String.to_lowercase)
+        bindings_writer.println "&variant_type = Variant.TYPE_$"(type//name->String.to_uppercase)
+      elseIf (has_attribute(type, "compound"))
+        println "TODO compound " + type//scoped_name
+        which (type//scoped_name)
+          case "Rogue::Byte"
+            #bindings_writer.println
+        endWhich
+      elseIf (has_attribute(type, "class"))
+        println "TODO class " + type//scoped_name
+      endIf
+
+      bindings_writer.indent -= 4
+      bindings_writer.println ''  )''
+      bindings_writer.println '')''
+
+      which (type//scoped_name)
+        case "Rogue::Byte"
+          bindings_writer.println ''vm.register_definition( "Rogue::Byte.MAXIMUM", Byte.MAXIMUM->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Byte.MINIMUM", Byte.MINIMUM->String )''
+        case "Rogue::Int"
+          bindings_writer.println ''vm.register_definition( "Rogue::Int.BITS",    Int.BITS->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Int.MAXIMUM", Int.MAXIMUM->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Int.MINIMUM", Int.MINIMUM->String )''
+        case "Rogue::Int32"
+          bindings_writer.println ''vm.register_definition( "Rogue::Int32.MAXIMUM", Int32.MAXIMUM->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Int32.MINIMUM", Int32.MINIMUM->String )''
+        case "Rogue::Int64"
+          bindings_writer.println ''vm.register_definition( "Rogue::Int64.MAXIMUM", Int64.MAXIMUM->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Int64.MINIMUM", Int64.MINIMUM->String )''
+        case "Rogue::Real"
+          bindings_writer.println ''vm.register_definition( "Rogue::Real.BITS",   Real.BITS->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Int.MAXIMUM", Int.MAXIMUM->String )''
+          bindings_writer.println ''vm.register_definition( "Rogue::Int.MINIMUM", Int.MINIMUM->String )''
+      endWhich
+
+      if (extensible)
+        forEach (m in type//methods)
+          if (m//type_context != type//scoped_name) nextIteration
+          if (type//base_class)
+            local base_class = types[type//base_class]
+            if (base_class//extensible and base_class//methods_by_signature[m//signature]) nextIteration
+          endIf
+
+          bindings_writer.println ''vm.register_native_method_slot( "$", $, "$" )'' ...
+            (type//scoped_name, m//index, m//signature)
+        endForEach
+      endIf
+      bindings_writer.println
+
       if (not extensible) return
 
       local scoped_name = "$::RogueScript$" (type["module"],type//name)
       if (not old_bindings.contains(scoped_name))
-        println "Generating " + scoped_name
+        println "Generating extensible class " + scoped_name
       endIf
 
       if (type["module"] != output_module)
@@ -72,22 +150,21 @@ class BindingGen
         class_writer.println
       endIf
 
-      class_writer.println "class RogueScript$ : $, RogueScript::RogueScriptAdapted [api]"(type//name,type//name)
+      if (type//scoped_name == "RogueScript::RogueScriptObject")
+        class_writer.println "augment RogueScriptObject"
+      else
+        class_writer.println "class RogueScript$ : $, RogueScript::RogueScriptAdapted [api]"(type//name,type//name)
+      endIf
       class_writer.println "  METHODS"
       class_writer.indent += 4
 
-      local methods = @[]
-      forEach (m in type//methods)
-        methods.add( m )
-      endForEach
+      forEach (m at i in type//methods)
+        if (m//type_context != type//scoped_name) nextIteration
+        if (type//base_class)
+          local base_class = types[type//base_class]
+          if (base_class//extensible and base_class//methods_by_signature[m//signature]) nextIteration
+        endIf
 
-      class_writer.println "method .configure_native_overrides"
-      forEach (m at i in methods)
-        class_writer.println ''  RogueScript::VM.configure_native_override( this, $, "$" )''(i,m//signature)
-      endForEach
-      class_writer.println
-
-      forEach (m at i in methods)
         class_writer.print "method "
         class_writer.print m//name
         class_writer.print '('
@@ -95,7 +172,7 @@ class BindingGen
           class_writer.print ' '
           forEach (param at i in m//parameters)
             if (i > 0) class_writer.print ", "
-              class_writer.print param//name
+            class_writer.print param//name
               if (param//default_value)
                 class_writer.print '='
                 class_writer.print param//default_value
@@ -144,7 +221,11 @@ class BindingGen
       endForEach
 
       class_writer.indent -= 4
-      class_writer.println "endClass"
+      if (type//scoped_name == "RogueScript::RogueScriptObject")
+        class_writer.println "endAugment"
+      else
+        class_writer.println "endClass"
+      endIf
       class_writer.println
 
     method has_attribute( type:Variant, attribute:String )->Logical
@@ -178,12 +259,53 @@ class BindingGen
 
       if (type//kept) return
       type//kept = true
+      if (extensible) type//extensible = true
 
-      if (type//base_class) keep_type( type//base_class, &=extensible )
+      type//methods_by_signature = @{}
+      forEach (m at i in rewriter=type//methods.as_list.rewriter)
+        local sig = m//signature
+        contingent
+          necessary (sig != "hash_code()")
+          necessary (sig != "module_name()")
+          necessary (sig != "type_id()")
+          necessary (sig != "type_name()")
+          necessary (sig != "type_info()")
+          necessary (sig != "type_info_index()")
+          rewriter.write( m )
+          type//methods_by_signature[m//signature] = m
+        endContingent
+      endForEach
 
-      if (has_attribute(type,"class"))
-        generate( type, &=extensible )
+      local next_method_index = 0
+      if (type//base_class)
+        keep_type( type//base_class, &=extensible )
+
+        local base_class = types[type//base_class]
+        next_method_index = base_class//methods.count
+
+        forEach (base_m in base_class//methods)
+          local override_m = type//methods_by_signature[base_m//signature]
+          if (override_m)
+            override_m//index = base_m//index
+            override_m//type_context = type_name
+          else
+            type//methods.add( base_m )
+            type//methods_by_signature[base_m//signature] = base_m
+          endIf
+        endForEach
       endIf
+
+      forEach (m at i in type//methods)
+        if (not m//type_context)
+          m//type_context = type_name
+          m//index = next_method_index
+          ++next_method_index
+        endIf
+      endForEach
+
+      type//methods.sort( $1//index < $2//index )
+
+      generate( type, &=extensible )
 
       if (keep_subclasses)
         forEach (other_type in types)

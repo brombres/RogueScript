@@ -303,7 +303,10 @@ class Type : Cmd
           ensure<<native_method_overrides>>
           native_method_overrides.expand_to_count( base_class.native_method_overrides.count )
           forEach (m at i in base_class.native_method_overrides)
-            if (m and not native_method_overrides[i]) native_method_overrides[i] = m
+            if (m and not native_method_overrides[i])
+              local m2 = methods[m.signature]
+              native_method_overrides[i] = m2 || m
+            endIf
           endForEach
         endIf
       endIf

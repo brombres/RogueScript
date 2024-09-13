@@ -3,6 +3,7 @@ module RogueScript
 class NativePrimitives [singleton]
   METHODS
     method register( vm:VM )
+      #{
       # Byte
       vm.register_type( "Rogue::Byte",
         NativeTypeInfo( &instance_of=(value)=>value.is_byte, &variant_type=Variant.TYPE_BYTE ) )
@@ -40,5 +41,6 @@ class NativePrimitives [singleton]
       # Real64
       vm.register_type( "Rogue::Real64",
         NativeTypeInfo( &instance_of=(value)=>value.is_real64, &variant_type=Variant.TYPE_REAL64 ) )
+      }#
 
 endClass

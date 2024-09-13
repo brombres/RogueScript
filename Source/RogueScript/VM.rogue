@@ -104,7 +104,9 @@ class VM [singleton]
       stack.discard_from( old_stack_count )
       return result
 
+      #{
     method configure_native_method_override( rs_type:Type, index:Int, signature:String )
+      #if local rs_type =
       if local base_type_info = obj.type_info.base_class
         if local rs_m = rs_type.methods[signature]
           if (not rs_m.attributes.is_native_function)
@@ -112,6 +114,7 @@ class VM [singleton]
           endIf
         endIf
       endIf
+      }#
 
     method create_object( of_type:Type, &no_init )->Variant
       local obj : Variant

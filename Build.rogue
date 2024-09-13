@@ -71,12 +71,10 @@ routine rogo_build
   source_files.add( "RogueScript/**" )
   source_files.remove( "NativeBindings.rogue" )
 
-  #{
   local native_bindings = File( "Source/NativeBindings.rogue" )
   if (source_files.any_newer_than(native_bindings))
     rogo_bindings
   endIf
-  }#
 
   if (source_files.any_newer_than(exe_file))
     local h_filepath = "Build/$-$.h" (Build.PROJECT,System.os)

@@ -15,6 +15,6 @@ class RogueScriptAdapted [abstract aspect]
     method set_rs_type( @rs_type )
 endClass
 
-class RogueScriptObject : RogueScriptAdapted
+class RogueScriptObject : RogueScriptAdapted [api]
   METHODS
 endClass

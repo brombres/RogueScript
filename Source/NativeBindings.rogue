@@ -1,29 +1,180 @@
+module RogueScript
+
+class NativeBindings [singleton]
+  METHODS
+    method register( vm:VM )
+      vm.register_type( "Rogue::Byte",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_byte,
+          &variant_type = Variant.TYPE_BYTE
+        )
+      )
+      vm.register_definition( "Rogue::Byte.MAXIMUM", Byte.MAXIMUM->String )
+      vm.register_definition( "Rogue::Byte.MINIMUM", Byte.MINIMUM->String )
+
+      vm.register_type( "Rogue::Character",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_character,
+          &variant_type = Variant.TYPE_CHARACTER
+        )
+      )
+
+      vm.register_type( "Rogue::Int",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_int,
+          &variant_type = Variant.TYPE_INT
+        )
+      )
+      vm.register_definition( "Rogue::Int.BITS",    Int.BITS->String )
+      vm.register_definition( "Rogue::Int.MAXIMUM", Int.MAXIMUM->String )
+      vm.register_definition( "Rogue::Int.MINIMUM", Int.MINIMUM->String )
+
+      vm.register_type( "Rogue::Int32",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_int32,
+          &variant_type = Variant.TYPE_INT32
+        )
+      )
+      vm.register_definition( "Rogue::Int32.MAXIMUM", Int32.MAXIMUM->String )
+      vm.register_definition( "Rogue::Int32.MINIMUM", Int32.MINIMUM->String )
+
+      vm.register_type( "Rogue::Int64",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_int64,
+          &variant_type = Variant.TYPE_INT64
+        )
+      )
+      vm.register_definition( "Rogue::Int64.MAXIMUM", Int64.MAXIMUM->String )
+      vm.register_definition( "Rogue::Int64.MINIMUM", Int64.MINIMUM->String )
+
+      vm.register_type( "Rogue::Logical",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_logical,
+          &variant_type = Variant.TYPE_LOGICAL
+        )
+      )
+
+      vm.register_type( "Rogue::Real",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_real,
+          &variant_type = Variant.TYPE_REAL
+        )
+      )
+      vm.register_definition( "Rogue::Real.BITS",   Real.BITS->String )
+      vm.register_definition( "Rogue::Int.MAXIMUM", Int.MAXIMUM->String )
+      vm.register_definition( "Rogue::Int.MINIMUM", Int.MINIMUM->String )
+
+      vm.register_type( "Rogue::Real32",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_real32,
+          &variant_type = Variant.TYPE_REAL32
+        )
+      )
+
+      vm.register_type( "Rogue::Real64",
+        NativeTypeInfo(
+          &instance_of = (value) => value.is_real64,
+          &variant_type = Variant.TYPE_REAL64
+        )
+      )
+
+      vm.register_type( "Rogue::Object",
+        NativeTypeInfo(
+        )
+      )
+      vm.register_native_method_slot( "Rogue::Object", 0, "description()" )
+      vm.register_native_method_slot( "Rogue::Object", 1, "hashcode()" )
+      vm.register_native_method_slot( "Rogue::Object", 2, "object_id()" )
+      vm.register_native_method_slot( "Rogue::Object", 3, "operator==(Rogue::Object)" )
+      vm.register_native_method_slot( "Rogue::Object", 4, "print_to(Rogue::PrintWriter)" )
+      vm.register_native_method_slot( "Rogue::Object", 5, "to<<Rogue::String>>()" )
+      vm.register_native_method_slot( "Rogue::Object", 6, "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)" )
+
+      vm.register_type( "Rogue::Pet",
+        NativeTypeInfo(
+        )
+      )
+      vm.register_native_method_slot( "Rogue::Pet", 7, "speak()" )
+
+      vm.register_type( "Rogue::Cat",
+        NativeTypeInfo(
+        )
+      )
+
+      vm.register_type( "Rogue::String",
+        NativeTypeInfo(
+        )
+      )
+
+endClass
+
 module Rogue
 
 class RogueScriptObject : Object, RogueScript::RogueScriptAdapted [api]
   METHODS
-    method description()
-    method hashcode()
-    method hash_code()
-    method object_id()
-    method operator==( other:Rogue::Object )
-    method print_to( buffer:Rogue::PrintWriter )
-    method to<<Rogue::String>>()
-    method type_info()
-    method write_json( builder:Rogue::String, formatted:Rogue::Logical, omit_commas:Rogue::Logical )
-    method module_name()
-    method type_name()
-    method type_info_index()
-    method type_id()
+    method description()->Rogue::String [override]
+      if local m = rs_type.native_method_overrides[0]
+        return m( this )
+      else
+        return prior.description()
+      endIf
+
+    method hashcode()->Rogue::Int [override]
+      if local m = rs_type.native_method_overrides[1]
+        return m( this )
+      else
+        return prior.hashcode()
+      endIf
+
+    method object_id()->Rogue::Int64 [override]
+      if local m = rs_type.native_method_overrides[2]
+        return m( this )
+      else
+        return prior.object_id()
+      endIf
+
+    method operator==( other:Rogue::Object )->Rogue::Logical [override]
+      if local m = rs_type.native_method_overrides[3]
+        return m( this, other )
+      else
+        return prior.operator==( other )
+      endIf
+
+    method print_to( buffer:Rogue::PrintWriter ) [override]
+      if local m = rs_type.native_method_overrides[4]
+        m( this, buffer )
+      else
+        prior.print_to( buffer )
+      endIf
+
+    method to<<Rogue::String>>()->Rogue::String [override]
+      if local m = rs_type.native_method_overrides[5]
+        return m( this )
+      else
+        return prior.to<<Rogue::String>>()
+      endIf
+
+    method write_json( builder:Rogue::String, formatted:Rogue::Logical, omit_commas:Rogue::Logical ) [override]
+      if local m = rs_type.native_method_overrides[6]
+        m( this, builder, formatted, omit_commas )
+      else
+        prior.write_json( builder, formatted, omit_commas )
+      endIf
+
 endClass
 
 class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
   METHODS
-    method speak()
+    method speak() [override]
+      if local m = rs_type.native_method_overrides[7]
+        m( this )
+      else
+        prior.speak()
+      endIf
+
 endClass
 
 class RogueScriptCat : Cat, RogueScript::RogueScriptAdapted [api]
   METHODS
-    method speak()
 endClass
 

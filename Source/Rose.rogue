@@ -12,6 +12,7 @@ class Cat : Pet [api]
       println "Meow"
 endClass
 
+#{
 class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
   GLOBAL METHODS
     #method .configure_native_overrides( rs_type:Type )
@@ -21,12 +22,13 @@ class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
     #method .configure_native_overrides( rs_type:Type )
 
     method speak [override]
-      if local m = rs_type.native_method_overrides?[0]
+      if local m = rs_type.native_method_overrides?[1]
         m( this )
       else
         prior.speak
       endIf
 endClass
+}#
 
 
 module RogueScript
@@ -35,6 +37,7 @@ uses Console/CommandLineParser
 
 $include RogueScript
 $include RogueScript/NativeLibraries
+$include NativeBindings [optional]
 
 RogueScript( System.command_line_arguments )
 
@@ -57,8 +60,9 @@ class RogueScript
       try
         local vm = VM
         NativeLibraries.register( vm )
-        vm.register_native_type( <<Pet>>, NativeTypeInfo(&create_extended_object=(rs_type) => RogueScriptPet(rs_type)) )
-        vm.register_native_type( <<Cat>> )
+        NativeBindings.register( vm )
+        #vm.register_native_type( <<Pet>>, NativeTypeInfo(&create_extended_object=(rs_type) => RogueScriptPet(rs_type)) )
+        #vm.register_native_type( <<Cat>> )
 
         vm.include( "Source/Libraries" )
 
@@ -75,9 +79,10 @@ class RogueScript
 
         if local type_buffy = vm.find_type( "Buffy" )
           local pet = vm.create_object( type_buffy ).to<<Pet>>
-          if (pet) pet.speak
-          pet = vm.create_object( type_buffy ).to<<Pet>>
-          if (pet) pet.speak
+          if (pet)
+            pet.speak
+            trace pet.hashcode
+          endIf
         endIf
 
       catch (error:RogueScriptError)

@@ -9,7 +9,8 @@ class NativeLibraries [singleton]
       NativeCore.register( vm )
       NativeMath.register( vm )
 
-      RogueScript::VM.register_native_method_slot( "Rogue::Object", 0, "hashcode()" )
+      #vm.register_native_method_slot( "Rogue::Object", 0, "hashcode()" )
+      #vm.register_native_method_slot( "Rogue::Pet", 1, "speak()" )
       #{
       configure_native_overrides_Rogue_Object( RogueScript::VM.find_type("Rogue::Object") )
       configure_native_overrides_Rogue_Pet( RogueScript::VM.find_type("Rogue::Pet") )
