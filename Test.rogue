@@ -1,1 +1,2 @@
-println "abcabc".after_first('b',false)
+# TODO: default and named args
+println "abcabc".after_first('b',false).before_last('c',false)

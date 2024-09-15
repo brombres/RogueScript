@@ -148,7 +148,6 @@ class Program [singleton]
           type.add_global_method( m )
         endForEach
 
-println "1"
         block parser = Parser()
           forEach (entry in VM.native_method_definitions.entries)
             local filename = "[VM.register_method($)]"(entry.key)
@@ -169,7 +168,6 @@ println "1"
           endForEach
         endBlock
 
-println "2"
         forEach (entry in VM.native_method_slots.entries)
           if local type = VM.find_type( entry.key )
             forEach (slot in entry.value)
