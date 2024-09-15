@@ -5436,11 +5436,37 @@ class ParserCore [abstract]
       r_scoped_name
       if (not _consume(TokenType.SYMBOL_PERIOD)) _throw_syntax_error( &expected=TokenType.SYMBOL_PERIOD )
       r_procedure_name
-      r_native_method_parameters
-      r_procedure_return_type
-      if (not disable_output) _push( NativeMethodSignature(_cur_t,_string_arg(-4),_string_arg(-3),_node_arg(-2)->(as NativeParameters),_node_arg(-1)->(as Type)), 4 )
-      _cur_t = _previous_cur_t
-      return 0
+      if (_consume(TokenType.SYMBOL_LTLT))
+        r_consume_eols
+        _begin_list
+        if (_consume(TokenType.SYMBOL_GTGT))
+          if (disable_output)     _discard_list
+          else                    _push_list( TypeList(_list_t) )
+        else
+          r_consume_eols
+          r_type
+          r_consume_eols
+          while (_consume(TokenType.SYMBOL_COMMA))
+            r_consume_eols
+            r_type
+            r_consume_eols
+          endWhile
+          if (not _consume(TokenType.SYMBOL_GTGT)) _throw_syntax_error( &expected=TokenType.SYMBOL_GTGT )
+          if (disable_output)     _discard_list
+          else                    _push_list( TypeList(_list_t) )
+        endIf
+        r_native_method_parameters
+        r_procedure_return_type
+        if (not disable_output) _push( NativeMethodSignature(_cur_t,_string_arg(-5),_string_arg(-4),_node_arg(-3)->(as TypeList),_node_arg(-2)->(as NativeParameters),_node_arg(-1)->(as Type)), 5 )
+        _cur_t = _previous_cur_t
+        return 0
+      else
+        r_native_method_parameters
+        r_procedure_return_type
+        if (not disable_output) _push( NativeMethodSignature(_cur_t,_string_arg(-4),_string_arg(-3),_node_arg(-2)->(as NativeParameters),_node_arg(-1)->(as Type)), 4 )
+        _cur_t = _previous_cur_t
+        return 0
+      endIf
 
     method r_native_method_parameters->Int
       local _previous_cur_t = _cur_t

@@ -61,8 +61,6 @@ class RogueScript
         local vm = VM
         NativeLibraries.register( vm )
         NativeBindings.register( vm )
-        #vm.register_native_type( <<Pet>>, NativeTypeInfo(&create_extended_object=(rs_type) => RogueScriptPet(rs_type)) )
-        #vm.register_native_type( <<Cat>> )
 
         vm.include( "Source/Libraries" )
 
@@ -77,13 +75,13 @@ class RogueScript
 
         vm.update
 
-        if local type_buffy = vm.find_type( "Buffy" )
-          local pet = vm.create_object( type_buffy ).to<<Pet>>
-          if (pet)
-            pet.speak
-            trace pet.hashcode
-          endIf
-        endIf
+        #if local type_buffy = vm.find_type( "Buffy" )
+        #  local pet = vm.create_object( type_buffy ).to<<Pet>>
+        #  if (pet)
+        #    pet.speak
+        #    trace pet.hashcode
+        #  endIf
+        #endIf
 
       catch (error:RogueScriptError)
         Global.error.println error

@@ -641,10 +641,6 @@ class Visitor
     method on_visit_children( cmd:NativeConstructorSignature )
       cmd.parameters = visit(cmd.parameters)->(as NativeParameters)
 
-    method on_visit_children( cmd:NativeMethodSignature )
-      cmd.parameters = visit(cmd.parameters)->(as NativeParameters)
-      cmd.return_type = visit(cmd.return_type)->(as Type)
-
     method on_visit_children( cmd:NativeProcedureSignature )
       cmd.parameters = visit(cmd.parameters)->(as NativeParameters)
       cmd.return_type = visit(cmd.return_type)->(as Type)
@@ -1303,5 +1299,10 @@ class Visitor
       cmd.context = visit(cmd.context)
       cmd.info = visit(cmd.info)->(as Procedure)
       cmd.args = visit(cmd.args)->(as Args)
+
+    method on_visit_children( cmd:NativeMethodSignature )
+      cmd.template_types = visit(cmd.template_types)->(as TypeList)
+      cmd.parameters = visit(cmd.parameters)->(as NativeParameters)
+      cmd.return_type = visit(cmd.return_type)->(as Type)
 
 endClass

@@ -3,7 +3,7 @@ module RogueScript
 class NativeMath [singleton]
   METHODS
     method register( vm:VM )
-      #VM.register_extended_type( "Rogue::Random", (rs_type) => RogueScript::RogueScriptRandom(rs_type) )
+      #VM.register_extensible_type( "Rogue::Random", (rs_type) => RogueScript::RogueScriptRandom(rs_type) )
       #{
       vm.register_method(
         "Rogue::Random.next32()->Int32",

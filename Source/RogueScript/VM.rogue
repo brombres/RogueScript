@@ -62,21 +62,6 @@ class VM [singleton]
     method execute( script:String )->Variant
       return compile(script)()
 
-    method .register_native_method( m:MethodInfo )
-      contingent # FIXME
-        necessary (m.parameters.is_empty)
-        sufficient (not m.return_type)
-        sufficient (m.return_type.scoped_name == "Rogue::Int")
-        sufficient (m.return_type.scoped_name == "Rogue::Int32")
-        sufficient (m.return_type.scoped_name == "Rogue::Logical")
-        necessary (m.return_type.scoped_name == "Rogue::Real")
-      unsatisfied
-        return
-      endContingent
-      local sig = "$.$"(m.type_context.scoped_name,m.signature)
-      if (m.return_type) sig = "$->$"(sig,m.return_type.scoped_name)
-      register_method( sig, () => m.rs_call_method )
-
   METHODS # Internal runtime API
     method context->Variant
       return stack[fp]
@@ -282,6 +267,19 @@ class VM [singleton]
         .register_native_method( m )
       endForEach
 
+    method .register_native_method( m:MethodInfo )
+      contingent # FIXME
+        necessary (m.parameters.is_empty)
+        sufficient (not m.return_type)
+        sufficient (m.return_type.is_primitive)
+        necessary (false)
+      unsatisfied
+        return
+      endContingent
+      local sig = "$.$"(m.type_context.scoped_name,m.signature)
+      if (m.return_type) sig = "$->$"(sig,m.return_type.scoped_name)
+      register_method( sig, () => m.rs_call_method )
+
     method register_method( full_signature:String, cmd:Cmd )
       native_method_definitions[full_signature] = cmd
       .begin_staging
@@ -297,7 +295,7 @@ class VM [singleton]
       endIf
       list.add( NativeMethodSlot(index, signature) )
 
-    method register_extended_type( native_type:String, create_extended_object:Function(Type)->Variant )
+    method register_extensible_type( native_type:String, create_extended_object:Function(Type)->Variant )
       if local entry = native_types.find( native_type )
         entry.value.create_extended_object = create_extended_object
       else

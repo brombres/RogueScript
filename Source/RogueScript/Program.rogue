@@ -97,7 +97,7 @@ class Program [singleton]
         endForEach
 
         forEach (fn at type_name in VM.native_extended_types)
-          VM.register_extended_type( type_name, fn )
+          VM.register_extensible_type( type_name, fn )
         endForEach
 
         forEach (entry in VM.native_definitions.entries)
@@ -135,7 +135,7 @@ class Program [singleton]
             entry.key
           ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
-          local m = GlobalMethod( sig.t, sig.name ).[ cmd_call=entry.value ]
+          local m = GlobalMethod( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
           if (sig.parameters.count)
             ensure<<m.parameters>>( sig.t )
@@ -154,7 +154,7 @@ class Program [singleton]
             entry.key
           ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
-          local m = Method( sig.t, sig.name ).[ cmd_call=entry.value ]
+          local m = Method( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
           if (sig.parameters.count)
             ensure<<m.parameters>>( sig.t )

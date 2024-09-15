@@ -77,31 +77,45 @@ class BindingGen
       bindings_file.save( new_bindings )  # need to resave regardless for a timestamp build dependency
 
     method generate( type:Variant, &extensible )
-      local first_line = ''vm.register_type( "$",''(type//scoped_name)
+      local first_line = ''vm.register_native_type( <<$>>''(type//scoped_name)
       if (not old_bindings.contains(first_line))
         println "Generating registration for " + type//scoped_name
       endIf
 
-      bindings_writer.println first_line
-      bindings_writer.println ''  NativeTypeInfo(''
-      bindings_writer.indent += 4
+      bindings_writer.print   first_line
+      contingent
+        sufficient (has_attribute(type,"primitive"))
+        sufficient (has_attribute(type,"compound"))
+        sufficient (type_name//scoped_name == "Rogue::String")
+        bindings_writer.println " )"
+        escapeContingent
 
-      if (has_attribute(type, "primitive"))
-        bindings_writer.println "&instance_of = (value) => value.is_$,"(type//name->String.to_lowercase)
-        bindings_writer.println "&variant_type = Variant.TYPE_$"(type//name->String.to_uppercase)
-      elseIf (has_attribute(type, "compound"))
-        println "TODO compound " + type//scoped_name
-        which (type//scoped_name)
-          case "Rogue::Byte"
-            #bindings_writer.println
-        endWhich
-      elseIf (has_attribute(type, "class"))
-        println "TODO class " + type//scoped_name
-      endIf
+      satisfied
+        bindings_writer.println ','
+        bindings_writer.println ''  NativeTypeInfo(''
+        bindings_writer.indent += 4
 
-      bindings_writer.indent -= 4
-      bindings_writer.println ''  )''
-      bindings_writer.println '')''
+        if (has_attribute(type, "primitive"))
+          bindings_writer.println "&instance_of = (value) => value.is_$,"(type//name->String.to_lowercase)
+          bindings_writer.println "&variant_type = Variant.TYPE_$,"(type//name->String.to_uppercase)
+          bindings_writer.println "&attributes = Attribute.PRIMITIVE"
+        elseIf (has_attribute(type, "compound"))
+          println "TODO NativeTypeInfo for compound " + type//scoped_name
+          which (type//scoped_name)
+            case "Rogue::Byte"
+              #bindings_writer.println
+          endWhich
+        elseIf (has_attribute(type, "class"))
+          which (type//scoped_name)
+            case "Rogue::String"
+              bindings_writer.println "&variant_type = Variant.TYPE_STRING"
+          endWhich
+        endIf
+
+        bindings_writer.indent -= 4
+        bindings_writer.println ''  )''
+        bindings_writer.println '')''
+      endContingent
 
       which (type//scoped_name)
         case "Rogue::Byte"
@@ -124,6 +138,9 @@ class BindingGen
       endWhich
 
       if (extensible)
+        bindings_writer.println ''vm.register_extensible_type( "$", (rs_type)=>$::RogueScript$(rs_type) )''...
+          (type//scoped_name,type["module"],type//name)
+
         forEach (m in type//methods)
           if (m//type_context != type//scoped_name) nextIteration
           if (type//base_class)

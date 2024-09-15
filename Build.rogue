@@ -69,7 +69,8 @@ routine rogo_build
 
   local source_files = Files( "Source", "Rose.rogue" )
   source_files.add( "RogueScript/**" )
-  source_files.remove( "NativeBindings.rogue" )
+  source_files.add( "BindingGen.rogue" )
+  source_files.add( "Bindings.txt" )
 
   local native_bindings = File( "Source/NativeBindings.rogue" )
   if (source_files.any_newer_than(native_bindings))

@@ -13,14 +13,12 @@ class Buffy : Dog
       println "Rarararararar!"
 endClass
 
-#local pet = Pet()
-#pet.speak
-#pet = Cat()
-#pet.speak
+local pet = Pet()
+pet.speak
+pet = Cat()
+pet.speak
 #pet = Buffy()
 #pet.speak
-
-println Int.BITS
 
 #Beta().display
 

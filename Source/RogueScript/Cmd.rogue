@@ -4172,28 +4172,6 @@ class NativeConstructorSignature : Cmd
 
 endClass
 
-class NativeMethodSignature : Cmd
-  PROPERTIES
-    scoped_type_name : String
-    name             : String
-    parameters       : NativeParameters
-    return_type      : Type
-
-  METHODS
-    method init( t, scoped_type_name, name, parameters, return_type )
-
-    method init( existing:NativeMethodSignature )
-      prior.init( existing )
-      scoped_type_name = existing.scoped_type_name
-      name = existing.name
-      if (existing.parameters) parameters = existing.parameters.cloned
-      if (existing.return_type) return_type = existing.return_type.cloned
-
-    method description->String
-      return "NativeMethodSignature($,$,$,$)" (%scoped_type_name,%name,%parameters,%return_type)
-
-endClass
-
 class NativeProcedureSignature : Cmd
   PROPERTIES
     scoped_type_name : String
@@ -10345,5 +10323,47 @@ class CallThisDynamicNativeMethod : CallProcedure
   METHODS
     method description->String
       return "CallThisDynamicNativeMethod($,$)" (%info,%args)
+
+endClass
+
+class NativeMethodSignature : Cmd
+  PROPERTIES
+    scoped_type_name : String
+    name             : String
+    template_types   : TypeList
+    parameters       : NativeParameters
+    return_type      : Type
+
+  METHODS
+    method init( t, scoped_type_name, name, template_types, parameters, return_type )
+
+    method init( t, scoped_type_name, name, parameters, return_type )
+
+    method init( existing:NativeMethodSignature )
+      prior.init( existing )
+      scoped_type_name = existing.scoped_type_name
+      name = existing.name
+      if (existing.template_types) template_types = existing.template_types.cloned
+      if (existing.parameters) parameters = existing.parameters.cloned
+      if (existing.return_type) return_type = existing.return_type.cloned
+
+    method description->String
+      return "NativeMethodSignature($,$,$,$,$)" (%scoped_type_name,%name,%template_types,%parameters,%return_type)
+
+    method qualified_name->String
+      # Includes <<Template,Types>> if present.
+      if (template_types)
+        local result = String()
+        result.print name
+        result.print "<<"
+        forEach (type at i in template_types)
+          if (i > 0) result.print ','
+          result.print type.scoped_name
+        endForEach
+        result.print ">>"
+        return result
+      else
+        return name
+      endIf
 
 endClass
