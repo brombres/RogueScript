@@ -148,25 +148,28 @@ class Program [singleton]
           type.add_global_method( m )
         endForEach
 
-        forEach (entry in VM.native_method_definitions.entries)
-          local sig = Parser(
-            "[VM.register_method($)]"(entry.key),
-            entry.key
-          ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
-          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
-          local m = Method( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
-          m.attributes.is_native_function = true
-          if (sig.parameters.count)
-            ensure<<m.parameters>>( sig.t )
-            forEach (param at i in sig.parameters)
-              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
-            endForEach
-          endIf
-          m.return_type = sig.return_type
-          m.statements.add( entry.value.cloned )
-          type.add_method( m )
-        endForEach
+println "1"
+        block parser = Parser()
+          forEach (entry in VM.native_method_definitions.entries)
+            local filename = "[VM.register_method($)]"(entry.key)
+            parser.reset( filename, entry.key )
+            local sig = parser.parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
+            local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+            local m = Method( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
+            m.attributes.is_native_function = true
+            if (sig.parameters.count)
+              ensure<<m.parameters>>( sig.t )
+              forEach (param at i in sig.parameters)
+                m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+              endForEach
+            endIf
+            m.return_type = sig.return_type
+            m.statements.add( entry.value.cloned )
+            type.add_method( m )
+          endForEach
+        endBlock
 
+println "2"
         forEach (entry in VM.native_method_slots.entries)
           if local type = VM.find_type( entry.key )
             forEach (slot in entry.value)

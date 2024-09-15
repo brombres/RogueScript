@@ -75,7 +75,7 @@ class Procedure : ControlStructure
         forEach (param at i in parameters)
           assert param.type
           if (i) _signature.print ','
-          _signature.print param.type
+          _signature.print param.type.scoped_name
         endForEach
       endIf
       _signature.print( ')' )

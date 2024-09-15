@@ -8,5 +8,5 @@ Rogue::Real
 Rogue::Real32
 Rogue::Real64
 +=Rogue::Object
-+Rogue::Pet
 Rogue::String
+Rogue::Random

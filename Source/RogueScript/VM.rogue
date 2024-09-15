@@ -24,25 +24,7 @@ class VM [singleton]
 
   METHODS # External runtime API
     method init
-      forEach (type in TypeInfo)
-        contingent
-          necessary (type.module_context == "Rogue")
-          sufficient (type.name.begins_with("Function_"))
-          sufficient (type.name.begins_with("Augment_"))
-
-          sufficient (type.name.contains("<<"))
-          sufficient (type.name.ends_with(']'))
-          sufficient (type.name.ends_with('?'))
-          sufficient (type.name.begins_with('('))
-
-          which (type.scoped_name)
-            case "Rogue::Object", "Rogue::Random"
-              register_native_type( type )
-            others
-              #trace type.scoped_name
-          endWhich
-        endContingent
-      endForEach
+      register_native_type( <<Rogue::Object>> )
 
     method compile( script:String )->(Function->Variant)
       launch
@@ -180,6 +162,7 @@ class VM [singleton]
     method launch
       try
         temporarily VM = this
+          register_native_methods
           if (new_elements and new_elements.count)
             local staged_program = Program( new_elements.values )
             resolved_elements = new_elements
@@ -248,8 +231,40 @@ class VM [singleton]
     method register_global_method( full_signature:String, callback:Function()->Variant )
       register_global_method( full_signature, CallNativeMethod(t,callback) )
 
+    method register_native_methods
+      forEach (info in native_types)
+        if (not info.methods_registered)
+          info.methods_registered = true
+          if (info.info)
+            forEach (m in info.info.methods)
+              .register_native_method( m )
+            endForEach
+          endIf
+        endIf
+      endForEach
+
+    method .register_native_method( m:MethodInfo )
+      contingent # FIXME - improve
+        if (m.parameters.count)
+          forEach (param in m.parameters)
+            necessary (native_types.contains(param.type.scoped_name))
+          endForEach
+        endIf
+        sufficient (not m.return_type)
+        sufficient (m.return_type.is_primitive)
+        sufficient (m.return_type.scoped_name == "Rogue::String")
+        necessary (false)
+      unsatisfied
+        return
+      endContingent
+      local sig = "$.$"(m.type_context.scoped_name,m.signature)
+      if (m.return_type) sig = "$->$"(sig,m.return_type.scoped_name)
+      register_method( sig, () => m.rs_call_method )
+
+
     method register_native_type( type:TypeInfo, info=null:NativeTypeInfo )
-      ensure<<info>>( type )
+      ensure<<info>>()
+      info.info = type
       if (not info.create_object) info.create_object = () => type.create_object
       if (not info.instance_of)   info.instance_of = (v) => v? and v->Object.type_info.instance_of(type)
       if (type.is_singleton)
@@ -262,23 +277,6 @@ class VM [singleton]
         endIf
       endIf
       register_type( type.scoped_name, info )
-
-      forEach (m in type.methods)
-        .register_native_method( m )
-      endForEach
-
-    method .register_native_method( m:MethodInfo )
-      contingent # FIXME
-        necessary (m.parameters.is_empty)
-        sufficient (not m.return_type)
-        sufficient (m.return_type.is_primitive)
-        necessary (false)
-      unsatisfied
-        return
-      endContingent
-      local sig = "$.$"(m.type_context.scoped_name,m.signature)
-      if (m.return_type) sig = "$->$"(sig,m.return_type.scoped_name)
-      register_method( sig, () => m.rs_call_method )
 
     method register_method( full_signature:String, cmd:Cmd )
       native_method_definitions[full_signature] = cmd

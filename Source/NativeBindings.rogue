@@ -1,3 +1,16 @@
+$api Rogue::Byte
+$api Rogue::Character
+$api Rogue::Int
+$api Rogue::Int32
+$api Rogue::Int64
+$api Rogue::Logical
+$api Rogue::Real
+$api Rogue::Real32
+$api Rogue::Real64
+$api Rogue::Object
+$api Rogue::String
+$api Rogue::Random
+
 module RogueScript
 
 class NativeBindings [singleton]
@@ -97,14 +110,9 @@ class NativeBindings [singleton]
       vm.register_native_method_slot( "Rogue::Object", 5, "to<<Rogue::String>>()" )
       vm.register_native_method_slot( "Rogue::Object", 6, "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)" )
 
-      vm.register_native_type( <<Rogue::Pet>> )
-      vm.register_extensible_type( "Rogue::Pet", (rs_type)=>Rogue::RogueScriptPet(rs_type) )
-      vm.register_native_method_slot( "Rogue::Pet", 7, "speak()" )
-
-      vm.register_native_type( <<Rogue::Cat>> )
-      vm.register_extensible_type( "Rogue::Cat", (rs_type)=>Rogue::RogueScriptCat(rs_type) )
-
       vm.register_native_type( <<Rogue::String>> )
+
+      vm.register_native_type( <<Rogue::Random>> )
 
 endClass
 
@@ -161,20 +169,5 @@ class RogueScriptObject : Object, RogueScript::RogueScriptAdapted [api]
         prior.write_json( builder, formatted, omit_commas )
       endIf
 
-endClass
-
-class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
-  METHODS
-    method speak() [override]
-      if local m = rs_type.native_method_overrides[7]
-        m( this )
-      else
-        prior.speak()
-      endIf
-
-endClass
-
-class RogueScriptCat : Cat, RogueScript::RogueScriptAdapted [api]
-  METHODS
 endClass
 

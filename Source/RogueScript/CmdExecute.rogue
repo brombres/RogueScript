@@ -51,12 +51,13 @@ augment
       endIf
 
       if (not m)
-        throw Error( "Cannot find native method $.$. Class $ may need to be declared [api]."(type_info,info,type_info) )
+        throw Error( "Cannot find native method $.$. Make sure native Rogue source specifies '$api $::$'."...
+          (type_info,info,'$',type_info.module_name,type_info) )
       endIf
 
       use variant_args = WorkList<<Variant>>
         if (args) variant_args.add( (forEach in args).execute )
-        return m( context, args )
+        return m( context, Variant(variant_args) )
       endUse
 
     method CallThisDynamicNativeMethod.execute->Variant
@@ -73,12 +74,13 @@ augment
       endIf
 
       if (not m)
-        throw Error( "Cannot find native method $.$. Class $ may need to be declared [api]."(type_info,info,type_info) )
+        throw Error( "Cannot find native method $.$. Make sure native Rogue source specifies '$api $::$'."...
+          (type_info,info,'$',type_info.module_name,type_info) )
       endIf
 
       use variant_args = WorkList<<Variant>>
         if (args) variant_args.add( (forEach in args).execute )
-        return m( context, args )
+        return m( context, Variant(variant_args) )
       endUse
 
 

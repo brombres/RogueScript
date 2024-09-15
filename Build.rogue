@@ -129,31 +129,6 @@ routine rogo_bindings
   gen.add_source( File("Source/Rose.rogue") )
   gen.add_source( File("Source/RogueScript") )
   gen.generate( File("Source/NativeBindings.rogue") )
-
-  #{
-  local bindings = parse_binding_rules( File("Source/Bindings.txt") )
-
-  local src_filepath = "Source/Rose.rogue"
-
-  File("Build").create_folder
-  local api_file = File("Build/NativeAPI.json")
-
-  local flags = Build.ROGUEC_FLAGS
-  #if (Build.BUILD_MODE == "debug") flags = flags.with_suffix(' ') + "--debug"
-  local targets = "--target=Console,C,$"(System.os)
-  if (System.is_macos) targets += ",ObjC"
-  local cmd = "roguec $ $ --main $ --doc --doc=Source/Rose.rogue --doc=Source/RogueScript --output=$"...
-    (File(src_filepath).esc,flags,targets,api_file)
-  execute cmd
-
-  local api = JSON.load( api_file )
-  forEach (mod in api//modules)
-    forEach (type in mod//types)
-      if (type//name == "Real")
-      endIf
-    endForEach
-  endForEach
-  }#
 endRoutine
 
 routine rogo_install
@@ -372,7 +347,7 @@ routine compile_rogue
   #if (Build.BUILD_MODE == "debug") flags = flags.with_suffix(' ') + "--debug"
   local targets = "--target=Console,C,$"(System.os)
   if (System.is_macos) targets += ",ObjC"
-  local cmd = "roguec $ $ --main --output=$ $"...
+  local cmd = "roguec $ $ Source/NativeBindings.rogue --main --output=$ $"...
               (File(src_filepath).esc,flags,File(c_filepath).esc,targets)
   execute cmd
 endRoutine

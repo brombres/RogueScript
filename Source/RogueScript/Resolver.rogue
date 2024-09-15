@@ -1124,7 +1124,7 @@ class Resolver : Visitor [singleton]
       if (suppress_error) return null
 
       # throw error
-      select_call_candidate( t, type_context, context, name, args, &=is_constructor )
+      find_procedure( t, type_context, context, name, args, &=is_constructor )
 
     method find_procedure( t:Token, type_context:Type, context:Cmd, name:String, args:Args,
       &is_constructor, &suppress_error )->Procedure
@@ -1207,6 +1207,7 @@ class Resolver : Visitor [singleton]
           message.print m.type_context
           message.print '.'
           message.print m.signature
+          message.println
         endForEach
         throw t.error( message )
       else
@@ -1239,6 +1240,18 @@ class Resolver : Visitor [singleton]
         return CallCandidates.match
       endIf
       CallCandidates.refine
+
+      # Exact args
+      if (arg_count)
+        forEach (m in CallCandidates)
+          contingent
+            forEach (arg at i in args)
+              necessary (arg.type is m.parameters[i].type)
+            endForEach
+            return m
+          endContingent
+        endForEach
+      endIf
 
       return null
 

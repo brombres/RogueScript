@@ -7,6 +7,7 @@ class BindingGen
 
     old_bindings    : String
     output_module   : String
+    api_writer      = String()
     bindings_writer = String()
     class_writer    = String()
 
@@ -68,7 +69,7 @@ class BindingGen
       bindings_writer.println "endClass"
       bindings_writer.println
 
-      local new_bindings = bindings_writer + class_writer
+      local new_bindings = "$\n$$"(api_writer,bindings_writer,class_writer)
       if (new_bindings != old_bindings)
         println "Writing $"(bindings_file)
       else
@@ -277,6 +278,8 @@ class BindingGen
       if (type//kept) return
       type//kept = true
       if (extensible) type//extensible = true
+
+      api_writer.println "$api " + type_name
 
       type//methods_by_signature = @{}
       forEach (m at i in rewriter=type//methods.as_list.rewriter)

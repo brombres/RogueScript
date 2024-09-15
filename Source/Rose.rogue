@@ -1,35 +1,6 @@
+$api String
+
 module Rogue
-
-class Pet [abstract]
-  METHODS
-    method speak [api]
-      println "???"
-endClass
-
-class Cat : Pet [api]
-  METHODS
-    method speak [override]
-      println "Meow"
-endClass
-
-#{
-class RogueScriptPet : Pet, RogueScript::RogueScriptAdapted [api]
-  GLOBAL METHODS
-    #method .configure_native_overrides( rs_type:Type )
-    #RogueScript::VM.configure_native_method_override( rs_type, 0, "speak()" )
-
-  METHODS
-    #method .configure_native_overrides( rs_type:Type )
-
-    method speak [override]
-      if local m = rs_type.native_method_overrides?[1]
-        m( this )
-      else
-        prior.speak
-      endIf
-endClass
-}#
-
 
 module RogueScript
 
@@ -37,7 +8,6 @@ uses Console/CommandLineParser
 
 $include RogueScript
 $include RogueScript/NativeLibraries
-$include NativeBindings [optional]
 
 RogueScript( System.command_line_arguments )
 
@@ -74,14 +44,6 @@ class RogueScript
         endForEach
 
         vm.update
-
-        #if local type_buffy = vm.find_type( "Buffy" )
-        #  local pet = vm.create_object( type_buffy ).to<<Pet>>
-        #  if (pet)
-        #    pet.speak
-        #    trace pet.hashcode
-        #  endIf
-        #endIf
 
       catch (error:RogueScriptError)
         Global.error.println error
