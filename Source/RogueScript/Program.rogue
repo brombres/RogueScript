@@ -25,6 +25,8 @@ class Program [singleton]
 
     pending_elements = ProgramElements[]
 
+    parser = Parser()
+
   METHODS
     method init
       .configure
@@ -37,7 +39,7 @@ class Program [singleton]
       pending_elements.add( elements )
 
     method add_definition( name:String, value:String )
-      local parser = Parser( "[define $]"(name), value )
+      parser.reset( "[define $]"(name), value )
       definitions[name] = parser.parse( ParserCore.ip_expression )
 
     method add_definitions( other:[String:Cmd] )
@@ -101,7 +103,7 @@ class Program [singleton]
         endForEach
 
         forEach (entry in VM.native_definitions.entries)
-          local parser = Parser( "[VM.register_definition($)]"(entry.key), entry.key )
+          parser.reset( "[VM.register_definition($)]"(entry.key), entry.key )
           local type = parser.parse( ParserCore.ip_type )->(as Type).resolved
           parser._consume( TokenType.SYMBOL_PERIOD )
           local name = parser.parse( ParserCore.ip_identifier )
@@ -111,10 +113,8 @@ class Program [singleton]
         endForEach
 
         forEach (entry in VM.native_constructors.entries)
-          local sig = Parser(
-            "[VM.register_constructor($)]"(entry.key),
-            entry.key
-          ).parse( ParserCore.ip_native_constructor_signature )->(as NativeConstructorSignature)
+          parser.reset( "[VM.register_constructor($)]"(entry.key), entry.key )
+          local sig = parser.parse( ParserCore.ip_native_constructor_signature )->(as NativeConstructorSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
           local m = GlobalMethod( sig.t, "create" ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
@@ -130,10 +130,8 @@ class Program [singleton]
         endForEach
 
         forEach (entry in VM.native_global_method_definitions.entries)
-          local sig = Parser(
-            "[VM.register_global_method($)]"(entry.key),
-            entry.key
-          ).parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
+          parser.reset( "[VM.register_global_method($)]"(entry.key), entry.key )
+          local sig = parser.parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
           local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
           local m = GlobalMethod( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
@@ -148,24 +146,47 @@ class Program [singleton]
           type.add_global_method( m )
         endForEach
 
-        block parser = Parser()
-          forEach (entry in VM.native_method_definitions.entries)
-            local filename = "[VM.register_method($)]"(entry.key)
-            parser.reset( filename, entry.key )
-            local sig = parser.parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
-            local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
-            local m = Method( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
-            m.attributes.is_native_function = true
-            if (sig.parameters.count)
-              ensure<<m.parameters>>( sig.t )
-              forEach (param at i in sig.parameters)
-                m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
-              endForEach
+        # Native methods
+        forEach (entry in VM.native_method_definitions.entries)
+          parser.reset( "[VM.register_method($)]"(entry.key), entry.key )
+          local sig = parser.parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
+          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local m = Method( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
+          m.attributes.is_native_function = true
+          if (sig.parameters.count)
+            ensure<<m.parameters>>( sig.t )
+            forEach (param at i in sig.parameters)
+              m.parameters.add( Local(param.t,"arg"+(i+1),param.type).[initial_value=param.default_value] )
+            endForEach
+          endIf
+          m.return_type = sig.return_type
+          m.statements.add( entry.value.cloned )
+          type.add_method( m )
+        endForEach
+
+        # Native method default args
+        block
+          local previous_m : Method
+          forEach (default_arg in VM.native_default_method_args)
+            if local type = Program.default_module.find_type( default_arg.@type_name )
+              if (default_arg.is_global)
+                trace "TODO: global default arg"
+              else
+                if local m = type.methods[default_arg.signature]
+                  if (m is not previous_m)
+                    if (previous_m) previous_m.update_min_args
+                    previous_m = m
+                  endIf
+
+                  assert default_arg.arg_index <= m.parameters.count
+                  local param = m.parameters[default_arg.arg_index - 1]
+                  parser.reset( "[Default arg $]"(param.name), default_arg.default_value )
+                  param.initial_value = parser.parse( ParserCore.ip_expression )
+                endIf
+              endIf
             endIf
-            m.return_type = sig.return_type
-            m.statements.add( entry.value.cloned )
-            type.add_method( m )
           endForEach
+          if (previous_m) previous_m.update_min_args
         endBlock
 
         forEach (entry in VM.native_method_slots.entries)
@@ -186,6 +207,7 @@ class Program [singleton]
         Organizer.organize_program
 
         pending_elements.clear
+
       endTemporarily
 
     method resolve

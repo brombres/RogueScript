@@ -11,10 +11,11 @@ class VM [singleton]
     native_constructors     = [String:Cmd]
     native_global_method_definitions = [String:Cmd]
     native_method_definitions        = [String:Cmd]
-    native_definitions      = [String:String]
-    native_extended_types   = [String:Function(Type)->Variant]
-    definitions             = [String:Cmd]
-    native_method_slots     = [String:NativeMethodSlot[]]
+    native_definitions         = [String:String]
+    native_extended_types      = [String:Function(Type)->Variant]
+    definitions                = [String:Cmd]
+    native_method_slots        = [String:NativeMethodSlot[]]
+    native_default_method_args = NativeDefaultArg[]
 
     program : Program
     stack   = Variant[]
@@ -230,6 +231,9 @@ class VM [singleton]
 
     method register_global_method( full_signature:String, callback:Function()->Variant )
       register_global_method( full_signature, CallNativeMethod(t,callback) )
+
+    method register_native_method_default_arg( type_name:String, signature:String, arg_index:Int, default_value:String )
+      native_default_method_args.add( NativeDefaultArg(type_name, signature, arg_index, default_value) )
 
     method register_native_methods
       forEach (info in native_types)

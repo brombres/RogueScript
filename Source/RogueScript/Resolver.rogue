@@ -849,13 +849,13 @@ class Resolver : Visitor [singleton]
           throw cmd.t.error( "Invalid 'prior' call - cannot specify current type context as prior call context." )
         endIf
         local m = find_procedure( cmd.t, cmd.type_context, null, cmd.name, cmd.args )->(as Method)
-        return validate( CallThisStaticMethod(cmd.t, m, cmd.args) )
+        return validate( CallThisStaticMethod(cmd.t, m, resolve_args(cmd.t,m,cmd.args)) )
       else
         local m = find_procedure( cmd.t, this_type, null, cmd.name, cmd.args )->(as Method)
         if (not m.overridden_m)
           throw cmd.t.error( "Invalid 'prior' call - $() is not an override."(cmd.name) )
         endIf
-        return validate( CallThisStaticMethod(cmd.t, m.overridden_m, cmd.args) )
+        return validate( CallThisStaticMethod(cmd.t, m.overridden_m, resolve_args(cmd.t,m,cmd.args)) )
       endIf
 
     method on_visit( cmd:Construct )->Cmd

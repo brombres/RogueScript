@@ -84,5 +84,26 @@ class Procedure : ControlStructure
     method to->String
       return signature
 
+    method update_min_args
+      if (parameters)
+        max_args = parameters.count
+        min_args = max_args
+
+        forEach (param at i in parameters)
+          if (param.type)
+            param.type = type_context.module_context.validate_type( param.type )
+            if (param.initial_value)
+              if (min_args == max_args) min_args = i
+            else
+              if (min_args != max_args)
+                throw param.t.error( "Parameter '$' must specify a default value; once any parameter specifies a default value, all successive parameters must specify a default value."(param.name) )
+              endIf
+            endIf
+          else
+            trace
+            throw param.t.error( "TODO: auto-store parameter" )
+          endIf
+        endForEach
+      endIf
 endClass
 

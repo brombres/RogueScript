@@ -138,6 +138,20 @@ class BindingGen
           bindings_writer.println ''vm.register_definition( "Rogue::Int.MINIMUM", Int.MINIMUM->String )''
       endWhich
 
+      forEach (m in type//methods)
+        forEach (param at i in m//parameters)
+          if (param//default_parameter)
+            bindings_writer.print   ''vm.register_native_method_default_arg( ''
+            bindings_writer.print   ''"$", "$", $, ''(type//scoped_name,m//signature,i+1)
+            if (param//default_value == '""')
+              bindings_writer.println @|'""' )
+            else
+              bindings_writer.println ''"$" )''(param//default_value->String.to_escaped_ascii(''"''))
+            endIf
+          endIf
+        endForEach
+      endForEach
+
       if (extensible)
         bindings_writer.println ''vm.register_extensible_type( "$", (rs_type)=>$::RogueScript$(rs_type) )''...
           (type//scoped_name,type["module"],type//name)

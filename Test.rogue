@@ -1,2 +1,2 @@
 # TODO: default and named args
-println "abcabc".after_first('b',false).before_last('c',false)
+println "abcabc".after_first('b').before_last('c').reversed

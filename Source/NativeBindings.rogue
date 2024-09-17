@@ -25,6 +25,9 @@ class NativeBindings [singleton]
       )
       vm.register_definition( "Rogue::Byte.MAXIMUM", Byte.MAXIMUM->String )
       vm.register_definition( "Rogue::Byte.MINIMUM", Byte.MINIMUM->String )
+      vm.register_native_method_default_arg( "Rogue::Byte", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Byte", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::Byte", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 4, "false" )
 
       vm.register_native_type( <<Rogue::Character>>,
         NativeTypeInfo(
@@ -33,6 +36,10 @@ class NativeBindings [singleton]
           &attributes = Attribute.PRIMITIVE
         )
       )
+      vm.register_native_method_default_arg( "Rogue::Character", "equals(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Character", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Character", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::Character", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 4, "false" )
 
       vm.register_native_type( <<Rogue::Int>>,
         NativeTypeInfo(
@@ -44,6 +51,10 @@ class NativeBindings [singleton]
       vm.register_definition( "Rogue::Int.BITS",    Int.BITS->String )
       vm.register_definition( "Rogue::Int.MAXIMUM", Int.MAXIMUM->String )
       vm.register_definition( "Rogue::Int.MINIMUM", Int.MINIMUM->String )
+      vm.register_native_method_default_arg( "Rogue::Int", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int", "to_digit(Rogue::Logical)", 1, "false" )
 
       vm.register_native_type( <<Rogue::Int32>>,
         NativeTypeInfo(
@@ -54,6 +65,10 @@ class NativeBindings [singleton]
       )
       vm.register_definition( "Rogue::Int32.MAXIMUM", Int32.MAXIMUM->String )
       vm.register_definition( "Rogue::Int32.MINIMUM", Int32.MINIMUM->String )
+      vm.register_native_method_default_arg( "Rogue::Int32", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int32", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int32", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int32", "to_digit(Rogue::Logical)", 1, "false" )
 
       vm.register_native_type( <<Rogue::Int64>>,
         NativeTypeInfo(
@@ -64,6 +79,10 @@ class NativeBindings [singleton]
       )
       vm.register_definition( "Rogue::Int64.MAXIMUM", Int64.MAXIMUM->String )
       vm.register_definition( "Rogue::Int64.MINIMUM", Int64.MINIMUM->String )
+      vm.register_native_method_default_arg( "Rogue::Int64", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int64", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int64", "to<<Rogue::String>>(Rogue::Int,Rogue::Logical,Rogue::Logical,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::Int64", "to_digit(Rogue::Logical)", 1, "false" )
 
       vm.register_native_type( <<Rogue::Logical>>,
         NativeTypeInfo(
@@ -101,6 +120,8 @@ class NativeBindings [singleton]
       )
 
       vm.register_native_type( <<Rogue::Object>> )
+      vm.register_native_method_default_arg( "Rogue::Object", "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Object", "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)", 3, "false" )
       vm.register_extensible_type( "Rogue::Object", (rs_type)=>Rogue::RogueScriptObject(rs_type) )
       vm.register_native_method_slot( "Rogue::Object", 0, "description()" )
       vm.register_native_method_slot( "Rogue::Object", 1, "hashcode()" )
@@ -111,8 +132,66 @@ class NativeBindings [singleton]
       vm.register_native_method_slot( "Rogue::Object", 6, "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)" )
 
       vm.register_native_type( <<Rogue::String>> )
+      vm.register_native_method_default_arg( "Rogue::String", "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_any(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_any(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_first(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_first(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_last(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_last(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_prefix(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "after_prefix(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "before_first(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "before_first(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "before_last(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "before_last(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "before_suffix(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "before_suffix(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "begins_with(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "begins_with(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "clipped(Rogue::Int,Rogue::Int)", 1, "0" )
+      vm.register_native_method_default_arg( "Rogue::String", "clipped(Rogue::Int,Rogue::Int)", 2, "0" )
+      vm.register_native_method_default_arg( "Rogue::String", "compare_to(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "contains(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "contains(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "contains_at(Rogue::String,Rogue::Int,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "contains_pattern(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "ends_with(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "ends_with(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "equals(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "extract_string(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "extract_strings(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "extract_strings(Rogue::String,Rogue::String[],Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "from_first(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "from_first(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "from_last(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "from_last(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate(Rogue::Character,Rogue::Int?,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate(Rogue::String,Rogue::Int?,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_last(Rogue::Character,Rogue::Int?,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_last(Rogue::String,Rogue::Int?,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_nth(Rogue::Character,Rogue::Int,Rogue::Int?,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_nth(Rogue::String,Rogue::Int,Rogue::Int?,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_nth_last(Rogue::Character,Rogue::Int,Rogue::Int?,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_nth_last(Rogue::String,Rogue::Int,Rogue::Int?,Rogue::Logical)", 4, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "locate_pattern(Rogue::String,Rogue::Int,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "matches_pattern(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "replacing(Rogue::Character,Rogue::Character,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "replacing(Rogue::Character,Rogue::String,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "replacing(Rogue::String,Rogue::String,Rogue::Logical)", 3, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "split(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "split(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "up_to_first(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "up_to_first(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "up_to_last(Rogue::Character,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "up_to_last(Rogue::String,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "_extract_strings(Rogue::Int,Rogue::Int,Rogue::String,Rogue::Int,Rogue::Int,Rogue::String[],Rogue::Logical)", 7, "false" )
+      vm.register_native_method_default_arg( "Rogue::String", "_pattern_match_count(Rogue::Int,Rogue::Int,Rogue::String,Rogue::Int,Rogue::Int,Rogue::Logical)", 6, "false" )
 
       vm.register_native_type( <<Rogue::Random>> )
+      vm.register_native_method_default_arg( "Rogue::Random", "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)", 2, "false" )
+      vm.register_native_method_default_arg( "Rogue::Random", "write_json(Rogue::String,Rogue::Logical,Rogue::Logical)", 3, "false" )
 
 endClass
 
