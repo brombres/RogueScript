@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 enum Attribute [bitflags]
   CATEGORIES

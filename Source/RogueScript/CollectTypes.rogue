@@ -1,12 +1,12 @@
-module RogueScript
+library RogueScript
 
 class CollectTypes : Visitor [singleton]
   METHODS
     method on_visit_node( cmd:Class )
-      Program.current_module.define_type( cmd )
+      Program.current_library.define_type( cmd )
       visit_children( cmd )
 
     method on_visit_node( cmd:SetModuleContext )
-      Program.current_module = Program.get_module( cmd.t, cmd.name )
+      Program.current_library = Program.get_library( cmd.t, cmd.name )
 
 endClass

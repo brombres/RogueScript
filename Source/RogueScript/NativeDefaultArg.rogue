@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 class NativeDefaultArg( type_name:String, signature:String,
     arg_index:Int, default_value:String, is_global=false:Logical ) [compound]

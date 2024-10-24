@@ -11,7 +11,7 @@ $api Rogue::Object
 $api Rogue::String
 $api Rogue::Random
 
-module RogueScript
+library RogueScript
 
 class NativeBindings [singleton]
   METHODS
@@ -195,7 +195,7 @@ class NativeBindings [singleton]
 
 endClass
 
-module Rogue
+library Rogue
 
 class RogueScriptObject : Object, RogueScript::RogueScriptAdapted [api]
   METHODS

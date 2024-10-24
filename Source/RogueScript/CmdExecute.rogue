@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 class RogueScriptRuntimeException : Exception
   METHODS
@@ -52,7 +52,7 @@ augment
 
       if (not m)
         throw Error( "Cannot find native method $.$. Make sure native Rogue source specifies '$api $::$'."...
-          (type_info,info,'$',type_info.module_name,type_info) )
+          (type_info,info,'$',type_info.library_name,type_info) )
       endIf
 
       use variant_args = WorkList<<Variant>>
@@ -75,7 +75,7 @@ augment
 
       if (not m)
         throw Error( "Cannot find native method $.$. Make sure native Rogue source specifies '$api $::$'."...
-          (type_info,info,'$',type_info.module_name,type_info) )
+          (type_info,info,'$',type_info.library_name,type_info) )
       endIf
 
       use variant_args = WorkList<<Variant>>

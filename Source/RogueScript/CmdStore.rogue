@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 augment
   METHODS
@@ -40,15 +40,15 @@ augment
       endForEach
 
     method SetModuleContext.store
-      Program.current_module = Program.modules[name]
+      Program.current_library = Program.libraries[name]
 
     method RoutineDef.store
-      local type_Routine = Program.current_module.type( t, "Routine" )
+      local type_Routine = Program.current_library.type( t, "Routine" )
       local m = GlobalMethod( t, name, parameters, return_type, attributes, null, &=statements )
       type_Routine.add_global_method( m )
 
     method Statements.store
-      local mod = Program.current_module
+      local mod = Program.current_library
       if (mod.global_statements)
         mod.global_statements.add( (forEach in this).cloned )
       else
@@ -60,7 +60,7 @@ augment
       type_context.add_method( m )
 
     method Uses.store
-      Program.current_module.use_module( t, id_filepath.replacing("/","::") )
+      Program.current_library.use_library( t, id_filepath.replacing("/","::") )
       if (not attributes.is_no_include)
         VM.include( id_filepath, &suppress_error )
       endIf

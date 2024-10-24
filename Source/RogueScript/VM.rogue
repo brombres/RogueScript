@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 class VM [singleton]
   PROPERTIES
@@ -33,7 +33,7 @@ class VM [singleton]
       temporarily VM=this, Program=program
         local statements = Parser( "[EXECUTE]", script ).parse( Parser.ip_multi_line_statements )->(as Statements)
         local m_execute = GlobalMethod( statements.t, "execute", &statements=statements )
-        m_execute.type_context = Program.default_module.type( Program.default_module.t, "Routine" )
+        m_execute.type_context = Program.default_library.type( Program.default_library.t, "Routine" )
         Resolver.resolve( m_execute )
         return function()->Variant with (vm=this)
           temporarily VM=vm, Program=program
@@ -111,17 +111,17 @@ class VM [singleton]
       return obj
 
     method find_global_method( scoped_signature:String )->GlobalMethod
-      local type = Program.default_module.find_type( scoped_signature.before_first('.') )
+      local type = Program.default_library.find_type( scoped_signature.before_first('.') )
       if (not type) return null
       return type.global_methods[ scoped_signature.after_first('.') ]
 
     method find_method( scoped_signature:String )->Method
-      local type = Program.default_module.find_type( scoped_signature.before_first('.') )
+      local type = Program.default_library.find_type( scoped_signature.before_first('.') )
       if (not type) return null
       return type.methods[ scoped_signature.after_first('.') ]
 
     method find_type( name:String )->Type
-      return Program.default_module.find_type( name )
+      return Program.default_library.find_type( name )
 
     method parameter( index:Int )->Variant
       # First parameter is index 1.

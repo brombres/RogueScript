@@ -1,10 +1,10 @@
-module RogueScript
+library RogueScript
 
 class Type : Cmd
   PROPERTIES
     batch_id             : Int
 
-    module_context       : Module
+    module_context       : Library
     definition           : Class
 
     attributes           : Attributes
@@ -378,7 +378,7 @@ class Type : Cmd
 
     method resolved->Type
       local mod = module_context
-      if (not mod) mod = Program.default_module
+      if (not mod) mod = Program.default_library
       local result = mod.must_find_type( this )
       return result
 

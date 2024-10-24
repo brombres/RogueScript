@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 class Organizer : Visitor [singleton]
   PROPERTIES
@@ -24,7 +24,7 @@ class Organizer : Visitor [singleton]
 
     method organize( procedure:Procedure )
       local type_context = procedure.type_context
-      temporarily Program.current_module=type_context.module_context, this_type=type_context
+      temporarily Program.current_library=type_context.module_context, this_type=type_context
         visit( procedure )
       endTemporarily
 
@@ -42,6 +42,6 @@ class Organizer : Visitor [singleton]
       #  return cmd
 
     method on_visit( cmd:Type )->Cmd
-      return Program.current_module.validate_type( cmd )
+      return Program.current_library.validate_type( cmd )
 
 endClass

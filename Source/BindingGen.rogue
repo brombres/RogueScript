@@ -6,7 +6,7 @@ class BindingGen
     types           = @{}
 
     old_bindings    : String
-    output_module   : String
+    output_library   : String
     api_writer      = String()
     bindings_writer = String()
     class_writer    = String()
@@ -33,7 +33,7 @@ class BindingGen
       execute cmd
 
       local api = JSON.load( api_file )
-      forEach (mod in api//modules)
+      forEach (mod in api//libraries)
         forEach (type in mod//types)
           if (type//scoped_name.contains('$')) nextIteration
           types[type//scoped_name] = type
@@ -43,7 +43,7 @@ class BindingGen
       old_bindings = which{ bindings_file.exists:String( bindings_file ) || "" }
 
       bindings_writer.println ...
-      @|module RogueScript
+      @|library RogueScript
        |
        |class NativeBindings [singleton]
        |  METHODS
@@ -154,7 +154,7 @@ class BindingGen
 
       if (extensible)
         bindings_writer.println ''vm.register_extensible_type( "$", (rs_type)=>$::RogueScript$(rs_type) )''...
-          (type//scoped_name,type["module"],type//name)
+          (type//scoped_name,type["library"],type//name)
 
         forEach (m in type//methods)
           if (m//type_context != type//scoped_name) nextIteration
@@ -171,14 +171,14 @@ class BindingGen
 
       if (not extensible) return
 
-      local scoped_name = "$::RogueScript$" (type["module"],type//name)
+      local scoped_name = "$::RogueScript$" (type["library"],type//name)
       if (not old_bindings.contains(scoped_name))
         println "Generating extensible class " + scoped_name
       endIf
 
-      if (type["module"] != output_module)
-        output_module = type["module"]
-        class_writer.println "module " + output_module
+      if (type["library"] != output_library)
+        output_library = type["library"]
+        class_writer.println "library " + output_library
         class_writer.println
       endIf
 
@@ -300,7 +300,7 @@ class BindingGen
         local sig = m//signature
         contingent
           necessary (sig != "hash_code()")
-          necessary (sig != "module_name()")
+          necessary (sig != "library_name()")
           necessary (sig != "type_id()")
           necessary (sig != "type_name()")
           necessary (sig != "type_info()")

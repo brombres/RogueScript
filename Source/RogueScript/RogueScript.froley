@@ -77,7 +77,7 @@ KEYWORD_LOCALIZE          localize
 KEYWORD_LOOP              loop
 KEYWORD_METHOD            method      [structural]
 KEYWORD_METHODS           METHODS     [structural]
-KEYWORD_MODULE            module      [structural]
+KEYWORD_MODULE            library      [structural]
 KEYWORD_NATIVE_SECTION    NATIVE      [structural]
 KEYWORD_NATIVE            native
 KEYWORD_NATIVE_HEADER     nativeHeader
@@ -609,7 +609,7 @@ parser
 ----------------------------------------------------------------------
 - program_elements
   beginList
-    # Implicit '$module RogueScript' at the start of each file
+    # Implicit '$library RogueScript' at the start of each file
     beginList
     createList Attributes
     create SetModuleContext(name="Rogue",attributes:Attributes)
@@ -689,8 +689,8 @@ parser
   endOn
 
 
-  on "module"
-    parse_module_id
+  on "library"
+    parse_library_id
     module_attributes
     produce SetModuleContext(name:String,attributes:Attributes)
   endOn
@@ -752,7 +752,7 @@ parser
     call join_strings
   endOn
 
-- parse_module_id
+- parse_library_id
   if (nextIs("::"))
     on "::"
       if (nextIs(IDENTIFIER))
@@ -1083,7 +1083,7 @@ parser
 
 - module_attribute
   on @"essential" -> AttributeEssential
-  syntaxError "Illegal module attribute. Expected [essential]."
+  syntaxError "Illegal library attribute. Expected [essential]."
 
 - class_attributes
   beginList
@@ -2265,7 +2265,7 @@ parser
   on @"noInclude" -> AttributeNoInclude
   syntaxError "Illegal 'uses' attribute. Expected any of [export noInclude]."
 
-#- import_module_by_path_or_filepath
+#- import_library_by_path_or_filepath
 #  on STRING
 #    produce ImportModuleByFilepath(filepath=content)
 #  endOn
@@ -3119,9 +3119,9 @@ parser
     #FIXME call define_macro
     return
 
-  elseOn "module"
+  elseOn "library"
     savePosition
-    #FIXME call parse_module_id # adjusts Program.current_module
+    #FIXME call parse_library_id # adjusts Program.current_library
     restorePosition
     #FIXME call rewrite_cur_token
     return
@@ -3156,7 +3156,7 @@ parser
     return
 
   elseOn "$thisModule"
-    #FIXME call write_this_module_id
+    #FIXME call write_this_library_id
     return
 
   elseOn "$string"

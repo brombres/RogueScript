@@ -1,13 +1,13 @@
-module RogueScript
+library RogueScript
 
-class Module
+class Library
   GLOBAL METHODS
-    method create( t:Token, name:String )->Module
-      local mod = Program.modules[ name ]
+    method create( t:Token, name:String )->Library
+      local mod = Program.libraries[ name ]
       if (mod) return mod
 
-      mod = Module( t, name, &initializer )
-      Program.modules[ name ] = mod
+      mod = Library( t, name, &initializer )
+      Program.libraries[ name ] = mod
       return mod
 
   PROPERTIES
@@ -17,15 +17,15 @@ class Module
     global_statements : Statements
     m_on_launch       : GlobalMethod
 
-    used_modules      = [String:Module]
+    used_libraries      = [String:Library]
     types             = [String:Type]
 
     visiting          : Logical
 
   METHODS
     method init( t, name, initializer:Logical )
-      Program.modules[name] = this
-      use_module( t, "Rogue" )
+      Program.libraries[name] = this
+      use_library( t, "Rogue" )
 
     method define_type( def:Class )->Type
       return define_type( def.t, def.name->String, def.attributes.cloned ).[ t=t, definition=def ]
@@ -45,7 +45,7 @@ class Module
         Program.types[type.scoped_name] = type
       endIf
 
-      if (this is Program.default_module)
+      if (this is Program.default_library)
         if (type.attributes.is_primitive)
           which (type_name)
             case "Byte":      type.variant_type = Variant.TYPE_BYTE
@@ -70,7 +70,7 @@ class Module
       if (visiting) return null
 
       if (type_name.contains("::"))
-        # Name is qualified with module name
+        # Name is qualified with library name
         return Program.types[type_name]
       endIf
 
@@ -80,7 +80,7 @@ class Module
       if (limited) return null
 
       temporarily visiting = true
-        forEach (mod in used_modules)
+        forEach (mod in used_libraries)
           result = mod.find_type( type_name )
           if (result) return result
         endForEach
@@ -121,7 +121,7 @@ class Module
 
     method type( t:Token, name:String, attributes=Attribute.OBJECT:Int )->Type
       if (name.contains("::"))
-        return Program.get_module( t, name.before_last("::") ).type( t, name.after_last("::"), &=attributes )
+        return Program.get_library( t, name.before_last("::") ).type( t, name.after_last("::"), &=attributes )
       endIf
 
       local result = types[name]
@@ -132,15 +132,15 @@ class Module
     method type_Routine->Type
       return type( t, "Routine" )
 
-    method use_module( t:Token, name:String )
+    method use_library( t:Token, name:String )
       if (name == this.name) return
-      if (used_modules.contains(name)) return
+      if (used_libraries.contains(name)) return
 
-      local mod = Program.modules[name]
+      local mod = Program.libraries[name]
       if (not mod)
-        mod = Module( t, name )
+        mod = Library( t, name )
       endIf
-      used_modules[ name ] = mod
+      used_libraries[ name ] = mod
 
     method validate_type( type:Type )->Type
       if (not type or type.module_context) return type

@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 class Procedure : ControlStructure
   PROPERTIES

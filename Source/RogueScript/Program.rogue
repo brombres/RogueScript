@@ -1,11 +1,11 @@
-module RogueScript
+library RogueScript
 
 class Program [singleton]
   PROPERTIES
     t              : Token
-    default_module : Module
-    current_module : Module
-    modules        = [String:Module]
+    default_library : Library
+    current_library : Library
+    libraries        = [String:Library]
     types          = [String:Type]  # All types, keys fully qualified e.g. RogueScript::Int
     definitions    = [String:Cmd]   # Includes VM.definitions
 
@@ -50,11 +50,11 @@ class Program [singleton]
         return cmd.execute
       endTemporarily
 
-    method get_module( t:Token, module_name:String )->Module
-      local mod = modules[module_name]
+    method get_library( t:Token, library_name:String )->Library
+      local mod = libraries[library_name]
       if (not mod)
-        mod = Module( t, module_name )
-        modules[module_name] = mod
+        mod = Library( t, library_name )
+        libraries[library_name] = mod
       endIf
       return mod
 
@@ -67,23 +67,23 @@ class Program [singleton]
           endIf
         endForEach
 
-        (forEach in modules).launch
+        (forEach in libraries).launch
       endTemporarily
 
     method organize
       temporarily Program = this
         forEach (element in pending_elements)
-          temporarily current_module = default_module
+          temporarily current_library = default_library
             CollectTypes.visit( element )
           endTemporarily
         endForEach
       endTemporarily
 
-      temporarily Program=this, current_module=default_module
+      temporarily Program=this, current_library=default_library
         forEach (entry in VM.native_types.entries)
-          local type = Program.default_module.type( VM.t, entry.key, entry.value.attributes )
+          local type = Program.default_library.type( VM.t, entry.key, entry.value.attributes )
           if (entry.value.base_class_name)
-            local base_class = Program.default_module.type( VM.t, entry.value.base_class_name )
+            local base_class = Program.default_library.type( VM.t, entry.value.base_class_name )
             if (type.base_class and type.base_class is not base_class)
               throw CompileError( "Multiple base types defined for $: $ and $."...
                                   (type,type.base_class,base_class) )
@@ -115,7 +115,7 @@ class Program [singleton]
         forEach (entry in VM.native_constructors.entries)
           parser.reset( "[VM.register_constructor($)]"(entry.key), entry.key )
           local sig = parser.parse( ParserCore.ip_native_constructor_signature )->(as NativeConstructorSignature)
-          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local type = Program.default_library.must_find_type( sig.t, sig.scoped_type_name )
           local m = GlobalMethod( sig.t, "create" ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
           if (sig.parameters.count)
@@ -132,7 +132,7 @@ class Program [singleton]
         forEach (entry in VM.native_global_method_definitions.entries)
           parser.reset( "[VM.register_global_method($)]"(entry.key), entry.key )
           local sig = parser.parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
-          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local type = Program.default_library.must_find_type( sig.t, sig.scoped_type_name )
           local m = GlobalMethod( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
           if (sig.parameters.count)
@@ -150,7 +150,7 @@ class Program [singleton]
         forEach (entry in VM.native_method_definitions.entries)
           parser.reset( "[VM.register_method($)]"(entry.key), entry.key )
           local sig = parser.parse( ParserCore.ip_native_method_signature )->(as NativeMethodSignature)
-          local type = Program.default_module.must_find_type( sig.t, sig.scoped_type_name )
+          local type = Program.default_library.must_find_type( sig.t, sig.scoped_type_name )
           local m = Method( sig.t, sig.qualified_name ).[ cmd_call=entry.value ]
           m.attributes.is_native_function = true
           if (sig.parameters.count)
@@ -168,7 +168,7 @@ class Program [singleton]
         block
           local previous_m : Method
           forEach (default_arg in VM.native_default_method_args)
-            if local type = Program.default_module.find_type( default_arg.@type_name )
+            if local type = Program.default_library.find_type( default_arg.@type_name )
               if (default_arg.is_global)
                 trace "TODO: global default arg"
               else
@@ -201,7 +201,7 @@ class Program [singleton]
           (forEach in elements.cloned).store
         endForEach
 
-        (forEach in modules).organize
+        (forEach in libraries).organize
 
         TypeResolver.resolve_types
         Organizer.organize_program
@@ -218,22 +218,22 @@ class Program [singleton]
     method .configure
       Program = this
       t = Token( TokenType.IDENTIFIER, "[RogueScript]", &content="RogueScript" )
-      default_module = Module( t, "Rogue" )
-      current_module = default_module
+      default_library = Library( t, "Rogue" )
+      current_library = default_library
 
-      type_Byte      = default_module.type( t, "Byte",      Attribute.PRIMITIVE )
-      type_Character = default_module.type( t, "Character", Attribute.PRIMITIVE )
-      type_Int       = default_module.type( t, "Int",       Attribute.PRIMITIVE )
-      type_Int32     = default_module.type( t, "Int32",     Attribute.PRIMITIVE )
-      type_Int64     = default_module.type( t, "Int64",     Attribute.PRIMITIVE )
-      type_Logical   = default_module.type( t, "Logical",   Attribute.PRIMITIVE )
-      type_Real      = default_module.type( t, "Real",      Attribute.PRIMITIVE )
-      type_Real32    = default_module.type( t, "Real32",    Attribute.PRIMITIVE )
-      type_Real64    = default_module.type( t, "Real64",    Attribute.PRIMITIVE )
-      type_String    = default_module.type( t, "String",    Attribute.OBJECT )
-      type_Object    = default_module.type( t, "Object",    Attribute.OBJECT )
-      type_RogueScriptObject = default_module.type( t, "Object", Attribute.OBJECT )
+      type_Byte      = default_library.type( t, "Byte",      Attribute.PRIMITIVE )
+      type_Character = default_library.type( t, "Character", Attribute.PRIMITIVE )
+      type_Int       = default_library.type( t, "Int",       Attribute.PRIMITIVE )
+      type_Int32     = default_library.type( t, "Int32",     Attribute.PRIMITIVE )
+      type_Int64     = default_library.type( t, "Int64",     Attribute.PRIMITIVE )
+      type_Logical   = default_library.type( t, "Logical",   Attribute.PRIMITIVE )
+      type_Real      = default_library.type( t, "Real",      Attribute.PRIMITIVE )
+      type_Real32    = default_library.type( t, "Real32",    Attribute.PRIMITIVE )
+      type_Real64    = default_library.type( t, "Real64",    Attribute.PRIMITIVE )
+      type_String    = default_library.type( t, "String",    Attribute.OBJECT )
+      type_Object    = default_library.type( t, "Object",    Attribute.OBJECT )
+      type_RogueScriptObject = default_library.type( t, "Object", Attribute.OBJECT )
 
-      type_XY = default_module.type( t, "Geometry::XY", Attribute.COMPOUND )
+      type_XY = default_library.type( t, "Geometry::XY", Attribute.COMPOUND )
 
 endClass

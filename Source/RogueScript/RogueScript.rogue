@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 uses Geometry [export]
 uses Introspection
@@ -11,7 +11,7 @@ $include RogueScript/CmdPreprocess
 $include RogueScript/CmdStore
 $include RogueScript/CmdType
 $include RogueScript/CollectTypes
-$include RogueScript/Module
+$include RogueScript/Library
 $include RogueScript/NativeDefaultArg
 $include RogueScript/NativeMethodSlot
 $include RogueScript/NativeTypeInfo

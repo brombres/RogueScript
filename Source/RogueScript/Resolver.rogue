@@ -1,4 +1,4 @@
-module RogueScript
+library RogueScript
 
 $localMacro GENERAL_OP_RESOLVE<<$Cmd,$op,$allow_logical>>
 augment Resolver
@@ -573,14 +573,14 @@ class Resolver : Visitor [singleton]
       scope_stack.clear_stack
       visit_program( Program )
 
-    method visit_module( mod:Module ) [override]
-      temporarily Program.current_module = mod
+    method visit_library( mod:Library ) [override]
+      temporarily Program.current_library = mod
         (forEach in mod.types).resolve
       endTemporarily
 
     method resolve_type( type:Type )
       use scope_stack
-        temporarily Program.current_module = type.module_context
+        temporarily Program.current_library = type.module_context
           visit_type( type )
 
           type.m_init_object = type.methods["init_object()"]
@@ -593,7 +593,7 @@ class Resolver : Visitor [singleton]
 
       use scope_stack
         local type_context = procedure.type_context
-        temporarily Program.current_module=type_context.module_context, this_type=type_context
+        temporarily Program.current_library=type_context.module_context, this_type=type_context
           visit( procedure )
         endTemporarily
       endUse
@@ -797,7 +797,7 @@ class Resolver : Visitor [singleton]
         endIf
       endIf
 
-      if local type = Program.current_module.find_type( cmd.name )
+      if local type = Program.current_library.find_type( cmd.name )
         if (cmd.args)
           return visit( Construct(cmd.t,type,cmd.args) )
 
@@ -818,7 +818,7 @@ class Resolver : Visitor [singleton]
         if local result = resolve_routine( cmd.t, this_type.module_context, cmd.name, cmd.args )
           return result
         endIf
-        forEach (mod in this_type.module_context.used_modules)
+        forEach (mod in this_type.module_context.used_libraries)
           if local result = resolve_routine( cmd.t, mod, cmd.name, cmd.args )
             return result
           endIf
@@ -827,7 +827,7 @@ class Resolver : Visitor [singleton]
 
       throw cmd.t.error( ''No such variable, method, or routine "$" exists in the current scope.''(cmd.name) )
 
-    method resolve_routine( t:Token, mod:Module, name:String, args:Args )->Cmd
+    method resolve_routine( t:Token, mod:Library, name:String, args:Args )->Cmd
       return resolve_access( t, mod.type_Routine, null, name, args, &suppress_error )
 
     method on_visit( cmd:Assign )->Cmd
@@ -1136,7 +1136,7 @@ class Resolver : Visitor [singleton]
 
       if (name.contains("::"))
         local parts = name.split("::")
-        local mod = Program.get_module( t, parts[0] )
+        local mod = Program.get_library( t, parts[0] )
         name = parts[1]
         if local type = mod.types[name]
           type_context = type

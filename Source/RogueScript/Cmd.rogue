@@ -1,5 +1,5 @@
 # Generated and updated by Froley. Custom changes will not be overwritten; customize as desired.
-module RogueScript
+library RogueScript
 
 class Cmd( t:Token )
   GLOBAL METHODS
@@ -3604,7 +3604,7 @@ endClass
 
 class Class : Cmd
   PROPERTIES
-    module_context         : Module
+    module_context         : Library
     name                   : Identifier
     constructor_properties : Parameters
     base_types             : TypeList

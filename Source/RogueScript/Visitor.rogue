@@ -1,5 +1,5 @@
 # Generated and updated by Froley. Custom changes will not be overwritten; customize as desired.
-module RogueScript
+library RogueScript
 
 class Visitor
   PROPERTIES
@@ -9,11 +9,11 @@ class Visitor
   METHODS
     method visit_program( program:Program )
       temporarily Program = program
-        visit_module( forEach in program.modules )
+        visit_library( forEach in program.libraries )
       endTemporarily
 
-    method visit_module( mod:Module )
-      temporarily Program.current_module = mod
+    method visit_library( mod:Library )
+      temporarily Program.current_library = mod
         visit_type( forEach in mod.types )
       endTemporarily
 
